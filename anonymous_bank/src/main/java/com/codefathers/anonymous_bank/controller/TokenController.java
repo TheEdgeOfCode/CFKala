@@ -36,10 +36,8 @@ public class TokenController {
         } catch (BadCredentialsException e) {
             throw new UserPassInvalidException("Incorrect Username Or Password",e);
         }
-
         final UserDetails userDetails = userDetailservice.loadUserByUsername(dto.getUsername());
         final String jwtToken = jwtUtil.generateToken(userDetails);
-
         return ResponseEntity.ok(new AuthenticationResponseDTO(jwtToken));
     }
 

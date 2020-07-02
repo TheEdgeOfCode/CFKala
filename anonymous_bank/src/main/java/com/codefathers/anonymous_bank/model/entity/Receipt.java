@@ -21,8 +21,3 @@ public class Receipt {
     boolean paid;
 }
 
-enum ReceiptType{
-    MOVE,
-    WITHDRAW,
-    DEPOSIT
-}
