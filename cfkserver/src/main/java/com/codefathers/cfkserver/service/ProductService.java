@@ -30,6 +30,6 @@ public class ProductService {
     }
 
     public int createProduct(CreateProductDTO dto){
-        return 0;
+        return 1;
     }
 }
