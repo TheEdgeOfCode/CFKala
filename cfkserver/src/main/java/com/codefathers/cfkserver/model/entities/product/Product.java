@@ -3,6 +3,7 @@ package com.codefathers.cfkserver.model.entities.product;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -11,7 +12,7 @@ import java.util.*;
 
 @Data
 @AllArgsConstructor
-@Entity
+@Entity @Builder
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,7 +60,7 @@ public class Product {
     private int boughtAmount;
     private int leastPrice;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private List<SellPackage> packages;
 
     public Product(int id){this.id = id;}

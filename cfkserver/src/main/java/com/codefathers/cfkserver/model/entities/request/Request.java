@@ -8,10 +8,11 @@ import com.codefathers.cfkserver.model.entities.request.edit.OffChangeAttributes
 import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribute;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
+@Data @NoArgsConstructor
 @Entity
 @Table(name = "t_request")
 public class Request {
@@ -62,34 +63,21 @@ public class Request {
         this.request = request;
         done = false;
         accepted = false;
-        String className = toChange.getClass().getName();
 
-        switch (className) {
-            case "ModelPackage.System.editPackage.OffChangeAttributes":
-                offEdit = (OffChangeAttributes) toChange;
-                break;
-            case "ModelPackage.Off.Off" :
-                off = (Off) toChange;
-                break;
-            case "ModelPackage.Product.Comment":
-                comment = (Comment) toChange;
-                break;
-            case "ModelPackage.Product.Product":
-                product = (Product) toChange;
-                break;
-            case "ModelPackage.Users.Seller":
-                seller = (Seller) toChange;
-                break;
-            case "ModelPackage.System.editPackage.ProductEditAttribute":
-                productEditAttribute = (ProductEditAttribute) toChange;
-                break;
-            case "ModelPackage.Users.Advertise":
-                advertise = (Advertise) toChange;
-                break;
+        if (toChange instanceof OffChangeAttributes){
+            offEdit = (OffChangeAttributes) toChange;
+        }else if (toChange instanceof Off){
+            off = (Off) toChange;
+        }else if (toChange instanceof Comment){
+            comment = (Comment) toChange;
+        }else if (toChange instanceof Product){
+            product = (Product) toChange;
+        }else if (toChange instanceof Seller){
+            seller = (Seller) toChange;
+        }else if (toChange instanceof ProductEditAttribute){
+            productEditAttribute = (ProductEditAttribute) toChange;
+        }else if (toChange instanceof Advertise){
+            advertise = (Advertise) toChange;
         }
-    }
-
-    public Request() {
-
     }
 }
