@@ -29,6 +29,7 @@ public class ProductService {
     @Autowired private RequestService requestService;
     @Autowired private ProductEditAttributeRepository attributeRepository;
     @Autowired private SellPackageRepository sellPackageRepository;
+    @Autowired private CommentRepository commentRepository;
 
     public List<Product> getAllActiveProduct(){
         return productRepository.findAllByProductStatusEquals(ProductStatus.VERIFIED);
@@ -107,5 +108,14 @@ public class ProductService {
         Product product = findById(productId);
         product.setBoughtAmount(product.getBoughtAmount() + amount);
         productRepository.save(product);
+    }
+
+    public void assignAComment(int productId, Comment comment) throws NoSuchAProductException {
+        Product product = findById(productId);
+        List<Comment> comments = product.getAllComments();
+        comments.add(comment);
+        product.setAllComments(comments);
+        productRepository.save(product);
+        commentRepository.save(comment);
     }
 }
