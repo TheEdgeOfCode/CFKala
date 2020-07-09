@@ -16,4 +16,8 @@ public class RequestService {
         requestRepository.save(request);
         return request;
     }
+
+    void save(Request request) {
+        requestRepository.save(request);
+    }
 }

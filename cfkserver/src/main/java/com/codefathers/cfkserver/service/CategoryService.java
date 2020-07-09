@@ -21,4 +21,8 @@ public class CategoryService {
             throw new CategoryNotFoundException("No Category With Id(" + id + ")");
         }
     }
+
+    void saveCategory(Category category){
+        categoryRepository.save(category);
+    }
 }

@@ -6,32 +6,66 @@ import com.codefathers.cfkserver.exceptions.model.product.EditorIsNotSellerExcep
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.model.dtos.product.CreateProductDTO;
+import com.codefathers.cfkserver.model.entities.offs.Off;
 import com.codefathers.cfkserver.model.entities.product.*;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.RequestType;
 import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribute;
+import com.codefathers.cfkserver.model.entities.user.Cart;
 import com.codefathers.cfkserver.model.entities.user.Seller;
-import com.codefathers.cfkserver.model.repositories.ProductEditAttributeRepository;
-import com.codefathers.cfkserver.model.repositories.ProductRepository;
-import com.codefathers.cfkserver.model.repositories.SellPackageRepository;
+import com.codefathers.cfkserver.model.entities.user.SubCart;
+import com.codefathers.cfkserver.model.repositories.*;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class ProductService {
-    @Autowired private ProductRepository productRepository;
-    @Autowired private CompanyService companyService;
-    @Autowired private SellerService sellerService;
-    @Autowired private CategoryService categoryService;
-    @Autowired private RequestService requestService;
-    @Autowired private ProductEditAttributeRepository attributeRepository;
-    @Autowired private SellPackageRepository sellPackageRepository;
-    @Autowired private CommentRepository commentRepository;
+    private final ProductRepository productRepository;
+    private final CompanyService companyService;
+    private final SellerService sellerService;
+    private final CategoryService categoryService;
+    private final RequestService requestService;
+    private final ProductEditAttributeRepository attributeRepository;
+    private final SellPackageRepository sellPackageRepository;
+    private final CommentRepository commentRepository;
+    private final SubCartRepository subCartRepository;
+    private final CartRepository cartRepository;
+    private final RequestRepository requestRepository;
+    private final OffRepository offRepository;
+
+    @Autowired /* this may cause problem */
+    public ProductService(SubCartRepository subCartRepository, ProductRepository productRepository,
+                          CompanyService companyService, SellerService sellerService,
+                          CategoryService categoryService, RequestService requestService,
+                          OffRepository offRepository, ProductEditAttributeRepository attributeRepository,
+                          SellPackageRepository sellPackageRepository, CommentRepository commentRepository,
+                          CartRepository cartRepository, RequestRepository requestRepository) {
+        this.subCartRepository = subCartRepository;
+        this.productRepository = productRepository;
+        this.companyService = companyService;
+        this.sellerService = sellerService;
+        this.categoryService = categoryService;
+        this.requestService = requestService;
+        this.offRepository = offRepository;
+        this.attributeRepository = attributeRepository;
+        this.sellPackageRepository = sellPackageRepository;
+        this.commentRepository = commentRepository;
+        this.cartRepository = cartRepository;
+        this.requestRepository = requestRepository;
+    }
 
     public List<Product> getAllActiveProduct(){
         return productRepository.findAllByProductStatusEquals(ProductStatus.VERIFIED);
@@ -140,5 +174,71 @@ public class ProductService {
         Comment[] toReturn = new Comment[comments.size()];
         comments.toArray(toReturn);
         return toReturn;
+    }
+
+    public void deleteProduct(int productId) throws NoSuchAProductException {
+        Product product = findById(productId);
+        deleteProduct(product);
+    }
+
+    public void deleteProduct(Product product) {
+        List<SellPackage> packages = product.getPackages();
+        product.setPackages(new ArrayList<>());
+        productRepository.save(product);
+        packages.forEach(this::deleteSellPackage);
+        deleteAllRequestRelatedToProduct(product);
+        Category category = product.getCategory();
+        category.getAllProducts().remove(product);
+        categoryService.saveCategory(category);
+        product.setCategory(null);
+        product.setCompanyClass(null);
+        deletePictures(product.getId());
+    }
+
+    private void deletePictures(int id) {
+        File directory = new File("src/main/resources/db/images/products/" + id);
+        try {
+            FileUtils.deleteDirectory(directory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteAllRequestRelatedToProduct(Product product) {
+        List<Request> requests = requestRepository.findAllByProduct(product);
+        requests.forEach(request -> {
+            request.setProduct(null);
+            requestService.save(request);
+        });
+    }
+
+    private void deleteSellPackage(SellPackage sellPackage) {
+        Seller seller = sellPackage.getSeller();
+        if (sellPackage.isOnOff()) {
+            Off off = sellPackage.getOff();
+            off.getProducts().remove(sellPackage.getProduct());
+            offRepository.save(off);
+            sellPackage.setOff(null);
+        }
+        List<SellPackage> packages = seller.getPackages();
+        packages.remove(sellPackage);
+        seller.setPackages(new ArrayList<>(packages));
+        Product product = sellPackage.getProduct();
+        deleteAllSubCarts(seller, product);
+        sellPackage.setProduct(null);
+        sellPackage.setSeller(null);
+        productRepository.save(product);
+        sellerService.saveSeller(seller);
+        sellPackageRepository.delete(sellPackage);
+    }
+
+    private void deleteAllSubCarts(Seller seller, Product product) {
+        List<SubCart> subCarts = subCartRepository.findAllByProductAndSeller(product,seller);
+        subCarts.forEach(subCart -> {
+            Cart cart = subCart.getCart();
+            cart.getSubCarts().remove(subCart);
+            cartRepository.save(cart);
+            subCartRepository.delete(subCart);
+        });
     }
 }
