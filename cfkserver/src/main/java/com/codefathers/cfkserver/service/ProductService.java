@@ -17,8 +17,10 @@ import com.codefathers.cfkserver.model.repositories.SellPackageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class ProductService {
@@ -117,5 +119,26 @@ public class ProductService {
         product.setAllComments(comments);
         productRepository.save(product);
         commentRepository.save(comment);
+    }
+
+    public void assignAScore(int productId, Score score) throws NoSuchAProductException {
+        Product product = findById(productId);
+        List<Score> scores = product.getAllScores();
+        int amount = scores.size();
+        scores.add(score);
+        product.setAllScores(scores);
+        product.setTotalScore((product.getTotalScore()*amount + score.getScore())/(amount+1));
+        productRepository.save(product);
+    }
+
+    public Comment[] getAllComment(int productId) throws NoSuchAProductException {
+        Product product = findById(productId);
+        List<Comment> comments = new CopyOnWriteArrayList<>(product.getAllComments());
+        for (Comment comment : comments) {
+            if (!comment.getStatus().equals(CommentStatus.VERIFIED)) comments.remove(comment);
+        }
+        Comment[] toReturn = new Comment[comments.size()];
+        comments.toArray(toReturn);
+        return toReturn;
     }
 }
