@@ -13,6 +13,7 @@ import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribut
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.repositories.ProductEditAttributeRepository;
 import com.codefathers.cfkserver.model.repositories.ProductRepository;
+import com.codefathers.cfkserver.model.repositories.SellPackageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +28,19 @@ public class ProductService {
     @Autowired private CategoryService categoryService;
     @Autowired private RequestService requestService;
     @Autowired private ProductEditAttributeRepository attributeRepository;
+    @Autowired private SellPackageRepository sellPackageRepository;
 
     public List<Product> getAllActiveProduct(){
         return productRepository.findAllByProductStatusEquals(ProductStatus.VERIFIED);
+    }
+
+    public Product findById(int id) throws NoSuchAProductException {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            return productOptional.get();
+        }else {
+            throw new NoSuchAProductException("There Isn't Any Product With ID (" + id + ")");
+        }
     }
 
     public void createProduct(CreateProductDTO dto)
@@ -57,22 +68,28 @@ public class ProductService {
     public void editProduct(String editor, ProductEditAttribute attribute)
             throws EditorIsNotSellerException, NoSuchSellerException, NoSuchAProductException {
         String requestStr = String.format("%s has requested to edit %s",editor,attribute);
-        Optional<Product> productOptional = productRepository.findById(attribute.getSourceId());
         attributeRepository.save(attribute);
-        if (productOptional.isPresent()){
-            Product product = productOptional.get();
-            checkIfEditorIsASeller(editor,product);
-            product.setProductStatus(ProductStatus.UNDER_EDIT);
-            Request request = requestService.createRequest(attribute,RequestType.EDIT_PRODUCT,editor,requestStr);
-            Seller seller = sellerService.findSellerByUsername(editor);
-            seller.addRequest(request);
-            sellerService.saveSeller(seller);
-        } else {
-            throw new NoSuchAProductException();
-        }
+        Product product = findById(attribute.getSourceId());
+        checkIfEditorIsASeller(editor,product);
+        product.setProductStatus(ProductStatus.UNDER_EDIT);
+        Request request = requestService.createRequest(attribute,RequestType.EDIT_PRODUCT,editor,requestStr);
+        Seller seller = sellerService.findSellerByUsername(editor);
+        seller.addRequest(request);
+        sellerService.saveSeller(seller);
     }
 
     private void checkIfEditorIsASeller(String username,Product product) throws EditorIsNotSellerException {
         if (!product.hasSeller(username))throw new EditorIsNotSellerException();
+    }
+
+    public void changeAmountOfStock(int productId, String sellerId, int amount)
+            throws NoSuchSellerException, NoSuchAProductException {
+        Product product = findById(productId);
+        SellPackage sellPackage = product.findPackageBySeller(sellerId);
+        int stock = sellPackage.getStock();
+        stock += amount;
+        if (stock < 0) stock = 0;
+        sellPackage.setStock(stock);
+        sellPackageRepository.save(sellPackage);
     }
 }
