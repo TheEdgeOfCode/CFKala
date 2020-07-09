@@ -16,14 +16,9 @@ import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.SubCart;
 import com.codefathers.cfkserver.model.repositories.*;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
