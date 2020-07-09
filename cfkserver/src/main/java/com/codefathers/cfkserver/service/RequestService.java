@@ -11,8 +11,9 @@ public class RequestService {
     @Autowired
     private RequestRepository requestRepository;
 
-    public void createRequest(Object requestObject, RequestType type,String userRequested,String requset){
+    public Request createRequest(Object requestObject, RequestType type,String userRequested,String requset){
         Request request = new Request(userRequested,type,requset,requestObject);
         requestRepository.save(request);
+        return request;
     }
 }

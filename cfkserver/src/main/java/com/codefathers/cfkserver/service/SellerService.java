@@ -21,4 +21,8 @@ public class SellerService {
             throw new NoSuchSellerException("Seller ("+ username + ") Doesn't Exist");
         }
     }
+
+    public void saveSeller(Seller seller){
+        sellerRepository.save(seller);
+    }
 }
