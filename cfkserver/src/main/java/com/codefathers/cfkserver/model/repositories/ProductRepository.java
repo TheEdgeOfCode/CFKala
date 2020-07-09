@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends CrudRepository<Product,Integer> {
     List<Product> findAllByProductStatusEquals(ProductStatus status);
-    List<Product> findAllByName(String name);
+    List<Product> findAllByNameContains(String name);
 }

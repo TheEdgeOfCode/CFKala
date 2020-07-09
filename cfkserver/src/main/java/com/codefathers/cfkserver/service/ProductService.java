@@ -92,4 +92,20 @@ public class ProductService {
         sellPackage.setStock(stock);
         sellPackageRepository.save(sellPackage);
     }
+
+    public List<Product> findProductsByName(String name){
+        return productRepository.findAllByNameContains(name);
+    }
+
+    public void addView(int productId) throws NoSuchAProductException {
+        Product product = findById(productId);
+        product.setView(product.getView()+1);
+        productRepository.save(product);
+    }
+
+    public void addBought(int productId, int amount) throws NoSuchAProductException {
+        Product product = findById(productId);
+        product.setBoughtAmount(product.getBoughtAmount() + amount);
+        productRepository.save(product);
+    }
 }
