@@ -302,7 +302,7 @@ public class CategoryService {
         }
     }
 
-    public static ArrayList<String> getPublicFeatures() {
+    public ArrayList<String> getPublicFeatures() {
         return publicFeatures;
     }
 }
