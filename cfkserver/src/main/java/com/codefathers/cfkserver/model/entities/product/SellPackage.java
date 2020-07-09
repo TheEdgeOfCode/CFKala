@@ -38,6 +38,15 @@ public class SellPackage {
         this.isAvailable = isAvailable;
     }
 
+    public SellPackage(Product product, Seller seller, int price, int stock) {
+        this.product = product;
+        this.seller = seller;
+        this.price = price;
+        this.stock = stock;
+        this.isOnOff = false;
+        this.isAvailable = stock != 0;
+    }
+
     public boolean isForProductWithId(int id) {
         return product.getId() == id;
     }
