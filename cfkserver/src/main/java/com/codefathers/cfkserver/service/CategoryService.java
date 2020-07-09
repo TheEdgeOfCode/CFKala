@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class CategoryService {
@@ -253,5 +254,55 @@ public class CategoryService {
             specialFeatures.remove(removeFeature);
             product.setSpecialFeatures(specialFeatures);
         }
+    }
+
+    List<Product> getAllProductsInThisCategory(int categoryId)
+            throws CategoryNotFoundException {
+        if (categoryId == 0) return productService.getAllActiveProduct();
+        Category category = findCategoryById(categoryId);
+        return getAllProductsInThisCategory(category);
+    }
+
+    private List<Product> getAllProductsInThisCategory(Category category){
+        List<Product> products = new ArrayList<>(category.getAllProducts());
+        List<Category> subcategories = category.getSubCategories();
+        if (!subcategories.isEmpty()){
+            for (Category subcategory : subcategories) {
+                products.addAll(getAllProductsInThisCategory(subcategory));
+            }
+        }
+        return products;
+    }
+
+    public void removeCategory(int categoryId) throws CategoryNotFoundException {
+        Category category = findCategoryById(categoryId);
+        removeCategory(category);
+    }
+
+    private void removeCategory(Category category) {
+        if (!category.getSubCategories().isEmpty())
+            for (Category subCategory : category.getSubCategories()) {
+                removeCategory(subCategory);
+            }
+        removeAllProductsIn(category);
+        category.setAllProducts(null);
+        Category parent = category.getParent();
+        if (parent != null) {
+            parent.getSubCategories().remove(category);
+            categoryRepository.save(parent);
+        }
+        category.setParent(null);
+        categoryRepository.delete(category);
+    }
+
+    private void removeAllProductsIn(Category category){
+        List<Product> list = new CopyOnWriteArrayList<>(category.getAllProducts());
+        for (Product product : list) {
+            productService.deleteProduct(product);
+        }
+    }
+
+    public static ArrayList<String> getPublicFeatures() {
+        return publicFeatures;
     }
 }
