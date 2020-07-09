@@ -1,4 +1,4 @@
-package com.codefathers.cfkserver.exceptions.model;
+package com.codefathers.cfkserver.exceptions.model.category;
 
 public class CategoryNotFoundException extends Exception {
     public CategoryNotFoundException() {
