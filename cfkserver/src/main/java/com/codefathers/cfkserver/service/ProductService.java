@@ -241,4 +241,54 @@ public class ProductService {
             subCartRepository.delete(subCart);
         });
     }
+
+    public void changePrice(Product product, int newPrice, String username) throws NoSuchSellerException {
+        SellPackage sellPackage = product.findPackageBySeller(username);
+        if (newPrice > 0) {
+            sellPackage.setPrice(newPrice);
+            sellPackageRepository.save(sellPackage);
+        }
+        if (newPrice < product.getLeastPrice()) {
+            product.setLeastPrice(newPrice);
+        }
+        productRepository.save(product);
+    }
+
+    public void changeStock(Product product, int newStock, String username) throws NoSuchSellerException {
+        SellPackage sellPackage = product.findPackageBySeller(username);
+        if (newStock > 0) {
+            sellPackage.setStock(newStock);
+            sellPackageRepository.save(sellPackage);
+        }
+    }
+
+    public void addASellerToProduct(Product product,Seller seller,int amount,int price) {
+        SellPackage sellPackage = new SellPackage(product, seller, price, amount, null, false, price != 0);
+        sellPackageRepository.save(sellPackage);
+        int currentLeast = product.getLeastPrice();
+        if (currentLeast > price) {
+            product.setLeastPrice(price);
+        }
+        product.getPackages().add(sellPackage);
+        seller.getPackages().add(sellPackage);
+        sellerService.saveSeller(seller);
+        productRepository.save(product);
+    }
+
+    public Seller bestSellerOf(Product product){
+        Seller seller = null;
+        int pricy = 2000000000;
+        for (SellPackage aPackage : product.getPackages()) {
+            int price = aPackage.getPrice();
+            if (price < pricy){
+                seller = aPackage.getSeller();
+                pricy = price;
+            }
+        }
+        return seller;
+    }
+
+    public List<Product> getAllOffFromActiveProducts(){
+        return productRepository.findAllByOnOffTrue();
+    }
 }
