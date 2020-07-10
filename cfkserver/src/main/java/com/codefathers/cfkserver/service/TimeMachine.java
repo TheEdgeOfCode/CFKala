@@ -18,6 +18,12 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * TimeMachine is a {@link Component} that checks Start Date And End Date
+ * of {@link DiscountCode}s, {@link Off}s and {@link Advertise}s and handles Activation Of Them.
+ * Every 60_000 milliseconds it begins its operation
+ */
+
 @Component
 public class TimeMachine {
     private final ContentService contentService;
