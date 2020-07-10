@@ -1,6 +1,6 @@
 package com.codefathers.cfkserver.service;
 
-import com.codefathers.cfkserver.exceptions.model.CategoryNotFoundException;
+import com.codefathers.cfkserver.exceptions.model.category.CategoryNotFoundException;
 import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
 import com.codefathers.cfkserver.exceptions.model.product.EditorIsNotSellerException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;

@@ -1,6 +1,6 @@
 package com.codefathers.cfkserver.service;
 
-import com.codefathers.cfkserver.exceptions.model.CategoryNotFoundException;
+import com.codefathers.cfkserver.exceptions.model.category.CategoryNotFoundException;
 import com.codefathers.cfkserver.exceptions.model.category.NoSuchAProductInCategoryException;
 import com.codefathers.cfkserver.exceptions.model.category.RepeatedFeatureException;
 import com.codefathers.cfkserver.exceptions.model.category.RepeatedNameInParentCategoryException;
