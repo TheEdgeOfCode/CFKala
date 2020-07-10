@@ -10,5 +10,7 @@ import java.util.List;
 @Repository
 public interface AdvertiseRepository extends CrudRepository<Advertise,Integer> {
     List<Advertise> findAllByCreatedAndActiveIsTrue(Date created);
+
+    List<Advertise> findAllByActiveIsTrue();
     void deleteAllByCreatedBeforeAndActiveIsTrue(Date date);
 }
