@@ -2,12 +2,14 @@ package com.codefathers.cfkserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-public class CfkserverApplication {
+@EnableScheduling
+public class CFKServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CfkserverApplication.class, args);
+        SpringApplication.run(CFKServerApplication.class, args);
     }
 
 }
