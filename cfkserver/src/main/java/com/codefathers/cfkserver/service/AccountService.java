@@ -1,11 +1,15 @@
 package com.codefathers.cfkserver.service;
 
 import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
+import com.codefathers.cfkserver.exceptions.model.user.NotVerifiedSeller;
+import com.codefathers.cfkserver.exceptions.model.user.UserNotFoundException;
+import com.codefathers.cfkserver.exceptions.model.user.WrongPasswordException;
 import com.codefathers.cfkserver.model.dtos.product.user.CustomerDTO;
 import com.codefathers.cfkserver.model.dtos.product.user.ManagerDTO;
 import com.codefathers.cfkserver.model.dtos.product.user.SellerDTO;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.RequestType;
+import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
 import com.codefathers.cfkserver.model.entities.user.*;
 import com.codefathers.cfkserver.model.repositories.CustomerRepository;
 import com.codefathers.cfkserver.model.repositories.ManagerRepository;
@@ -13,6 +17,8 @@ import com.codefathers.cfkserver.model.repositories.SellerRepository;
 import com.codefathers.cfkserver.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -30,8 +36,13 @@ public class AccountService {
     @Autowired
     private CompanyService companyService;
 
-    public User getUserByUsername(String username){
-        return userRepository.getByUsername(username);
+    public User getUserByUsername(String username) throws UserNotFoundException {
+        Optional<User> optionalUser = userRepository.findById(username);
+        if (optionalUser.isPresent()){
+            return optionalUser.get();
+        } else {
+            throw new UserNotFoundException();
+        }
     }
 
     public void createSeller(SellerDTO sellerDTO) throws NoSuchACompanyException {
@@ -81,5 +92,63 @@ public class AccountService {
         managerRepository.save(manager);
     }
 
+    public String login(String username, String password) throws UserNotFoundException, NotVerifiedSeller, WrongPasswordException {
+        User user = getUserByUsername(username);
 
+        if (isCorrectPassword(user, password)) {
+            Optional<Customer> customer = customerRepository.findById(username);
+            if (customer.isPresent()) return "Customer";
+            Optional<Seller> seller = sellerRepository.findById(username);
+            if (seller.isPresent()) if (seller.get().getVerified())
+                return "Seller";
+            else
+                throw new NotVerifiedSeller();
+            Optional<Manager> manager = managerRepository.findById(username);
+            if (manager.isPresent()) {
+                return "Manager";
+            }
+        } else {
+            throw new WrongPasswordException(username);
+        }
+        return "";
+    }
+
+    public User viewPersonalInfo(String username) throws UserNotFoundException {
+        return getUserByUsername(username);
+    }
+
+    public void changeInfo(String username, UserEditAttributes editAttributes) throws UserNotFoundException {
+        User user = getUserByUsername(username);
+        String newFirstName = editAttributes.getNewFirstName();
+        String newLastName = editAttributes.getNewLastName();
+        String newPassword = editAttributes.getNewPassword();
+        String newEmail = editAttributes.getNewEmail();
+        String newPhone = editAttributes.getNewPhone();
+
+        if (newFirstName != null) {
+            user.setFirstName(newFirstName);
+        }
+        if (newLastName != null) {
+            user.setLastName(newLastName);
+        }
+        if (newPassword != null) {
+            user.setPassword(newPassword);
+        }
+        if (newEmail != null) {
+            user.setEmail(newEmail);
+        }
+        if (newPhone != null) {
+            user.setPhoneNumber(newPhone);
+        }
+
+        userRepository.save(user);
+    }
+
+    public void logout(String username) throws UserNotFoundException {
+        //TODO: What TODO?
+    }
+
+    private boolean isCorrectPassword(User user, String password) {
+        return user.getPassword().equals(password);
+    }
 }
