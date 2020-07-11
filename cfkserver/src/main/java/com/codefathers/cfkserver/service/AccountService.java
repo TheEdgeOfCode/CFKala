@@ -1,7 +1,7 @@
 package com.codefathers.cfkserver.service;
 
 import com.codefathers.cfkserver.model.entities.user.User;
-import com.codefathers.cfkserver.model.repositories.AccountRepository;
+import com.codefathers.cfkserver.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 public class AccountService {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     public User getUserByUsername(String username){
-        return accountRepository.getByUsername(username);
+        return userRepository.getByUsername(username);
     }
 }
