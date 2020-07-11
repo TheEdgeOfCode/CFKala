@@ -7,9 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 public class CFKServerApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(CFKServerApplication.class, args);
     }
-
 }

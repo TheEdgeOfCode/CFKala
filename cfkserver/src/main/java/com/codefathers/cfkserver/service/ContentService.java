@@ -16,18 +16,14 @@ import java.util.List;
 
 @Service
 public class ContentService {
-    private final MainContentRepository mainContentRepository;
-    private final AdvertiseRepository advertiseRepository;
-    private final ProductService productService;
-    private final RequestService requestService;
-
     @Autowired
-    public ContentService(MainContentRepository mainContentRepository, AdvertiseRepository advertiseRepository, ProductService productService, RequestService requestService) {
-        this.mainContentRepository = mainContentRepository;
-        this.advertiseRepository = advertiseRepository;
-        this.productService = productService;
-        this.requestService = requestService;
-    }
+    private MainContentRepository mainContentRepository;
+    @Autowired
+    private AdvertiseRepository advertiseRepository;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private RequestService requestService;
 
     public void addContent(String title, String content) {
         MainContent mainContent = new MainContent(title, content);

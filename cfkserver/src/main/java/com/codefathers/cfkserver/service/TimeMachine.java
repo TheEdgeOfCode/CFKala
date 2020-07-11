@@ -26,30 +26,24 @@ import java.util.List;
 
 @Component
 public class TimeMachine {
-    private final ContentService contentService;
-    private final AdvertiseRepository advertiseRepository;
-    private final DiscountRepository discountRepository;
-    private final DiscountService discountService;
-    private final OffRepository offRepository;
-    private final SellPackageRepository sellPackageRepository;
-    private final OffService offService;
+    @Autowired
+    private ContentService contentService;
+    @Autowired
+    private AdvertiseRepository advertiseRepository;
+    @Autowired
+    private DiscountRepository discountRepository;
+    @Autowired
+    private DiscountService discountService;
+    @Autowired
+    private OffRepository offRepository;
+    @Autowired
+    private SellPackageRepository sellPackageRepository;
+    @Autowired
+    private OffService offService;
 
     private final long TIME_PERIOD = 60_000;
 
-    @Autowired
-    public TimeMachine(ContentService contentService, AdvertiseRepository advertiseRepository,
-                       DiscountRepository discountRepository, DiscountService discountService,
-                       OffRepository offRepository, SellPackageRepository sellPackageRepository, OffService offService) {
-        this.contentService = contentService;
-        this.advertiseRepository = advertiseRepository;
-        this.discountRepository = discountRepository;
-        this.discountService = discountService;
-        this.offRepository = offRepository;
-        this.sellPackageRepository = sellPackageRepository;
-        this.offService = offService;
-    }
-
-    @Scheduled(fixedRate = TIME_PERIOD)
+    //@Scheduled(fixedRate = TIME_PERIOD)
     private void run() {
         offCheck();
         discountCheck();

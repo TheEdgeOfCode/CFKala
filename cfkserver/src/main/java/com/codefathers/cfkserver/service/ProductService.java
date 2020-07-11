@@ -28,39 +28,30 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class ProductService {
-    private final ProductRepository productRepository;
-    private final CompanyService companyService;
-    private final SellerService sellerService;
-    private final CategoryService categoryService;
-    private final RequestService requestService;
-    private final ProductEditAttributeRepository attributeRepository;
-    private final SellPackageRepository sellPackageRepository;
-    private final CommentRepository commentRepository;
-    private final SubCartRepository subCartRepository;
-    private final CartRepository cartRepository;
-    private final RequestRepository requestRepository;
-    private final OffRepository offRepository;
-
-    @Autowired /* this may cause problem */
-    public ProductService(SubCartRepository subCartRepository, ProductRepository productRepository,
-                          CompanyService companyService, SellerService sellerService,
-                          CategoryService categoryService, RequestService requestService,
-                          OffRepository offRepository, ProductEditAttributeRepository attributeRepository,
-                          SellPackageRepository sellPackageRepository, CommentRepository commentRepository,
-                          CartRepository cartRepository, RequestRepository requestRepository) {
-        this.subCartRepository = subCartRepository;
-        this.productRepository = productRepository;
-        this.companyService = companyService;
-        this.sellerService = sellerService;
-        this.categoryService = categoryService;
-        this.requestService = requestService;
-        this.offRepository = offRepository;
-        this.attributeRepository = attributeRepository;
-        this.sellPackageRepository = sellPackageRepository;
-        this.commentRepository = commentRepository;
-        this.cartRepository = cartRepository;
-        this.requestRepository = requestRepository;
-    }
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private CompanyService companyService;
+    @Autowired
+    private SellerService sellerService;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private RequestService requestService;
+    @Autowired
+    private ProductEditAttributeRepository attributeRepository;
+    @Autowired
+    private SellPackageRepository sellPackageRepository;
+    @Autowired
+    private CommentRepository commentRepository;
+    @Autowired
+    private SubCartRepository subCartRepository;
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private RequestRepository requestRepository;
+    @Autowired
+    private OffRepository offRepository;
 
     public List<Product> getAllActiveProduct(){
         return productRepository.findAllByProductStatusEquals(ProductStatus.VERIFIED);

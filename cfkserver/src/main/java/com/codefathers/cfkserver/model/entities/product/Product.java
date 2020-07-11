@@ -5,7 +5,6 @@ import com.codefathers.cfkserver.model.entities.user.Seller;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.util.*;
@@ -59,6 +58,7 @@ public class Product {
 
     private int boughtAmount;
     private int leastPrice;
+    private boolean onOff;
 
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private List<SellPackage> packages;
