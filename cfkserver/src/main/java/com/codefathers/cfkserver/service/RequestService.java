@@ -22,34 +22,26 @@ import java.util.*;
 
 @Service
 public class RequestService {
-    private final RequestRepository requestRepository;
-    private final SellerRepository sellerRepository;
-    private final AdvertiseRepository advertiseRepository;
-    private final MessageService messageService;
-    private final ProductRepository productRepository;
-    private final ProductService productService;
-    private final CategoryService categoryService;
-    private final SellPackageRepository sellPackageRepository;
-    private final OffRepository offRepository;
-    private final OffService offService;
-
     @Autowired
-    public RequestService(RequestRepository requestRepository, SellerRepository sellerRepository,
-                          AdvertiseRepository advertiseRepository, MessageService messageService,
-                          ProductRepository productRepository, ProductService productService,
-                          CategoryService categoryService, SellPackageRepository sellPackageRepository,
-                          OffRepository offRepository, OffService offService) {
-        this.requestRepository = requestRepository;
-        this.sellerRepository = sellerRepository;
-        this.advertiseRepository = advertiseRepository;
-        this.messageService = messageService;
-        this.productRepository = productRepository;
-        this.productService = productService;
-        this.categoryService = categoryService;
-        this.sellPackageRepository = sellPackageRepository;
-        this.offRepository = offRepository;
-        this.offService = offService;
-    }
+    private RequestRepository requestRepository;
+    @Autowired
+    private SellerRepository sellerRepository;
+    @Autowired
+    private AdvertiseRepository advertiseRepository;
+    @Autowired
+    private MessageService messageService;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private SellPackageRepository sellPackageRepository;
+    @Autowired
+    private OffRepository offRepository;
+    @Autowired
+    private OffService offService;
 
     public Request createRequest(Object requestObject, RequestType type,String userRequested,String requset){
         Request request = new Request(userRequested,type,requset,requestObject);

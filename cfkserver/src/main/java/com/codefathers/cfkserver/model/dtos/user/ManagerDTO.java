@@ -1,4 +1,4 @@
-package com.codefathers.cfkserver.model.dtos.product.user;
+package com.codefathers.cfkserver.model.dtos.user;
 
 
 import lombok.AllArgsConstructor;
