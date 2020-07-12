@@ -16,6 +16,8 @@ import com.codefathers.cfkserver.model.repositories.SubCartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class CartService {
     @Autowired
@@ -104,6 +106,11 @@ public class CartService {
             subCart.setAmount(previousAmount + change);
         }
         cart.setTotalPrice(calculateTotalPrice(cart));
+        cartRepository.save(cart);
+    }
+
+    public void emptyCart(Cart cart) {
+        cart.getSubCarts().clear();
         cartRepository.save(cart);
     }
 }

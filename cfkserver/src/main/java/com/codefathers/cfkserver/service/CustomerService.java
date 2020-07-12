@@ -1,5 +1,6 @@
 package com.codefathers.cfkserver.service;
 
+import com.codefathers.cfkserver.exceptions.model.cart.NotEnoughAmountOfProductException;
 import com.codefathers.cfkserver.exceptions.model.discount.NoMoreDiscount;
 import com.codefathers.cfkserver.exceptions.model.discount.NoSuchADiscountCodeException;
 import com.codefathers.cfkserver.exceptions.model.discount.UserNotExistedInDiscountCodeException;
@@ -8,6 +9,7 @@ import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.model.user.NoSuchACustomerException;
 import com.codefathers.cfkserver.exceptions.model.user.NoSuchAPackageException;
 import com.codefathers.cfkserver.exceptions.model.user.NotEnoughMoneyException;
+import com.codefathers.cfkserver.exceptions.model.user.UserNotFoundException;
 import com.codefathers.cfkserver.model.entities.logs.PurchaseLog;
 import com.codefathers.cfkserver.model.entities.maps.DiscountcodeIntegerMap;
 import com.codefathers.cfkserver.model.entities.offs.DiscountCode;
@@ -30,6 +32,10 @@ public class CustomerService {
     private SellerService sellerService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private LogService logService;
+    @Autowired
+    private CartService cartService;
 
     public Customer getCustomerByUsername(String username) throws NoSuchACustomerException {
         Optional<Customer> customer = customerRepository.findById(username);
@@ -50,7 +56,7 @@ public class CustomerService {
 
     public void purchase(String username, CustomerInformation customerInformation, DiscountCode discountCode)
             throws NotEnoughAmountOfProductException, NoSuchAProductException, NoSuchSellerException,
-            NoSuchAPackageException, NoSuchACustomerException {
+            NoSuchAPackageException, NoSuchACustomerException, NotEnoughMoneyException {
         Customer customer = getCustomerByUsername(username);
 
         Cart cart = customer.getCart();
@@ -61,26 +67,26 @@ public class CustomerService {
         if (discountCode != null) {
             try {
                 discountService.useADiscount(customer, discountCode.getCode());
-                csclManager.createPurchaseLog(cart, discountCode.getOffPercentage(), customer);
+                logService.createPurchaseLog(cart, discountCode.getOffPercentage(), customer);
             } catch (NoSuchADiscountCodeException | UserNotExistedInDiscountCodeException | NoMoreDiscount e) {
-                csclManager.createPurchaseLog(cart, 0, customer);
+                logService.createPurchaseLog(cart, 0, customer);
                 e.printStackTrace();
             }
         } else {
-            csclManager.createPurchaseLog(cart, 0, customer);
+            logService.createPurchaseLog(cart, 0, customer);
         }
         String name = customer.getUsername();
         cart.getSubCarts().forEach(subCart -> {
             try {
-                csclManager.createSellLog(subCart, name);
-                ProductManager.getInstance().addBought(subCart.getProduct().getId(), subCart.getAmount());
-            } catch (NoSuchAPackageException | NoSuchAProductException e) {
+                logService.createSellLog(subCart, name);
+                productService.addBought(subCart.getProduct().getId(), subCart.getAmount());
+            } catch (NoSuchAPackageException | NoSuchAProductException | UserNotFoundException e) {
                 e.printStackTrace();
             }
         });
         productChangeInPurchase(customer);
-        DBManager.save(customer);
-        csclManager.emptyCart(cart);
+        save(customer);
+        cartService.emptyCart(cart);
     }
 
     public void checkIfThereIsEnoughAmount(Customer customer) throws NotEnoughAmountOfProductException, NoSuchAProductException, NoSuchSellerException {
@@ -138,7 +144,7 @@ public class CustomerService {
         return totalPrice;
     }
 
-    long findPrice(SubCart subCart) throws NoSuchAPackageException {
+    int findPrice(SubCart subCart) throws NoSuchAPackageException {
         SellPackage sellPackage = subCart.getSeller().findPackageByProductId(subCart.getProduct().getId());
         return sellPackage.isOnOff() ? sellPackage.getPrice() * (100 - sellPackage.getOff().getOffPercentage()) / 100 : sellPackage.getPrice();
     }
