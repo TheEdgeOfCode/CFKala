@@ -11,4 +11,6 @@ public class LogService {
     private PurchaseLogRepository purchaseLogRepository;
     @Autowired
     private SellLogRepository sellLogRepository;
+
+
 }
