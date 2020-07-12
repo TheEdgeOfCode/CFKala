@@ -1,5 +1,6 @@
 package com.codefathers.cfkserver.service;
 
+import com.codefathers.cfkserver.exceptions.model.cart.NoSuchAProductInCart;
 import com.codefathers.cfkserver.exceptions.model.cart.NotEnoughAmountOfProductException;
 import com.codefathers.cfkserver.exceptions.model.cart.NotTheSellerException;
 import com.codefathers.cfkserver.exceptions.model.cart.ProductExistedInCart;
@@ -75,5 +76,34 @@ public class CartService {
         for (SubCart subCart : cart.getSubCarts()) {
             if (subCart.getProduct().getId() == productId) throw new ProductExistedInCart(productId);
         }
+    }
+
+    public SubCart getSubCartByProductId(Cart cart, int productId) throws NoSuchAProductInCart {
+        for (SubCart subCart : cart.getSubCarts()) {
+            if (subCart.getProduct().getId() == productId) return subCart;
+        }
+        throw new NoSuchAProductInCart(productId);
+    }
+
+    public void deleteProductFromCart(Cart cart, int productId) throws NoSuchAProductInCart {
+        SubCart subCart = getSubCartByProductId(cart, productId);
+        cart.getSubCarts().remove(subCart);
+        subCartRepository.delete(subCart);
+        cartRepository.save(cart);
+    }
+
+    public void changeProductAmountInCart(Cart cart, int productId, String sellerId, int change)
+            throws NoSuchAProductInCart, NoSuchAProductException, NoSuchSellerException,
+            NotEnoughAmountOfProductException, NoSuchAPackageException {
+        SubCart subCart = getSubCartByProductId(cart, productId);
+        int previousAmount = subCart.getAmount();
+        checkIfThereIsEnoughAmountOfProduct(productId, sellerId, previousAmount + change);
+        if (previousAmount + change == 0) {
+            cart.getSubCarts().remove(subCart);
+        } else {
+            subCart.setAmount(previousAmount + change);
+        }
+        cart.setTotalPrice(calculateTotalPrice(cart));
+        cartRepository.save(cart);
     }
 }
