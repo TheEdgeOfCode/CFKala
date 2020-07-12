@@ -14,7 +14,7 @@ public class ErrorUtil {
         try {
             response.getOutputStream().print(String.format("{\"timestamp\": \"%s\"," +
                     "\"status\": %d,\"error\": \"%s\",\"message\": \"%s\"}",
-                    new Timestamp(System.nanoTime()),status.value(),status.getReasonPhrase(),message));
+                    new Timestamp(System.currentTimeMillis()),status.value(),status.getReasonPhrase(),message));
             response.flushBuffer();
         } catch (IOException e) {
             e.printStackTrace();

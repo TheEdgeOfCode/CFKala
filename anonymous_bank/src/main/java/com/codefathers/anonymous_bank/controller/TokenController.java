@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.codefathers.anonymous_bank.utils.ErrorUtil.sendError;
+
 @RestController
 public class TokenController {
     @Autowired
@@ -42,7 +44,7 @@ public class TokenController {
                     new UsernamePasswordAuthenticationToken(dto.getUsername(),dto.getPassword())
             );
         } catch (BadCredentialsException e) {
-            ErrorUtil.sendError(response,"Incorrect Username Or Password",HttpStatus.UNAUTHORIZED);
+            sendError(response,"Incorrect Username Or Password",HttpStatus.UNAUTHORIZED);
             return null;
         }
         final UserDetails userDetails = userDetailservice.loadUserByUsername(dto.getUsername());
