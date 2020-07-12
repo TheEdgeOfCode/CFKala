@@ -4,10 +4,9 @@ import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyExceptio
 import com.codefathers.cfkserver.exceptions.model.user.NotVerifiedSeller;
 import com.codefathers.cfkserver.exceptions.model.user.UserNotFoundException;
 import com.codefathers.cfkserver.exceptions.model.user.WrongPasswordException;
-import com.codefathers.cfkserver.model.dtos.product.user.CustomerDTO;
-import com.codefathers.cfkserver.model.dtos.product.user.ManagerDTO;
-import com.codefathers.cfkserver.model.dtos.product.user.SellerDTO;
-import com.codefathers.cfkserver.model.entities.request.Request;
+import com.codefathers.cfkserver.model.dtos.user.CustomerDTO;
+import com.codefathers.cfkserver.model.dtos.user.ManagerDTO;
+import com.codefathers.cfkserver.model.dtos.user.SellerDTO;
 import com.codefathers.cfkserver.model.entities.request.RequestType;
 import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
 import com.codefathers.cfkserver.model.entities.user.*;
@@ -144,7 +143,7 @@ public class AccountService {
         userRepository.save(user);
     }
 
-    public void logout(String username) throws UserNotFoundException {
+    public void logout(String username) {
         //TODO: What TODO?
     }
 
