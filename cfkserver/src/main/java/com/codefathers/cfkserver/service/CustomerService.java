@@ -153,4 +153,8 @@ public class CustomerService {
         customer.getPurchaseLogs().add(log);
         customerRepository.save(customer);
     }
+
+    public void save(Customer customer) {
+        customerRepository.save(customer);
+    }
 }
