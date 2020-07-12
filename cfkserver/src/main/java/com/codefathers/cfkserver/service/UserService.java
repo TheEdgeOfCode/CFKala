@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AccountService {
+public class UserService {
 
     @Autowired
     private UserRepository userRepository;
