@@ -1,5 +1,8 @@
 package com.codefathers.cfkserver.service;
 
+import com.codefathers.cfkserver.exceptions.model.cart.NotEnoughAmountOfProductException;
+import com.codefathers.cfkserver.exceptions.model.cart.NotTheSellerException;
+import com.codefathers.cfkserver.exceptions.model.cart.ProductExistedInCart;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.model.user.NoSuchAPackageException;
@@ -22,9 +25,12 @@ public class CartService {
     private ProductService productService;
     @Autowired
     private SellerService sellerService;
+    @Autowired
+    private CustomerService customerService;
 
     public void addProductToCart(Cart cart, String sellerId, int productId, int amount)
-            throws ProductExistedInCart, NotEnoughAmountOfProductException, NoSuchAProductException, NotTheSellerException, NoSuchSellerException, NoSuchAPackageException, NoSuchSellerException {
+            throws ProductExistedInCart, NotEnoughAmountOfProductException, NoSuchAProductException,
+            NotTheSellerException, NoSuchAPackageException, NoSuchSellerException {
         checkIfProductExistsInCart(cart, productId);
         checkIfThereIsEnoughAmountOfProduct(productId, sellerId, amount);
         Product product = productService.findById(productId);
@@ -44,7 +50,6 @@ public class CartService {
 
         subCartRepository.save(subCart);
         cartRepository.save(cart);
-        DBManager.save(cart);
     }
 
     private void checkIfIsTheSellerOfThisProduct(Product product, Seller seller) throws NotTheSellerException {
@@ -53,16 +58,15 @@ public class CartService {
 
     private long calculateTotalPrice(Cart cart) throws NoSuchAPackageException {
         long total = 0;
-        CSCLManager csclManager = CSCLManager.getInstance();
         for (SubCart subCart : cart.getSubCarts()) {
-            total += csclManager.findPrice(subCart);
+            total += customerService.findPrice(subCart);
         }
         return total;
     }
 
     void checkIfThereIsEnoughAmountOfProduct(int productId, String sellerId, int amount)
             throws NotEnoughAmountOfProductException, NoSuchAProductException, NoSuchSellerException {
-        Product product = ProductManager.getInstance().findProductById(productId);
+        Product product = productService.findById(productId);
         int stock = product.findPackageBySeller(sellerId).getStock();
         if (amount > stock) throw new NotEnoughAmountOfProductException(amount);
     }
