@@ -1,6 +1,5 @@
 package com.codefathers.anonymous_bank.controller;
 
-
 import com.codefathers.anonymous_bank.model.service.ReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,6 +1,9 @@
 package com.codefathers.anonymous_bank.utils;
 
+import com.codefathers.anonymous_bank.model.exceptions.token.ExpiredTokenException;
+import com.codefathers.anonymous_bank.model.exceptions.token.InvalidTokenException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,9 +46,18 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validateToken(String token,UserDetails userDetails){
-        final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    public Boolean validateToken(String token,UserDetails userDetails)
+            throws ExpiredTokenException, InvalidTokenException {
+        try {
+            final String username = extractUsername(token);
+            return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        } catch (Exception e) {
+            if (e instanceof ExpiredJwtException){
+                throw new ExpiredTokenException("Expired Token");
+            }else {
+                throw new InvalidTokenException("Invalid Token");
+            }
+        }
     }
 
     private Claims extractAllClaims(String token) {
