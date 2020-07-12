@@ -7,12 +7,12 @@ import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductExceptio
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.model.user.NoSuchACustomerException;
 import com.codefathers.cfkserver.exceptions.model.user.NoSuchAPackageException;
+import com.codefathers.cfkserver.exceptions.model.user.NotEnoughMoneyException;
 import com.codefathers.cfkserver.model.entities.logs.PurchaseLog;
 import com.codefathers.cfkserver.model.entities.maps.DiscountcodeIntegerMap;
 import com.codefathers.cfkserver.model.entities.offs.DiscountCode;
-import com.codefathers.cfkserver.model.entities.user.Cart;
-import com.codefathers.cfkserver.model.entities.user.Customer;
-import com.codefathers.cfkserver.model.entities.user.CustomerInformation;
+import com.codefathers.cfkserver.model.entities.product.SellPackage;
+import com.codefathers.cfkserver.model.entities.user.*;
 import com.codefathers.cfkserver.model.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,8 @@ public class CustomerService {
     private DiscountService discountService;
     @Autowired
     private SellerService sellerService;
+    @Autowired
+    private ProductService productService;
 
     public Customer getCustomerByUsername(String username) throws NoSuchACustomerException {
         Optional<Customer> customer = customerRepository.findById(username);
@@ -85,7 +87,7 @@ public class CustomerService {
         Cart cart = customer.getCart();
 
         for (SubCart subCart : cart.getSubCarts()) {
-            CartManager.getInstance().checkIfThereIsEnoughAmountOfProduct(
+            cartService.checkIfThereIsEnoughAmountOfProduct(
                     subCart.getProduct().getId(),
                     subCart.getSeller().getUsername(),
                     subCart.getAmount()
@@ -104,11 +106,11 @@ public class CustomerService {
         customer.getCustomerInformation().add(customerInformation);
     }
 
-    public void productChangeInPurchase(Customer customer) throws NoSuchSellerException {
+    public void productChangeInPurchase(Customer customer) throws NoSuchSellerException, NoSuchAProductException {
         Cart cart = customer.getCart();
 
         for (SubCart subCart : cart.getSubCarts()) {
-            ProductManager.getInstance().changeAmountOfStock(
+            productService.changeAmountOfStock(
                     subCart.getProduct().getId(),
                     subCart.getSeller().getUsername(),
                     -subCart.getAmount()
@@ -120,13 +122,8 @@ public class CustomerService {
         Cart cart = customer.getCart();
         long totalPrice = 0;
 
-        Seller seller;
-        int off;
         for (SubCart subCart : cart.getSubCarts()) {
-            seller = subCart.getSeller();
-            totalPrice = CSCLManager.getInstance().findPrice(subCart);
-            off = getOff(seller, subCart);
-            totalPrice = (long) (totalPrice * subCart.getAmount() * (double) (100 - off) / 100);
+            totalPrice = findPrice(subCart);
         }
 
         if (discountCode != null) {
@@ -140,18 +137,12 @@ public class CustomerService {
         return totalPrice;
     }
 
-    private int getOff(Seller seller, SubCart subCart) {
-        for (SellPackage product : subCart.getProduct().getPackages()) {
-            if (product.getSeller().equals(seller)) {
-                if (product.isOnOff()) {
-                    return product.getOff().getOffPercentage();
-                }
-            }
-        }
-        return 0;
+    long findPrice(SubCart subCart) throws NoSuchAPackageException {
+        SellPackage sellPackage = subCart.getSeller().findPackageByProductId(subCart.getProduct().getId());
+        return sellPackage.isOnOff() ? sellPackage.getPrice() * (100 - sellPackage.getOff().getOffPercentage()) / 100 : sellPackage.getPrice();
     }
 
-    public void checkIfCustomerHasEnoughMoney(long difference) {
+    public void checkIfCustomerHasEnoughMoney(long difference) throws NotEnoughMoneyException {
         if (difference > 0) {
             throw new NotEnoughMoneyException(difference);
         }
@@ -159,6 +150,6 @@ public class CustomerService {
 
     public void addPurchaseLog(PurchaseLog log, Customer customer) {
         customer.getPurchaseLogs().add(log);
-        DBManager.save(customer);
+        customerRepository.save(customer);
     }
 }
