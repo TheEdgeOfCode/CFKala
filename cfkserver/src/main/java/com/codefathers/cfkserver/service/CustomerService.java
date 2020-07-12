@@ -95,7 +95,8 @@ public class CustomerService {
         }
     }
 
-    public void purchaseForCustomer(Customer customer, CustomerInformation customerInformation, DiscountCode discountCode) throws NoSuchSellerException, NoSuchAPackageException {
+    public void purchaseForCustomer(Customer customer, CustomerInformation customerInformation, DiscountCode discountCode)
+            throws NoSuchAPackageException, NotEnoughMoneyException {
         long totalPrice = getTotalPrice(discountCode, customer);
 
         long difference = totalPrice - customer.getBalance();
