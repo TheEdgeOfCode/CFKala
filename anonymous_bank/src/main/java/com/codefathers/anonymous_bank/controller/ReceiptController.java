@@ -7,6 +7,7 @@ import com.codefathers.anonymous_bank.model.exceptions.receipt.InvalidParameterP
 import com.codefathers.anonymous_bank.model.exceptions.receipt.InvalidRecieptTypeException;
 import com.codefathers.anonymous_bank.model.service.ReceiptService;
 import com.codefathers.anonymous_bank.model.service.SecurityConfig;
+import com.codefathers.anonymous_bank.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class ReceiptController {
     @Autowired
     private ReceiptService receiptService;
     @Autowired private SecurityConfig security;
+    @Autowired private JwtUtil jwtUtil;
 
     @PostMapping("/create_receipt")
     private ResponseEntity<?> createReceipt(@RequestBody String body, HttpServletRequest request, HttpServletResponse response){
@@ -43,7 +45,7 @@ public class ReceiptController {
     private ReceiptDTO createReceiptDto(String body)
             throws InvalidParameterPassedException, InvalidRecieptTypeException, InvalidDescriptionExcxeption
     {
-        Matcher matcher = Pattern.compile("create_receipt (\\S+) (\\d{1,19}) (-?\\d{1,9}) (-?\\d{1,9}) (.*)").matcher(body);
+        Matcher matcher = Pattern.compile("create_receipt (\\S+) (\\d{1,19}) (-?\\d{1,9}) (-?\\d{1,9}) (.*?)").matcher(body);
         if (matcher.find()){
             if (!matcher.group(1).matches("deposit|move|withdraw")){
                 throw new InvalidRecieptTypeException();
@@ -55,6 +57,21 @@ public class ReceiptController {
             }
         }else {
             throw new InvalidParameterPassedException("invalid parameter passed");
+        }
+    }
+
+    @PostMapping("get_transactions")
+    private ResponseEntity<?> getTransactions(@RequestBody String body, HttpServletRequest request, HttpServletResponse response){
+        String[] username = new String[1];
+        if (security.validate(response,request,username)){
+            try {
+                return ResponseEntity.ok(receiptService.getTransactions(body,username[0]));
+            } catch (Exception e) {
+                sendError(response,e.getMessage(),HttpStatus.BAD_REQUEST);
+                return null;
+            }
+        }else {
+            return null;
         }
     }
 }

@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    private void check(HttpServletRequest request)
+    private void check(HttpServletRequest request,String[] user)
             throws ExpiredTokenException, InvalidTokenException {
         final String authorizationHeader = request.getHeader("Authorization");
         String username = null;
@@ -66,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             jwt = authorizationHeader.substring(10);
             try {
                 username = jwtUtil.extractUsername(jwt);
+                user[0] = username;
             } catch (Exception e) {
                 if (e instanceof ExpiredJwtException){
                     throw new ExpiredTokenException("Expired Token");
@@ -87,9 +88,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
-    public boolean validate(HttpServletResponse response,HttpServletRequest request){
+    public boolean validate(HttpServletResponse response,HttpServletRequest request,String[] username) {
         try {
-            check(request);
+            check(request,username);
             return true;
         } catch (Exception e) {
             response.resetBuffer();
@@ -103,5 +104,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             }
             return false;
         }
+    }
+
+    public boolean validate(HttpServletResponse response,HttpServletRequest request) {
+        return validate(response,request,new String[1]);
     }
 }
