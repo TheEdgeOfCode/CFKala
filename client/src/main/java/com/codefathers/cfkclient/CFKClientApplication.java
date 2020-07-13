@@ -1,13 +1,11 @@
 package com.codefathers.cfkclient;
 
-import org.springframework.boot.SpringApplication;
+import javafx.application.Application;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CfkclientApplication {
-
+public class CFKClientApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CfkclientApplication.class, args);
+        Application.launch(CFK.class,args);
     }
-
 }
