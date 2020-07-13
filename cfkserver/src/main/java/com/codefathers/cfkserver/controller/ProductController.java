@@ -10,7 +10,7 @@ import com.codefathers.cfkserver.service.Sorter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,7 +27,7 @@ public class ProductController {
     @Autowired
     private Sorter sorter;
 
-    @GetMapping("/product/get_all_products")
+    @PostMapping("/product/get_all_products")
     private ResponseEntity<?> getAllProducts(@RequestBody FilterSortDto filterSortDto) {
         try {
             int[] priceRange = {filterSortDto.getDownPriceLimit(), filterSortDto.getUpPriceLimit()};
