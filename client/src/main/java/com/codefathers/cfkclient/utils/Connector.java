@@ -1,9 +1,16 @@
 package com.codefathers.cfkclient.utils;
 
+import com.codefathers.cfkclient.dtos.product.FilterSortDto;
+import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
+import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.*;
+
+import static org.springframework.http.HttpMethod.*;
 
 public class Connector {
     private String token;
@@ -16,6 +23,11 @@ public class Connector {
 
     private <T,U> ResponseEntity<U> post(String uri,T dto ,Class<U> type){
         HttpEntity<T> requestEntity = new HttpEntity<>(dto);
-        return restTemplate.exchange(uri, HttpMethod.POST,requestEntity,type);
+        return restTemplate.exchange(uri, POST,requestEntity,type);
+    }
+
+    public List<MiniProductDto> getAllProducts(FilterSortDto dto){
+        ResponseEntity<MiniProductArrayListDto> response = post("",dto, MiniProductArrayListDto.class);
+        return response.getBody().getDtos(); // TODO: 7/14/2020 handle errors
     }
 }
