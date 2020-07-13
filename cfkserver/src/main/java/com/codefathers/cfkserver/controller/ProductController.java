@@ -28,7 +28,7 @@ public class ProductController {
     private Sorter sorter;
 
     @GetMapping("/product/get_all_products")
-    private ResponseEntity<List<MiniProductDto>> getAllProducts(@RequestBody FilterSortDto filterSortDto) {
+    private ResponseEntity<?> getAllProducts(@RequestBody FilterSortDto filterSortDto) {
         try {
             int[] priceRange = {filterSortDto.getDownPriceLimit(), filterSortDto.getUpPriceLimit()};
             List<Product> products = sorter.sort(filterService.updateFilterList(
@@ -37,7 +37,7 @@ public class ProductController {
                     )
                     , filterSortDto.getSortType());
             List<MiniProductDto> toReturn = dtosFromList(products);
-            return new ResponseEntity<>(toReturn, HttpStatus.OK);
+            return ResponseEntity.ok(toReturn);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
