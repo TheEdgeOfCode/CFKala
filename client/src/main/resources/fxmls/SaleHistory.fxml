@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.SaleHistory">
+    <BorderPane prefHeight="594.0" prefWidth="960.0">
+        <top>
+            <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
+                <padding>
+                    <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                </padding>
+                <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" />
+                    </graphic>
+                </JFXButton>
+                <Label text="Sale History"/>
+                <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" text=" ">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-window-minimize" iconSize="15" />
+                    </graphic>
+                </JFXButton>
+                <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-window-close" iconSize="15" />
+                    </graphic>
+                </JFXButton>
+            </HBox>
+        </top>
+        <center>
+            <JFXTabPane BorderPane.alignment="CENTER">
+                <Tab text="SaleHistory">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-history" iconSize="15"/>
+                    </graphic>
+                    <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
+                            <left>
+                                <TableView fx:id="saleTable" prefHeight="522.0" prefWidth="222.0"
+                                           BorderPane.alignment="CENTER">
+                                    <columns>
+                                        <TableColumn fx:id="sellNoCol" prefWidth="111.0" text="No."/>
+                                        <TableColumn fx:id="sellDateCol" prefWidth="111.0" text="Date"/>
+                                    </columns>
+                                </TableView>
+                            </left>
+                            <bottom>
+                                <HBox alignment="CENTER_RIGHT" prefHeight="33.0" prefWidth="960.0" spacing="10.0"
+                                      styleClass="Green" stylesheets="@../CSSs/gradient.css"
+                                      BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Label prefHeight="2.0" text="Total Sale : " textFill="WHITE">
+                                            <font>
+                                                <Font name="System Bold" size="23.0"/>
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="totalSale" layoutX="840.0" layoutY="15.0" prefHeight="2.0"
+                                               text="65123$" textFill="WHITE">
+                                            <font>
+                                                <Font name="System Bold" size="23.0"/>
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </HBox>
+                            </bottom>
+                            <center>
+                                <VBox fx:id="infoBox" prefHeight="200.0" prefWidth="100.0"
+                                      BorderPane.alignment="CENTER">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="679.0"
+                                              spacing="15.0">
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" left="25.0" right="25.0" top="5.0"/>
+                                            </VBox.margin>
+                                            <children>
+                                                <FontIcon iconLiteral="fa-database" iconSize="35"
+                                                          wrappingWidth="51.20002841949463"/>
+                                                <Label text="Sale No. : ">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                                <Label fx:id="saleId" layoutX="92.0" layoutY="43.0">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="15.0" prefHeight="52.0"
+                                              prefWidth="679.0" spacing="15.0">
+                                            <children>
+                                                <FontIcon iconLiteral="fa-barcode" iconSize="35"
+                                                          wrappingWidth="51.20002841949463"/>
+                                                <Label text="Product Id : ">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                                <Label fx:id="productId" layoutX="92.0" layoutY="43.0">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                                <Region HBox.hgrow="ALWAYS"/>
+                                                <JFXButton fx:id="viewProduct" text="View Product ">
+                                                    <graphic>
+                                                        <FontIcon iconLiteral="fa-eye"/>
+                                                    </graphic>
+                                                </JFXButton>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" left="25.0" right="25.0" top="5.0"/>
+                                            </VBox.margin>
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="15.0" prefHeight="52.0"
+                                              prefWidth="679.0" spacing="15.0">
+                                            <children>
+                                                <FontIcon iconLiteral="fa-calendar" iconSize="35"
+                                                          wrappingWidth="51.20002841949463"/>
+                                                <Label text="Date : ">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                                <Label fx:id="date" layoutX="92.0" layoutY="43.0">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" left="25.0" right="25.0" top="5.0"/>
+                                            </VBox.margin>
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="173.0" prefHeight="52.0"
+                                              prefWidth="679.0" spacing="15.0">
+                                            <children>
+                                                <FontIcon iconLiteral="fa-money" iconSize="35"
+                                                          wrappingWidth="51.20002841949463"/>
+                                                <Label text="Money Gotten : ">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                                <Label fx:id="moneyGotten" layoutX="92.0" layoutY="43.0">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" left="25.0" right="25.0" top="5.0"/>
+                                            </VBox.margin>
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="243.0" prefHeight="52.0"
+                                              prefWidth="679.0" spacing="15.0">
+                                            <children>
+                                                <FontIcon iconLiteral="fa-angle-double-down" iconSize="35"
+                                                          wrappingWidth="51.20002841949463"/>
+                                                <Label text="Off :">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                                <Label fx:id="off" layoutX="92.0" layoutY="43.0">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" left="25.0" right="25.0" top="5.0"/>
+                                            </VBox.margin>
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="314.0" prefHeight="52.0"
+                                              prefWidth="679.0" spacing="15.0">
+                                            <children>
+                                                <FontIcon iconLiteral="fa-user-circle" iconSize="35"
+                                                          wrappingWidth="51.20002841949463"/>
+                                                <Label text="Buyer : ">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                                <Label fx:id="buyer" layoutX="92.0" layoutY="43.0">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" left="25.0" right="25.0" top="5.0"/>
+                                            </VBox.margin>
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="331.0" prefHeight="52.0"
+                                              prefWidth="679.0" spacing="15.0">
+                                            <children>
+                                                <FontIcon iconLiteral="fa-truck" iconSize="35"
+                                                          wrappingWidth="51.20002841949463"/>
+                                                <Label text="Delivery Status : ">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                                <Label fx:id="deliveryStatus" layoutX="92.0" layoutY="43.0">
+                                                    <font>
+                                                        <Font name="System Bold" size="23.0"/>
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" left="25.0" right="25.0" top="5.0"/>
+                                            </VBox.margin>
+                                        </HBox>
+                                    </children>
+                                    <BorderPane.margin>
+                                        <Insets left="5.0" right="5.0"/>
+                                    </BorderPane.margin>
+                                </VBox>
+                            </center>
+                        </BorderPane>
+                    </content>
+                </Tab>
+                <Tab disable="true" text="Sell Chart">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-line-chart"/>
+                    </graphic>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
+                                style="-fx-background-color: white;">
+                        <LineChart alternativeColumnFillVisible="true" layoutX="21.0" layoutY="61.0" prefHeight="400.0"
+                                   prefWidth="917.0" title="Sell Each Month">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT"/>
+                            </yAxis>
+                        </LineChart>
+                    </AnchorPane>
+                </Tab>
+                <Tab disable="true" text="Product Chart">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-bar-chart"/>
+                    </graphic>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
+                                style="-fx-background-color: white;">
+                        <BarChart alternativeColumnFillVisible="true" barGap="10.0" categoryGap="20.0" layoutX="40.0"
+                                  layoutY="32.0" prefHeight="458.0" prefWidth="879.0" title="Amount Of Product Sold">
+                            <xAxis>
+                                <CategoryAxis label="Product" side="BOTTOM"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis label="Amount" side="TOP"/>
+                            </yAxis>
+                        </BarChart>
+                    </AnchorPane>
+                </Tab>
+            </JFXTabPane>
+        </center>
+    </BorderPane>
+</AnchorPane>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.Cart">
+   <BorderPane prefHeight="594.0" prefWidth="960.0">
+      <top>
+         <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;"
+               BorderPane.alignment="CENTER">
+            <padding>
+               <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+            </padding>
+            <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+               <graphic>
+                  <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20"/>
+               </graphic>
+            </JFXButton>
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+            <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0"
+                       prefWidth="26.0" text=" ">
+               <graphic>
+                  <FontIcon iconLiteral="fa-window-minimize" iconSize="15"/>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0"
+                       prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+               <graphic>
+                  <FontIcon iconLiteral="fa-window-close" iconSize="15"/>
+               </graphic>
+            </JFXButton>
+         </HBox>
+      </top>
+      <left>
+         <VBox alignment="TOP_CENTER" prefHeight="560.0" prefWidth="304.0" spacing="10.0" styleClass="unknown2"
+               stylesheets="@../CSSs/gradient.css" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+               <Insets/>
+            </BorderPane.margin>
+            <padding>
+               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <children>
+               <ImageView fitHeight="278.0" fitWidth="267.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../Images/cart.png"/>
+                  </image>
+               </ImageView>
+               <Label text="Cart">
+                  <font>
+                     <Font name="Gill Sans Ultra Bold" size="53.0"/>
+                  </font>
+               </Label>
+               <Separator prefWidth="200.0"/>
+               <Label prefHeight="18.0" prefWidth="275.0" text="Total Price : ">
+                  <font>
+                     <Font size="18.0"/>
+                  </font>
+               </Label>
+               <Label fx:id="totalPrice" alignment="CENTER" prefHeight="18.0" prefWidth="189.0" text="26.84$">
+                  <font>
+                     <Font size="30.0"/>
+                  </font>
+               </Label>
+               <Separator prefWidth="200.0"/>
+               <JFXButton fx:id="purchase" buttonType="RAISED" prefHeight="44.0" prefWidth="238.0" text="Purchase">
+                  <font>
+                     <Font name="Lemon Regular" size="21.0"/>
+                  </font>
+                  <ripplerFill>
+                     <RadialGradient centerX="0.5" centerY="0.5" cycleMethod="REFLECT" radius="0.21962619050640925">
+                        <stops>
+                           <Stop color="#ff0000a5"/>
+                           <Stop color="#ff0000a5" offset="0.007633587786259542"/>
+                           <Stop color="#ff00d4a9" offset="0.11335877862595418"/>
+                           <Stop color="#9d00ffc5" offset="0.2162971870751856"/>
+                           <Stop color="#00ffeab6" offset="0.32870960995503495"/>
+                           <Stop color="#0009ffb6" offset="0.43376032625745053"/>
+                           <Stop color="#00ff00c2" offset="0.5650371222419743"/>
+                           <Stop color="#e5ff00b9" offset="0.6999111157586532"/>
+                           <Stop color="#ffcc009b" offset="0.8380685977203806"/>
+                           <Stop color="#ff00007f" offset="1.0"/>
+                        </stops>
+                     </RadialGradient>
+                  </ripplerFill>
+               </JFXButton>
+            </children>
+         </VBox>
+      </left>
+      <center>
+         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <children>
+               <TableView fx:id="tableView" editable="true" prefHeight="506.0" prefWidth="653.0"
+                          tableMenuButtonVisible="true">
+                  <columns>
+                     <TableColumn fx:id="product" prefWidth="194.39996641874313" text="Product"/>
+                     <TableColumn fx:id="amount" minWidth="0.0" prefWidth="74.40000915527344" text="Quantity"/>
+                     <TableColumn fx:id="price" minWidth="0.0" prefWidth="140.0" text="Fee"/>
+                     <TableColumn fx:id="afterOff" minWidth="0.0" prefWidth="118.39996337890625"
+                                  text="Price After Off"/>
+                     <TableColumn fx:id="totalCol" minWidth="0.0" prefWidth="108.0" text="total"/>
+                  </columns>
+               </TableView>
+               <HBox alignment="CENTER_RIGHT" prefHeight="97.0" prefWidth="653.0" spacing="10.0">
+                  <VBox.margin>
+                     <Insets/>
+                  </VBox.margin>
+                  <padding>
+                     <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+                  </padding>
+                  <children>
+                     <Button fx:id="decrease" layoutX="484.0" layoutY="35.0" mnemonicParsing="false" text="decrease">
+                        <graphic>
+                           <FontIcon iconLiteral="fa-arrow-down" iconSize="15"/>
+                        </graphic>
+                     </Button>
+                     <Button fx:id="increase" mnemonicParsing="false" text="Increase">
+                        <graphic>
+                           <FontIcon iconLiteral="fa-arrow-up" iconSize="15"/>
+                        </graphic>
+                     </Button>
+                     <Button fx:id="delete" layoutX="411.0" layoutY="35.0" mnemonicParsing="false" text="delete">
+                        <graphic>
+                           <FontIcon iconLiteral="fa-trash" iconSize="15"/>
+                        </graphic>
+                     </Button>
+                     <Button fx:id="goToProduct" mnemonicParsing="false" text="Go To Product">
+                        <graphic>
+                           <FontIcon iconLiteral="fa-eye" iconSize="15" selectionEnd="0"/>
+                        </graphic>
+                     </Button>
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+      </center>
+   </BorderPane>
+</AnchorPane>

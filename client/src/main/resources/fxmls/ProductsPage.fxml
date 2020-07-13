@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.ProductsPage">
+   <children>
+      <BorderPane prefHeight="594.0" prefWidth="960.0">
+         <top>
+            <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
+               <children>
+                  <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="cartButt" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-shopping-basket" iconSize="20" />
+                     </graphic>
+                  </JFXButton>
+                  <Label text="  Products">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-minimize" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-close" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </HBox>
+         </top>
+         <left>
+            <HBox prefHeight="560.0" prefWidth="393.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ListView fx:id="categories" prefHeight="560.0" prefWidth="178.0"/>
+                  <ScrollPane fx:id="filterPane" prefHeight="560.0" prefWidth="213.0">
+                     <content>
+                        <VBox prefWidth="210.0">
+                           <children>
+                              <HBox prefWidth="210.0">
+                                 <children>
+                                    <Button fx:id="searchBut" mnemonicParsing="false" prefHeight="26.0"
+                                            prefWidth="238.0" text="Search"/>
+                                    <Button fx:id="ignoreSearch" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="25.0" prefWidth="16.0">
+                                       <graphic>
+                                          <FontIcon iconLiteral="fa-repeat" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <TitledPane expanded="false" prefWidth="201.0" text="Filters">
+                                 <content>
+                                    <VBox fx:id="filterVBox" prefWidth="199.0" spacing="5.0">
+                                       <padding>
+                                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                       </padding>
+                                       <children>
+                                          <Label text="Min Price" />
+                                          <JFXSlider fx:id="minPrice" max="2000.0" value="-1.0"/>
+                                          <Label text="Max Price" />
+                                          <JFXSlider fx:id="maxPrice" layoutX="25.0" layoutY="53.0" max="2000.0"
+                                                     value="-1.0"/>
+                                          <Separator prefWidth="200.0" />
+                                          <JFXToggleButton fx:id="offOnly" alignment="CENTER_LEFT" graphicTextGap="50.0" prefHeight="58.0" prefWidth="178.0" size="8.0" text="Off Only">
+                                             <opaqueInsets>
+                                                <Insets/>
+                                             </opaqueInsets>
+                                          </JFXToggleButton>
+                                          <JFXToggleButton fx:id="avaiOnly" alignment="CENTER_LEFT"
+                                                           graphicTextGap="20.0" layoutX="25.0" layoutY="144.0"
+                                                           prefHeight="58.0" prefWidth="178.0" size="8.0"
+                                                           text="Available Only">
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                          </JFXToggleButton>
+                                          <Separator prefWidth="200.0" />
+                                          <TableView fx:id="featureTable" prefHeight="115.0" prefWidth="169.0">
+                                             <columns>
+                                                <TableColumn fx:id="filterCol" prefWidth="75.0" text="Filter"/>
+                                                <TableColumn fx:id="fieldCol" prefWidth="75.0"/>
+                                             </columns>
+                                          </TableView>
+                                          <Separator layoutX="25.0" layoutY="243.0" prefWidth="200.0"/>
+                                          <Label text="Filter By Name"/>
+                                          <TextField fx:id="nameFilter"/>
+                                          <Label layoutX="25.0" layoutY="379.0" text="Filter By Brand"/>
+                                          <TextField fx:id="brandFilter" layoutX="25.0" layoutY="401.0"/>
+                                          <Label layoutX="25.0" layoutY="432.0" text="Filter By Seller"/>
+                                          <TextField fx:id="sellerFilter" layoutX="25.0" layoutY="448.0"/>
+                                          <Button fx:id="filterByFiled" mnemonicParsing="false" prefHeight="26.0"
+                                                  prefWidth="210.0" text="Filter By Fields"/>
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </TitledPane>
+                              <TitledPane expanded="false" text="Sorts">
+                                 <content>
+                                    <VBox prefWidth="197.0" spacing="10.0">
+                                       <children>
+                                          <JFXRadioButton selected="true" text="Ascending">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="ADOrder" />
+                                             </toggleGroup>
+                                          </JFXRadioButton>
+                                          <JFXRadioButton text="Descending" toggleGroup="$ADOrder" />
+                                          <Separator prefWidth="200.0" />
+                                          <JFXRadioButton text="Price">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="type" />
+                                             </toggleGroup>
+                                          </JFXRadioButton>
+                                          <JFXRadioButton layoutX="25.0" layoutY="95.0" text="Date Added" toggleGroup="$type" />
+                                          <JFXRadioButton layoutX="25.0" layoutY="123.0" selected="true" text="View" toggleGroup="$type" />
+                                          <JFXRadioButton layoutX="25.0" layoutY="151.0" text="Bought" toggleGroup="$type" />
+                                          <JFXRadioButton layoutX="25.0" layoutY="179.0" text="Name" toggleGroup="$type" />
+                                          <JFXRadioButton layoutX="25.0" layoutY="207.0" text="Score" toggleGroup="$type" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                       </padding>
+                                    </VBox>
+                                 </content>
+                              </TitledPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </HBox>
+         </left>
+         <center>
+            <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <content>
+                  <VBox fx:id="productVBox" prefWidth="550.0" spacing="5.0">
+                     <children>
+                        <Label text="Choose A Category To See The Poducts"/>
+                     </children>
+                     <padding>
+                        <Insets top="5.0"/>
+                     </padding>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

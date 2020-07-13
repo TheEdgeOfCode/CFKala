@@ -1,0 +1,35 @@
+.Kyoota{
+    -fx-background-color: linear-gradient(to right, #ffd452, #544a7d);
+}
+
+.unknown{
+    -fx-background-color: linear-gradient(from 10% 26% to 100% 67%, #42275a, #734b6d);
+}
+
+.Green{
+    -fx-background-color: linear-gradient(to right, #97eaad, #2ba398);
+}
+
+.shadeGray50{
+    -fx-background-color: linear-gradient(to bottom, #bdc3c7, #2c3e50);
+}
+.water_fire{
+    -fx-background-color: linear-gradient(to top, #2196f3, #f44336);
+}
+
+.unknown2{
+    -fx-background-color: linear-gradient(from 10% 26% to 100% 67%, #8ccfbd, #0499d1);
+}
+
+.unknown3{
+    -fx-background-color: linear-gradient(from 10% 26% to 100% 67%, rgb(12, 133, 75), rgb(125, 214, 123));
+}
+
+.unknown4 {
+    -fx-background-color: linear-gradient(to right, #005aa7, #fffde4);
+}
+
+.comment {
+    -fx-background-color: linear-gradient(from 5% 40% to 100% 100%, #cfcc3c, #fdff58, #cfcc3c, #fdff58, #cfcc3c, #fdff58);
+}
+

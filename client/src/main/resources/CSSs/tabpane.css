@@ -1,0 +1,6 @@
+.jfx-tab-pane:top .depth-container .tab-header-area .headers-region .tab-selected-line {
+    -fx-background-color: linear-gradient(to right, #ffd452, #544a7d);
+}
+.jfx-tab-pane .tab-header-area .tab-selected-line {
+    -fx-background-color: #fff4f3;
+}

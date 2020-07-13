@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="400.0" prefWidth="920.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.SlideShow">
+    <children>
+        <Label fx:id="noContent" layoutX="367.0" layoutY="173.0" text="No Content">
+            <font>
+                <Font name="Franklin Gothic Medium Cond" size="36.0"/>
+            </font>
+        </Label>
+        <AnchorPane fx:id="container" prefHeight="400.0" prefWidth="920.0"/>
+        <JFXButton fx:id="previous" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="14.0"
+                   layoutY="171.0" ripplerFill="BLACK" text="Button">
+            <graphic>
+                <FontIcon iconColor="WHITE" iconLiteral="fa-arrow-circle-left" iconSize="50"/>
+            </graphic>
+        </JFXButton>
+        <JFXButton fx:id="next" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="846.0" layoutY="171.0"
+                   ripplerFill="BLACK" text="Button">
+            <graphic>
+                <FontIcon iconColor="WHITE" iconLiteral="fa-arrow-circle-right" iconSize="50"/>
+            </graphic>
+        </JFXButton>
+    </children>
+</AnchorPane>

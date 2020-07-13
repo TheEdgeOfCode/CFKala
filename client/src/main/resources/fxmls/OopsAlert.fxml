@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<AnchorPane fx:id="rootPane" prefHeight="260.0" prefWidth="420.0" style="-fx-background-color: #FFF9C4;" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.OopsAlert">
+   <children>
+      <FontIcon iconColor="#ff3f34" iconLiteral="fa-exclamation-triangle" iconSize="80" layoutX="170.0" layoutY="95.0" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="55.0" layoutY="106.0" prefHeight="58.0" prefWidth="309.0" text="Action Failed" textAlignment="CENTER" textFill="#ff3f34">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Label>
+      <Text fx:id="text" fontSmoothingType="LCD" layoutX="32.0" layoutY="186.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="356.0000244140624">
+         <font>
+            <Font name="Microsoft YaHei Light" size="20.0" />
+         </font>
+      </Text>
+      <JFXButton fx:id="close" contentDisplay="CENTER" focusTraversable="false" layoutX="376.0" layoutY="14.0" prefHeight="26.0" prefWidth="30.0" text=" ">
+         <graphic>
+            <FontIcon iconLiteral="fa-remove" iconSize="20" selectionFill="#3c40c6" />
+         </graphic>
+      </JFXButton>
+   </children>
+</AnchorPane>

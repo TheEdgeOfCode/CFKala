@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.OrderHistory">
+   <children>
+      <BorderPane prefHeight="594.0" prefWidth="960.0">
+         <top>
+            <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
+               <children>
+                  <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="cartButt" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-shopping-basket" iconSize="20" />
+                     </graphic>
+                  </JFXButton>
+                  <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-minimize" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-close" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </HBox>
+         </top>
+         <left>
+            <VBox alignment="TOP_RIGHT" prefHeight="560.0" prefWidth="399.0" spacing="15.0" BorderPane.alignment="TOP_LEFT">
+               <children>
+                  <TableView fx:id="orderTable" prefHeight="502.0" prefWidth="399.0">
+                    <columns>
+                      <TableColumn fx:id="orderNoColumn" prefWidth="184.00000017881393" text="Order No." />
+                      <TableColumn fx:id="dateColumn" prefWidth="169.60003662109375" text="Date" />
+                    </columns>
+                  </TableView>
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+            </VBox>
+         </left>
+         <center>
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="3.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                     <children>
+                        <Label text="Order No">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="no">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                     <children>
+                        <Label text="Date">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="date">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </HBox>
+                  <Separator layoutX="10.0" layoutY="72.0" prefWidth="200.0" />
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="76.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                     <children>
+                        <Label text="Price">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="price">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </HBox>
+                  <Separator layoutX="10.0" layoutY="138.0" prefWidth="200.0" />
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="141.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                     <children>
+                        <Label text="Discount">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="discount">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </HBox>
+                  <Separator layoutX="10.0" layoutY="204.0" prefWidth="200.0" />
+                  <Label text="  Products Bought">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="productsTable" prefHeight="155.0" prefWidth="546.0">
+                    <columns>
+                      <TableColumn fx:id="pNameCol" prefWidth="115.20001524686813" text="Product" />
+                      <TableColumn fx:id="pSellerCol" prefWidth="121.5999755859375" text="Seller" />
+                        <TableColumn fx:id="pPriceCol" prefWidth="121.5999755859375" text="Price" />
+                    </columns>
+                  </TableView>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="546.0" spacing="5.0">
+                     <children>
+                        <Button fx:id="giveScore" mnemonicParsing="false" text="Give Score"/>
+                        <Button fx:id="viewProduct" mnemonicParsing="false" text="View Product">
+                           <padding>
+                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </padding>
+                  </HBox>
+                  <Separator layoutX="10.0" layoutY="269.0" prefWidth="200.0" />
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="207.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                     <children>
+                        <Label text="Delivery Status">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="delStatus">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </HBox>
+               </children>
+               <BorderPane.margin>
+                  <Insets right="15.0" />
+               </BorderPane.margin>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

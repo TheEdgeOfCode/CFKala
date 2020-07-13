@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane prefHeight="200.0" prefWidth="130.0" styleClass="productPane" stylesheets="@../CSSs/button.css"
+      xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.codefathers.cfkclient.controllers.SingleMiniProduct">
+   <children>
+       <Pane fx:id="pane" prefHeight="200.0" prefWidth="130.0" styleClass="productSubPane"
+             stylesheets="@../CSSs/button.css">
+         <children>
+             <ImageView fx:id="productPreViewImage" fitHeight="115.0" fitWidth="120.0" layoutX="5.0" layoutY="17.0"
+                        pickOnBounds="true" preserveRatio="true"/>
+            <ImageView fx:id="specialOffer" fitHeight="50.0" fitWidth="51.0" layoutX="10.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               <image>
+                   <Image url="@../Images/dicount.png"/>
+               </image>
+            </ImageView>
+             <Label fx:id="productName" alignment="CENTER" layoutX="5.0" layoutY="129.0" prefHeight="36.0"
+                    prefWidth="120.0" textAlignment="CENTER">
+               <font>
+                  <Font name="Teko SemiBold" size="22.0" />
+               </font>
+            </Label>
+             <Label fx:id="price" alignment="CENTER" layoutX="5.0" layoutY="156.0" prefHeight="29.0" prefWidth="120.0"
+                    textAlignment="CENTER">
+               <font>
+                  <Font name="Verdana Bold" size="12.0" />
+               </font>
+            </Label>
+             <Label fx:id="offPrice" alignment="CENTER" layoutX="5.0" layoutY="170.0" prefHeight="29.0"
+                    prefWidth="120.0" textAlignment="CENTER" textFill="#981a18">
+               <font>
+                   <Font name="Verdana Bold" size="13.0"/>
+               </font>
+            </Label>
+             <ImageView fx:id="soldOut" fitHeight="92.0" fitWidth="85.0" layoutX="23.0" layoutY="41.0"
+                        pickOnBounds="true" preserveRatio="true" visible="false">
+                 <image>
+                     <Image url="@../Images/soldout.png"/>
+                 </image>
+             </ImageView>
+         </children>
+      </Pane>
+   </children>
+    <cursor>
+        <Cursor fx:constant="HAND"/>
+    </cursor>
+</Pane>
