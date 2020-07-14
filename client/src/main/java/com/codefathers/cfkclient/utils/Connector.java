@@ -31,7 +31,7 @@ public class Connector {
             return response;
         }else {
             /*this might cause problem */
-            String error = response.getHeaders().get("ERROR").get(0);
+            String error = response.getStatusCode().toString() +  response.getHeaders().get("ERROR");
             throw new Exception(error);
         }
     }
