@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.codefathers.cfkclient.controllers.DiscountCodeCustomer">
+   <BorderPane prefHeight="594.0" prefWidth="960.0">
+      <top>
+         <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;"
+               BorderPane.alignment="CENTER">
+            <padding>
+               <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+            </padding>
+            <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+               <graphic>
+                  <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20"/>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="cartButt" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+               <graphic>
+                  <FontIcon iconLiteral="fa-shopping-basket" iconSize="20"/>
+               </graphic>
+            </JFXButton>
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+            <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0"
+                       prefWidth="26.0" text=" ">
+               <graphic>
+                  <FontIcon iconLiteral="fa-window-minimize" iconSize="15"/>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0"
+                       prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+               <graphic>
+                  <FontIcon iconLiteral="fa-window-close" iconSize="15"/>
+               </graphic>
+            </JFXButton>
+         </HBox>
+      </top>
+      <left>
+         <VBox prefHeight="560.0" prefWidth="366.0" spacing="15.0" BorderPane.alignment="CENTER_RIGHT">
+            <padding>
+               <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+            </padding>
+            <children>
+               <TableView fx:id="codesTable" prefHeight="555.0" prefWidth="213.0">
+                  <columns>
+                     <TableColumn fx:id="codeCol" prefWidth="243.20001524686813" text="Code"/>
+                     <TableColumn fx:id="countCol" prefWidth="115.99998474121094" text="Remaining"/>
+                  </columns>
+               </TableView>
+            </children>
+         </VBox>
+      </left>
+      <center>
+         <Pane fx:id="disCode" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <ImageView fitHeight="490.0" fitWidth="340.0" layoutX="127.0" layoutY="39.0" pickOnBounds="true"
+                       preserveRatio="true">
+               <Image url="@../Images/customer_discount.jpg"/>
+            </ImageView>
+            <Label fx:id="percent" alignment="CENTER_RIGHT" layoutX="176.0" layoutY="211.0" prefHeight="102.0"
+                   prefWidth="135.0" textFill="#d5bb8a">
+               <font>
+                  <Font name="Humanst521 BT Bold" size="82.0"/>
+               </font>
+            </Label>
+            <Label layoutX="209.0" layoutY="393.0" text="Use The Code" textFill="#d5bb8a">
+               <font>
+                  <Font name="Century751 BT Italic" size="12.0"/>
+               </font>
+            </Label>
+            <Label fx:id="code" alignment="CENTER" layoutX="288.0" layoutY="393.0" prefHeight="15.0"
+                   prefWidth="159.0" textFill="#d5bb8a">
+               <font>
+                  <Font name="Century751 BT Italic" size="12.0"/>
+               </font>
+            </Label>
+            <Label layoutX="180.0" layoutY="416.0" text="To Shop Up To" textFill="#d5bb8a">
+               <font>
+                  <Font name="Century751 BT Italic" size="12.0"/>
+               </font>
+            </Label>
+            <Label fx:id="max" alignment="CENTER" layoutX="265.0" layoutY="416.0" prefHeight="15.0" prefWidth="73.0"
+                   textFill="#d5bb8a">
+               <font>
+                  <Font name="Century751 BT Italic" size="12.0"/>
+               </font>
+            </Label>
+            <Label layoutX="344.0" layoutY="416.0" text="with Discount" textFill="#d5bb8a">
+               <font>
+                  <Font name="Century751 BT Italic" size="12.0"/>
+               </font>
+            </Label>
+            <Label layoutX="229.0" layoutY="368.0" text="Until" textFill="#d5bb8a">
+               <font>
+                  <Font name="Century751 BT Italic" size="12.0"/>
+               </font>
+            </Label>
+            <Label fx:id="date" alignment="CENTER" layoutX="272.0" layoutY="368.0" prefHeight="15.0"
+                   prefWidth="102.0" textFill="#d5bb8a">
+               <font>
+                  <Font name="Century751 BT Italic" size="12.0"/>
+               </font>
+            </Label>
+         </Pane>
+      </center>
+   </BorderPane>
+</AnchorPane>

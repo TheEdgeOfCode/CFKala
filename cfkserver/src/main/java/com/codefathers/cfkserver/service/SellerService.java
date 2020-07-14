@@ -12,15 +12,9 @@ import com.codefathers.cfkserver.model.entities.user.Cart;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.SubCart;
 import com.codefathers.cfkserver.model.repositories.*;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -106,21 +100,7 @@ public class SellerService {
     }
 
     private List<SubCart> getAllSubCarts(Seller seller, Product product) {
-        //TODO:
-        /*Session session = HibernateUtil.getSession();
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<SubCart> criteriaQuery = criteriaBuilder.createQuery(SubCart.class);
-        Root<SubCart> root = criteriaQuery.from(SubCart.class);
-        criteriaQuery.select(root);
-        Predicate[] predicates = {
-                criteriaBuilder.equal(root.get("seller").as(Seller.class), seller),
-                criteriaBuilder.equal(root.get("product").as(Product.class), product)
-        };
-        criteriaQuery.where(
-                predicates
-        );
-        Query<SubCart> query = session.createQuery(criteriaQuery);
-        return query.getResultList();*/
+        return subCartRepository.findAllByProductAndSeller(product, seller);
     }
 
     public List<Seller> viewSellersOfProduct(int productId)

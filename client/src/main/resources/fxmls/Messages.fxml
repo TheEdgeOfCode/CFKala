@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.Messages">
+    <children>
+        <BorderPane prefHeight="593.0" prefWidth="960.0" style="-fx-background-color: white;">
+            <top>
+                <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;"
+                      BorderPane.alignment="CENTER">
+                    <children>
+                        <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                            <graphic>
+                                <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20"/>
+                            </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="cartButt" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                            <graphic>
+                                <FontIcon iconLiteral="fa-shopping-basket" iconSize="20"/>
+                            </graphic>
+                        </JFXButton>
+                        <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                        <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false"
+                                   prefHeight="26.0" prefWidth="26.0" text=" ">
+                            <graphic>
+                                <FontIcon iconLiteral="fa-window-minimize" iconSize="15"/>
+                            </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false"
+                                   prefHeight="26.0" prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+                            <graphic>
+                                <FontIcon iconLiteral="fa-window-close" iconSize="15"/>
+                            </graphic>
+                        </JFXButton>
+                    </children>
+                    <padding>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+                    </padding>
+                </HBox>
+            </top>
+            <center>
+                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" stylesheets="@../CSSs/button.css"
+                      BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                    </BorderPane.margin>
+                    <styleClass>
+                        <String fx:value="productPane"/>
+                        <String fx:value="transparentFade15"/>
+                    </styleClass>
+                    <children>
+                        <Label fx:id="subject" prefHeight="65.0" prefWidth="597.0" text="Label">
+                            <font>
+                                <Font name="Cookie-Regular" size="48.0"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="date" text="Date"/>
+                        <ScrollPane hbarPolicy="NEVER" prefHeight="425.0" prefWidth="582.0">
+                            <content>
+                                <Text fx:id="message" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="535.0">
+                                    <font>
+                                        <Font size="17.0"/>
+                                    </font>
+                                </Text>
+                            </content>
+                            <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                            </padding>
+                        </ScrollPane>
+                    </children>
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                    </padding>
+                </VBox>
+            </center>
+            <left>
+                <VBox prefHeight="559.0" prefWidth="298.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <TableView fx:id="listTable" editable="true" prefHeight="559.0" prefWidth="283.0"
+                                   tableMenuButtonVisible="true">
+                            <columns>
+                                <TableColumn fx:id="subjectColumn" prefWidth="115.99999696016312" text="Subject"/>
+                                <TableColumn fx:id="dateColumn" prefWidth="110.39999389648438" text="Date"/>
+                                <TableColumn fx:id="readColumn" prefWidth="54.40003967285156" text="Is Read"/>
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </left>
+        </BorderPane>
+    </children>
+</AnchorPane>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.OffManager">
+   <children>
+      <BorderPane prefHeight="594.0" prefWidth="960.0">
+         <top>
+            <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+               <children>
+                  <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" />
+                     </graphic>
+                  </JFXButton>
+                  <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-minimize" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-close" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+         </top>
+         <left>
+            <VBox alignment="TOP_CENTER" prefHeight="560.0" prefWidth="291.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Create Off">
+                     <font>
+                        <Font name="System Bold" size="32.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="18.0" prefWidth="294.0" text="Percentage">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Label>
+                  <JFXSlider fx:id="createPercentage" blockIncrement="0.0" value="20.0" />
+                  <Label layoutX="25.0" layoutY="83.0" prefHeight="18.0" prefWidth="294.0" text="Start Date">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Label>
+                   <DatePicker fx:id="crStartDt" prefHeight="26.0" prefWidth="325.0" />
+                  <Label layoutX="25.0" layoutY="112.0" prefHeight="18.0" prefWidth="294.0" text="End Date">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Label>
+                   <DatePicker fx:id="crEndDate" prefHeight="26.0" prefWidth="333.0" />
+                  <Region VBox.vgrow="ALWAYS" />
+                  <Label prefHeight="18.0" prefWidth="266.0" text="You Can Add Products After Your Off is Accepted" />
+                  <JFXButton fx:id="create" prefHeight="26.0" prefWidth="306.0" text="Create Off">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <stylesheets>
+                  <URL value="@../CSSs/gradient.css"/>
+                  <URL value="@../CSSs/button.css"/>
+               </stylesheets>
+               <styleClass>
+                  <String fx:value="productPane" />
+                  <String fx:value="transparentFade15" />
+               </styleClass>
+            </VBox>
+         </left>
+         <center>
+            <VBox prefHeight="560.0" prefWidth="523.0" spacing="5.0" stylesheets="@../CSSs/button.css"
+                  BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="15.0" right="15.0" />
+               </BorderPane.margin>
+               <styleClass>
+                  <String fx:value="transparentFadeForProduct" />
+                  <String fx:value="productPane" />
+               </styleClass>
+               <children>
+                  <HBox prefHeight="503.0" prefWidth="418.0" spacing="5.0">
+                     <children>
+                        <VBox prefHeight="462.0" prefWidth="213.0" spacing="5.0">
+                           <styleClass>
+                              <String fx:value="transparentFade15" />
+                              <String fx:value="productPane" />
+                           </styleClass>
+                           <children>
+                              <Label text="Status" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="offStatus" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="17.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Off Percent" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <JFXSlider fx:id="percent" value="20.0" />
+                              <Label text="Start Date" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                               <DatePicker fx:id="startDate" prefHeight="26.0" prefWidth="218.0" />
+                              <Label layoutX="25.0" layoutY="92.0" text="End Date" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                               <DatePicker fx:id="endDate" />
+                              <Region prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                              <JFXButton fx:id="confirm" prefHeight="26.0" prefWidth="198.0" text="Confirm Changes">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                                 <graphic>
+                                    <FontIcon iconLiteral="fa-edit" />
+                                 </graphic>
+                              </JFXButton>
+                              <JFXButton fx:id="reset" layoutX="25.0" layoutY="464.0" prefHeight="26.0" prefWidth="198.0" text="Reset Changes">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                                 <graphic>
+                                    <FontIcon iconLiteral="fa-close" />
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                        <VBox layoutX="10.0" layoutY="10.0" prefHeight="462.0" prefWidth="222.0" spacing="5.0">
+                           <children>
+                              <Label prefHeight="18.0" prefWidth="171.0" text="Products On This Off" />
+                              <ListView fx:id="productsList" prefHeight="405.0" prefWidth="202.0" />
+                               <Button fx:id="deleteProduct" mnemonicParsing="false" prefHeight="26.0" prefWidth="217.0" text="Delete This Product From Off" />
+                              <HBox alignment="CENTER" prefHeight="41.0" prefWidth="202.0" spacing="5.0">
+                                 <children>
+                                    <ComboBox fx:id="availableProducts" prefHeight="26.0" prefWidth="142.0" promptText="Choose Product" />
+                                    <Button fx:id="addProduct" mnemonicParsing="false" text="Add">
+                                       <graphic>
+                                          <FontIcon iconLiteral="fa-plus-square" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <styleClass>
+                              <String fx:value="transparentFade15" />
+                              <String fx:value="productPane" />
+                           </styleClass>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <JFXButton fx:id="removeOff" prefHeight="26.0" prefWidth="467.0" ripplerFill="WHITE" text="Remove This Off" textFill="#bf2020">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <graphic>
+                        <FontIcon iconColor="#f50000" iconLiteral="fa-trash" iconSize="25" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </VBox>
+         </center>
+         <right>
+            <ListView fx:id="offsList" prefHeight="200.0" prefWidth="200.0" stylesheets="@../CSSs/button.css"
+                      BorderPane.alignment="CENTER"/>
+         </right>
+      </BorderPane>
+   </children>
+</AnchorPane>

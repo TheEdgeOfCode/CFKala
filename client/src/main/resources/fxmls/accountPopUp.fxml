@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="176.0"
+      prefWidth="300.0" spacing="25.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.AccountPopUp">
+    <children>
+        <JFXTextField fx:id="username" labelFloat="true" promptText="Username"/>
+        <JFXPasswordField fx:id="password" labelFloat="true" promptText="Password"/>
+        <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="260.0" spacing="5.0">
+            <children>
+                <JFXButton fx:id="signIn" focusTraversable="false" text="Sign Up"/>
+                <JFXButton fx:id="login" layoutX="10.0" layoutY="10.0" text="Login"/>
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+</VBox>

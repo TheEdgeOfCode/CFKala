@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane fx:id="rootPane" prefHeight="593.0" prefWidth="960.0" style="-fx-background-color: transparent;"
+            styleClass="shadow" stylesheets="@../CSSs/button.css" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.SellerSignUp">
+   <children>
+      <Pane prefHeight="593.0" prefWidth="593.0" style="-fx-background-color: #90ddd4;" styleClass="roudPaneLeft">
+         <stylesheets>
+            <URL value="@../CSSs/button.css"/>
+            <URL value="@../CSSs/gradient.css"/>
+         </stylesheets>
+         <children>
+            <JFXButton fx:id="back" contentDisplay="CENTER" ellipsisString="" focusTraversable="false" layoutX="14.0" layoutY="14.0" prefHeight="11.0" prefWidth="42.0" styleClass="mainPageMenuButtons" text=" ">
+               <graphic>
+                  <FontIcon iconColor="WHITE" iconLiteral="fa-arrow-circle-left" iconSize="30" />
+               </graphic>
+               <ripplerFill>
+                  <RadialGradient centerX="0.4822222391764323" centerY="0.5" cycleMethod="REFLECT" focusAngle="-31.35" radius="0.7897196172553802">
+                     <stops>
+                        <Stop color="#ccff00" />
+                        <Stop color="#32c2aa" offset="0.49794520547945204" />
+                        <Stop color="#ff4949" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </ripplerFill>
+            </JFXButton>
+            <ImageView fitHeight="331.0" fitWidth="496.0" layoutX="49.0" layoutY="131.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/seller.png"/>
+               </image>
+            </ImageView>
+            <Label layoutX="99.0" layoutY="461.0" text="Become A Seller" textFill="WHITE">
+               <font>
+                  <Font name="Microsoft YaHei Light" size="54.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Pane layoutX="594.0" prefHeight="593.0" prefWidth="367.0" style="-fx-background-color: white;"
+            styleClass="roudPaneRight" stylesheets="@../CSSs/button.css">
+         <children>
+            <JFXTextField fx:id="Company" focusColor="#405aa8" labelFloat="true" layoutX="49.0" layoutY="91.0" prefHeight="45.0" prefWidth="270.0" promptText="Company ID">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </JFXTextField>
+            <JFXButton fx:id="createCompanyButt" layoutX="266.0" layoutY="149.0" text="Create">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </JFXButton>
+            <Label layoutX="49.0" layoutY="153.0" prefHeight="17.0" prefWidth="201.0" text="Not Exist ? Create One Now ..." textFill="#828282" />
+            <JFXButton fx:id="signUpSubmit" layoutX="224.0" layoutY="516.0" prefHeight="45.0" prefWidth="122.0" ripplerFill="#fd7272" text="Sign Up">
+               <font>
+                  <Font name="System Bold" size="21.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

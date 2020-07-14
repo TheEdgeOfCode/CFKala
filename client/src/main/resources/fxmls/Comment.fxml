@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="250.0" prefWidth="562.0" stylesheets="@../CSSs/button.css"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.codefathers.cfkclient.controllers.Comment">
+   <children>
+      <VBox layoutX="11.0" layoutY="8.0" prefHeight="233.0" prefWidth="538.0" style="-fx-background-color: #f1f2f6;">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="52.0" prefWidth="538.0" spacing="10.0">
+               <children>
+                  <Label fx:id="title" prefHeight="36.0" prefWidth="118.0" text="Tilte">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+                  <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <HBox fx:id="bouthThisBox" alignment="CENTER_LEFT" prefHeight="52.0" prefWidth="148.0" spacing="10.0">
+                     <children>
+                        <Label text="Bought This Product" textFill="#00741f" />
+                        <FontIcon iconColor="#00741f" iconLiteral="fa-check-square-o" iconSize="25" />
+                     </children>
+                  </HBox>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets left="15.0" right="15.0" />
+               </padding>
+            </HBox>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0">
+               <content>
+                  <TextFlow prefHeight="174.0" prefWidth="519.0">
+                     <children>
+                        <Text fx:id="comment" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="479.6429138183594">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </TextFlow>
+               </content>
+            </ScrollPane>
+            <Label fx:id="username" alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="529.0" text="user" textAlignment="RIGHT" />
+         </children>
+      </VBox>
+   </children>
+   <styleClass>
+      <String fx:value="roudPaneRight" />
+      <String fx:value="roudPaneLeft" />
+   </styleClass>
+</AnchorPane>

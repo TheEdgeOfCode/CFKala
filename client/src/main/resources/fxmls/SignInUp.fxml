@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" style="-fx-background-color: transparent;" styleClass="shadow"
+            stylesheets="@../CSSs/button.css" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.SignInUp">
+   <children>
+      <Pane prefHeight="593.0" prefWidth="593.0">
+         <stylesheets>
+             <URL value="@../CSSs/button.css"/>
+             <URL value="@../CSSs/gradient.css"/>
+         </stylesheets>
+         <styleClass>
+            <String fx:value="roudPaneLeft" />
+            <String fx:value="unknown" />
+         </styleClass>
+         <children>
+            <JFXButton fx:id="back" contentDisplay="CENTER" ellipsisString="" focusTraversable="false" layoutX="14.0" layoutY="14.0" prefHeight="11.0" prefWidth="42.0" styleClass="mainPageMenuButtons" text=" ">
+               <graphic>
+                  <FontIcon iconColor="WHITE" iconLiteral="fa-arrow-circle-left" iconSize="30" />
+               </graphic>
+               <ripplerFill>
+                  <RadialGradient centerX="0.4822222391764323" centerY="0.5" cycleMethod="REFLECT" focusAngle="-31.35" radius="0.7897196172553802">
+                     <stops>
+                        <Stop color="#ccff00" />
+                        <Stop color="#32c2aa" offset="0.49794520547945204" />
+                        <Stop color="#ff4949" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </ripplerFill>
+            </JFXButton>
+            <ImageView fitHeight="331.0" fitWidth="496.0" layoutX="50.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                   <Image url="@../Images/signIn.png"/>
+               </image>
+            </ImageView>
+             <JFXButton fx:id="signInButton" focusTraversable="false" layoutX="215.0" layoutY="393.0" prefHeight="60.0"
+                        prefWidth="164.0" styleClass="signIButton" stylesheets="@../CSSs/button.css" text="Sign In">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </JFXButton>
+             <JFXButton fx:id="signUpButton" focusTraversable="false" layoutX="215.0" layoutY="459.0" prefHeight="60.0"
+                        prefWidth="164.0" styleClass="signUpButton" stylesheets="@../CSSs/button.css" text="Sign Up">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </Pane>
+       <Pane fx:id="signInPage" layoutX="594.0" prefHeight="593.0" prefWidth="367.0"
+             style="-fx-background-color: white;" styleClass="roudPaneRight" stylesheets="@../CSSs/button.css"
+             visible="false">
+         <children>
+            <JFXTextField fx:id="usernameIn" focusColor="#405aa8" labelFloat="true" layoutX="49.0" layoutY="91.0" prefHeight="45.0" prefWidth="270.0" promptText="Username">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </JFXTextField>
+            <JFXPasswordField fx:id="passwordIn" focusColor="#405aa8" labelFloat="true" layoutX="49.0" layoutY="175.0" prefHeight="45.0" prefWidth="270.0" promptText="Password">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </JFXPasswordField>
+            <JFXButton fx:id="signInSubmit" layoutX="224.0" layoutY="516.0" prefHeight="45.0" prefWidth="122.0" ripplerFill="#fd7272" text="Sign In">
+               <font>
+                  <Font name="System Bold" size="21.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </Pane>
+       <Pane fx:id="signUpPage" layoutX="594.0" prefHeight="593.0" prefWidth="367.0"
+             style="-fx-background-color: white;" styleClass="roudPaneRight" stylesheets="@../CSSs/button.css">
+         <children>
+            <ScrollPane hbarPolicy="NEVER" prefHeight="510.0" prefWidth="367.0" style="-fx-background-color: white;" vbarPolicy="ALWAYS">
+               <content>
+                  <VBox alignment="TOP_CENTER" prefWidth="340.0" spacing="35.0" style="-fx-background-color: white;">
+                     <children>
+                         <JFXTextField fx:id="usernameUp" focusColor="#405aa8" labelFloat="true" prefHeight="45.0"
+                                       prefWidth="270.0" promptText="Username">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </JFXTextField>
+                         <JFXPasswordField fx:id="passwordUp" focusColor="#405aa8" labelFloat="true" prefHeight="45.0"
+                                           prefWidth="270.0" promptText="Password">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </JFXPasswordField>
+                         <JFXPasswordField fx:id="rePasswordUp" focusColor="#405aa8" labelFloat="true" prefHeight="45.0"
+                                           prefWidth="270.0" promptText="Repeat Password">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </JFXPasswordField>
+                         <JFXTextField fx:id="firstName" focusColor="#405aa8" labelFloat="true" prefHeight="45.0"
+                                       prefWidth="270.0" promptText="First Name">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </JFXTextField>
+                         <JFXTextField fx:id="lastName" focusColor="#405aa8" labelFloat="true" prefHeight="45.0"
+                                       prefWidth="270.0" promptText="Last Name">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </JFXTextField>
+                         <JFXTextField fx:id="email" focusColor="#405aa8" labelFloat="true" prefHeight="45.0"
+                                       prefWidth="270.0" promptText="Email">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </JFXTextField>
+                         <JFXTextField fx:id="phone" focusColor="#405aa8" labelFloat="true" prefHeight="45.0"
+                                       prefWidth="270.0" promptText="Phone Number">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </JFXTextField>
+                         <JFXTextField fx:id="balance" focusColor="#405aa8" labelFloat="true" layoutX="30.0"
+                                       layoutY="515.0" prefHeight="45.0" prefWidth="270.0" promptText="Balance">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </JFXTextField>
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                  </VBox>
+               </content>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </ScrollPane>
+            <JFXButton fx:id="signUpSubmit" layoutX="236.0" layoutY="533.0" prefHeight="45.0" prefWidth="122.0" ripplerFill="#fd7272c7" text="Sign Up">
+               <font>
+                  <Font name="System Bold" size="21.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="sellerBut" layoutX="33.0" layoutY="535.0" prefHeight="45.0" prefWidth="134.0" text="Become A Seller">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

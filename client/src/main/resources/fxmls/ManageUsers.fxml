@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.ManageUsers">
+   <children>
+      <BorderPane prefHeight="593.0" prefWidth="960.0" style="-fx-background-color: white;">
+         <top>
+            <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
+               <children>
+                  <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" />
+                     </graphic>
+                  </JFXButton>
+                  <Label text="Manage Users" />
+                  <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-minimize" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-close" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </HBox>
+         </top>
+         <left>
+            <VBox prefHeight="559.0" prefWidth="255.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <TableView fx:id="table" editable="true" prefHeight="574.0" prefWidth="246.0" tableMenuButtonVisible="true">
+                     <columns>
+                        <TableColumn fx:id="usernameCol" maxWidth="1.7976931348623157E308" prefWidth="111.19995421171188" text="Username" />
+                        <TableColumn fx:id="roleCol" prefWidth="127.199951171875" text="Role" />
+                     </columns>
+                  </TableView>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </left>
+         <center>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0"
+                  stylesheets="@../CSSs/button.css" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+               <styleClass>
+                  <String fx:value="productPane" />
+                  <String fx:value="transparentFade15" />
+               </styleClass>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="25.0">
+                     <children>
+                        <ImageView fx:id="userImage" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Images/user-png-icon-male-user-icon-512.png"/>
+                           </image>
+                        </ImageView>
+                        <VBox prefHeight="134.0" prefWidth="280.0" spacing="25.0">
+                           <HBox.margin>
+                              <Insets bottom="20.0" top="20.0" />
+                           </HBox.margin>
+                           <children>
+                              <Label fx:id="username" prefHeight="62.0" prefWidth="280.0">
+                                 <font>
+                                    <Font name="Cookie-Regular" size="53.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="role" prefHeight="34.0" prefWidth="279.0">
+                                 <font>
+                                    <Font name="System Bold" size="23.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="25.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+                  <HBox alignment="CENTER_LEFT" prefHeight="70.0" prefWidth="675.0" spacing="20.0">
+                     <children>
+                        <FontIcon iconLiteral="fa-address-book" iconSize="35" wrappingWidth="32.999998569488525" />
+                        <Label fx:id="lastname">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label text=",">
+                           <font>
+                              <Font size="21.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="firstname">
+                           <font>
+                              <Font size="21.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="40.0" layoutY="254.0" prefHeight="70.0" prefWidth="675.0" spacing="20.0">
+                     <children>
+                        <FontIcon iconLiteral="fa-at" iconSize="35" wrappingWidth="32.999998569488525" />
+                        <Label fx:id="email">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="40.0" layoutY="340.0" prefHeight="70.0" prefWidth="675.0" spacing="20.0">
+                     <children>
+                        <FontIcon iconLiteral="fa-phone" iconSize="35" wrappingWidth="32.999998569488525" />
+                        <Label fx:id="phone">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Region VBox.vgrow="ALWAYS" />
+                  <HBox alignment="CENTER_RIGHT" prefHeight="46.0" prefWidth="675.0">
+                     <children>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <JFXButton fx:id="deleteBtn" prefHeight="38.0" prefWidth="218.0" text="Remove This User" textFill="#bd1919">
+                           <font>
+                              <Font name="System Bold" size="17.0" />
+                           </font>
+                           <graphic>
+                              <FontIcon iconColor="#bd1919" iconLiteral="fa-user-times" iconSize="21" selectionFill="#bd1919" />
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

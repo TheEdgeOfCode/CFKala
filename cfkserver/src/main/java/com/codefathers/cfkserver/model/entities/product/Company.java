@@ -19,6 +19,7 @@ public class Company {
     @Column(unique = true)
     private String name;
     private String phone;
+    @Column(name = "type")
     private String group;
 
     @ElementCollection(targetClass = Product.class)

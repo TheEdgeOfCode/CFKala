@@ -1,0 +1,59 @@
+.mainPageMenuButtons{
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 200;
+    -fx-background-color: transparent;
+}
+
+.productSubPane{
+    -fx-background-radius: 20;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+    -fx-border-color: rgba(81, 40, 255, 0.71);
+    -fx-background-color: rgba(205, 189, 255, 0.47);
+}
+
+.productPane{
+    -fx-background-radius: 10;
+    -fx-background-color: transparent;
+}
+
+.imageProductMini{
+    -fx-border-radius: 20;
+}
+
+.roudPaneLeft{
+    -fx-border-radius: 10 0 0 10;
+    -fx-background-radius: 10 0 0 10;
+
+    /* top-left, top-right, bottom-right, and bottom-left corners, in that order. */
+}
+
+.roudPaneRight{
+    -fx-border-radius: 0 10 10 0;
+    -fx-background-radius: 0 10 10 0;
+
+    /* top-left, top-right, bottom-right, and bottom-left corners, in that order. */
+}
+
+.shadow{
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.33), 10, 0, 4, 4);
+}
+
+.signIButton{
+    -fx-background-radius: 10;
+    -fx-background-color: #F8EFBA;
+}
+
+.signUpButton{
+    -fx-background-radius: 10;
+    -fx-background-color: #58B19F;
+}
+
+.transparentFadeForProduct{
+    -fx-background-color : rgba(0, 0, 0, 0.35);
+}
+
+.transparentFade15 {
+    -fx-background-color : rgba(0, 0, 0, 0.15);
+}
