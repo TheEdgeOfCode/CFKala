@@ -2,6 +2,7 @@ package com.codefathers.cfkserver.controller;
 
 import com.codefathers.cfkserver.model.dtos.product.FilterSortDto;
 import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
+import com.codefathers.cfkserver.model.dtos.product.MiniProductListDto;
 import com.codefathers.cfkserver.model.dtos.product.SellPackageDto;
 import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.service.FilterService;
@@ -10,7 +11,7 @@ import com.codefathers.cfkserver.service.Sorter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,8 +28,8 @@ public class ProductController {
     @Autowired
     private Sorter sorter;
 
-    @GetMapping("/product/get_all_products")
-    private ResponseEntity<List<MiniProductDto>> getAllProducts(@RequestBody FilterSortDto filterSortDto) {
+    @PostMapping("/product/get_all_products")
+    private ResponseEntity<?> getAllProducts(@RequestBody FilterSortDto filterSortDto) {
         try {
             int[] priceRange = {filterSortDto.getDownPriceLimit(), filterSortDto.getUpPriceLimit()};
             List<Product> products = sorter.sort(filterService.updateFilterList(
@@ -37,7 +38,7 @@ public class ProductController {
                     )
                     , filterSortDto.getSortType());
             List<MiniProductDto> toReturn = dtosFromList(products);
-            return new ResponseEntity<>(toReturn, HttpStatus.OK);
+            return ResponseEntity.ok(new MiniProductListDto(new ArrayList<>(toReturn)));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

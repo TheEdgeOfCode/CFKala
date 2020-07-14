@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootPane" prefHeight="200.0" prefWidth="356.0" styleClass="Green" stylesheets="@../CSSs/gradient.css"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.codefathers.cfkclient.controllers.ScoreGetter">
+    <children>
+        <JFXTextField fx:id="field" focusColor="#440303" labelFloat="true" layoutX="33.0" layoutY="45.0"
+                      prefHeight="54.0" prefWidth="290.0">
+            <font>
+                <Font size="17.0"/>
+            </font>
+        </JFXTextField>
+        <JFXButton fx:id="submitButt" layoutX="236.0" layoutY="136.0" text="Submit" textFill="WHITE">
+            <font>
+                <Font name="Eras Light ITC" size="25.0"/>
+            </font>
+        </JFXButton>
+        <JFXButton fx:id="cancel" layoutX="131.0" layoutY="136.0" text="Cancel" textFill="WHITE">
+            <font>
+                <Font name="Eras Light ITC" size="25.0"/>
+            </font>
+        </JFXButton>
+    </children>
+</AnchorPane>

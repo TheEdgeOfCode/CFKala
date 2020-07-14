@@ -1,0 +1,54 @@
+package com.codefathers.cfkclient.controllers;
+
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXSlider;
+import com.jfoenix.controls.JFXTextField;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+
+public class DiscountManager {
+    @FXML private JFXButton back;
+    @FXML private JFXButton refresh;
+    @FXML private JFXButton minimize;
+    @FXML private JFXButton close;
+    @FXML private JFXTextField crCode;
+    @FXML private JFXSlider crPercentage;
+    @FXML private JFXTextField crMaximum;
+    @FXML private DatePicker crStartDate;
+    @FXML private TextField crStartH;
+    @FXML private TextField crStartM;
+    @FXML private TextField crStartS;
+    @FXML private DatePicker crEndDate;
+    @FXML private TextField crEndH;
+    @FXML private TextField crEndM;
+    @FXML private TextField crEndS;
+    @FXML private JFXButton crButton;
+    @FXML private VBox editBox;
+    @FXML private JFXSlider edPercent;
+    @FXML private JFXTextField edMaximum;
+    @FXML private DatePicker edStartDate;
+    @FXML private TextField edStartH;
+    @FXML private TextField edStartM;
+    @FXML private TextField edStartS;
+    @FXML private DatePicker edEndDate;
+    @FXML private TextField edEndH;
+    @FXML private TextField edEndM;
+    @FXML private TextField edEndS;
+    @FXML private JFXButton edConfirm;
+    @FXML private JFXButton edReset;
+    @FXML private TableView userTable;
+    @FXML private TableColumn userColumn;
+    @FXML private TableColumn amountColumn;
+    @FXML private JFXButton removeUser;
+    @FXML private JFXTextField addUsername;
+    @FXML private JFXTextField addUserQuantity;
+    @FXML private JFXButton addUser;
+    @FXML private VBox sysAddBox;
+    @FXML private JFXComboBox sysMode;
+    @FXML private JFXTextField sysQuantity;
+    @FXML private JFXButton sysAdd;
+    @FXML private JFXButton delete;
+    @FXML private ListView codes;
+}

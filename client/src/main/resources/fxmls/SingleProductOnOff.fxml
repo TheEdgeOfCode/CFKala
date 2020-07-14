@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane fx:id="pane" prefHeight="200.0" prefWidth="130.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.SingleProductOnOff">
+    <children>
+        <Rectangle fx:id="root" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="194.0" layoutX="2.0" layoutY="3.0"
+                   stroke="BLACK" strokeType="INSIDE" width="126.0">
+            <cursor>
+                <Cursor fx:constant="HAND"/>
+            </cursor>
+        </Rectangle>
+        <ImageView fx:id="image" fitHeight="85.0" fitWidth="85.0" layoutX="23.0" layoutY="46.0" pickOnBounds="true"
+                   preserveRatio="true"/>
+        <Label fx:id="name" alignment="CENTER" layoutX="3.0" layoutY="130.0" prefHeight="20.0" prefWidth="123.0"
+               text="Name">
+            <font>
+                <Font name="System Bold" size="14.0"/>
+            </font>
+        </Label>
+        <Label fx:id="percent" alignment="CENTER" layoutX="35.0" layoutY="150.0" prefHeight="18.0" prefWidth="60.0"
+               text="percent"/>
+        <HBox alignment="CENTER" layoutX="3.0" prefHeight="45.0" prefWidth="123.0">
+            <children>
+                <Label fx:id="days" layoutX="43.0" layoutY="24.0" text="DDD"/>
+                <Label layoutX="73.0" layoutY="24.0" text="::"/>
+                <Label fx:id="hour" text="HH"/>
+                <Label layoutX="10.0" layoutY="10.0" text=":"/>
+                <Label fx:id="min" layoutX="61.0" layoutY="24.0" text="MM"/>
+                <Label layoutX="70.0" layoutY="24.0" text=":"/>
+                <Label fx:id="sec" layoutX="72.0" layoutY="24.0" text="SS"/>
+            </children>
+        </HBox>
+        <FontIcon iconColor="#bd2727" iconLiteral="fa-percent" iconSize="35" layoutX="18.0" layoutY="125.0"
+                  wrappingWidth="33.25710678100586"/>
+        <Label fx:id="price" layoutX="52.0" layoutY="168.0" text="price"/>
+        <ImageView fx:id="soldOut" fitHeight="92.0" fitWidth="85.0" layoutX="22.0" layoutY="33.0" pickOnBounds="true"
+                   preserveRatio="true" visible="false">
+            <image>
+                <Image url="@../Images/soldout.png"/>
+            </image>
+        </ImageView>
+    </children>
+    <cursor>
+        <Cursor fx:constant="HAND"/>
+    </cursor>
+</AnchorPane>

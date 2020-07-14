@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<AnchorPane fx:id="rootPane" prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.Purchase">
+   <children>
+      <VBox prefHeight="594.0" prefWidth="960.0">
+         <children>
+            <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;">
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+               <children>
+                  <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" />
+                     </graphic>
+                  </JFXButton>
+                  <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-minimize" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-close" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <JFXTabPane fx:id="tabPane" prefHeight="560.0" prefWidth="960.0">
+               <tabs>
+                  <Tab fx:id="postalInformation" closable="false" text="Postal Information">
+                     <content>
+                        <VBox alignment="TOP_RIGHT" spacing="10.0" style="-fx-background-color: white;"
+                              stylesheets="@../CSSs/gradient.css">
+                           <children>
+                              <VBox prefHeight="487.0" prefWidth="960.0" stylesheets="@../CSSs/gradient.css">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="960.0" spacing="30.0">
+                                       <children>
+                                          <Label prefWidth="200.0" text="Country">
+                                             <font>
+                                                <Font name="System Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <ComboBox fx:id="country" prefWidth="150.0" promptText="Country" visibleRowCount="5" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="45.0" prefWidth="960.0" spacing="30.0">
+                                       <children>
+                                          <Label prefWidth="200.0" text="City       ">
+                                             <font>
+                                                <Font name="System Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <ComboBox fx:id="city" prefWidth="150.0" promptText="City" visibleRowCount="5" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                       </padding>
+                                    </HBox>
+                                    <Separator layoutX="10.0" layoutY="95.0" prefWidth="200.0" />
+                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="95.0" prefHeight="45.0" prefWidth="960.0" spacing="30.0">
+                                       <children>
+                                          <Label prefHeight="35.0" prefWidth="200.0" text="Address">
+                                             <font>
+                                                <Font name="System Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <JFXTextArea fx:id="address" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="183.0" prefHeight="45.0" prefWidth="960.0" spacing="30.0">
+                                       <children>
+                                          <Label prefHeight="35.0" prefWidth="200.0" text="Zip Code">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <JFXTextArea fx:id="zipCode" prefHeight="36.0" prefWidth="206.0" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                       </padding>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <Button fx:id="nextPagePostalInformation" mnemonicParsing="false" text="Next Page" />
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="discount" closable="false" text="Discount">
+                    <content>
+                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
+                                   style="-fx-background-color: white;" stylesheets="@../CSSs/gradient.css">
+                           <children>
+                              <ImageView fitHeight="507.0" fitWidth="745.0" layoutX="107.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Images/Coupon.png"/>
+                                 </image>
+                              </ImageView>
+                              <Label alignment="CENTER" layoutX="116.0" layoutY="186.0" prefHeight="39.0" prefWidth="726.0" text="If you have a &quot;Discount Code&quot; and you want to use it ENTER your code Here">
+                                 <font>
+                                    <Font name="Gloucester MT Extra Condensed" size="26.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="discountField" layoutX="340.0" layoutY="286.0" prefHeight="26.0" prefWidth="278.0">
+                                 <focusColor>
+                                    <LinearGradient>
+                                       <stops>
+                                          <Stop color="#40a8a5" />
+                                          <Stop color="#0ef006" offset="1.0" />
+                                       </stops>
+                                    </LinearGradient>
+                                 </focusColor>
+                              </JFXTextField>
+                              <JFXButton fx:id="useDiscount" buttonType="RAISED" layoutX="480.0" layoutY="329.0" prefHeight="51.0" prefWidth="140.0" ripplerFill="BLACK" text="Use">
+                                 <font>
+                                    <Font name="Gloucester MT Extra Condensed" size="27.0" />
+                                 </font>
+                              </JFXButton>
+                              <Label layoutX="201.0" layoutY="225.0" text="Note That After Clicking &quot;Use&quot; Button You Can't Undo The Proccess&quot;" />
+                              <Button fx:id="nextPageDiscount" layoutX="875.0" layoutY="486.0" mnemonicParsing="false" text="Next Page" />
+                              <Button fx:id="previousPageDiscount" layoutX="14.0" layoutY="486.0" mnemonicParsing="false" text="Previous Page" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab fx:id="payment" closable="false" text="Payment">
+                     <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
+                           <left>
+                              <VBox alignment="TOP_CENTER" prefHeight="522.0" prefWidth="302.0" spacing="10.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <ImageView fitHeight="168.0" fitWidth="231.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../Images/anonymous.jpg"/>
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="CENTER" prefHeight="26.0" prefWidth="274.0" text="Anonymous Bank">
+                                       <font>
+                                          <Font name="Candara Bold" size="27.0" />
+                                       </font>
+                                    </Label>
+                                    <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../Images/banks.png"/>
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                                 <BorderPane.margin>
+                                    <Insets />
+                                 </BorderPane.margin>
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                              </VBox>
+                           </left>
+                           <center>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <ImageView fitHeight="439.0" fitWidth="627.0" layoutX="15.0" layoutY="42.0" opacity="0.31" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../Images/anonymous-bg.png"/>
+                                       </image>
+                                    </ImageView>
+                                    <VBox layoutX="329.0" layoutY="27.0" prefHeight="467.0" prefWidth="311.0"
+                                          spacing="15.0" stylesheets="@../CSSs/button.css">
+                                       <styleClass>
+                                          <String fx:value="transparentFadeForProduct" />
+                                          <String fx:value="productPane" />
+                                       </styleClass>
+                                       <padding>
+                                          <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                       </padding>
+                                       <children>
+                                          <Label text="Card Numbe : ">
+                                             <font>
+                                                <Font name="System Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER" prefHeight="36.0" prefWidth="262.0" spacing="5.0">
+                                             <children>
+                                                <TextField fx:id="card1" prefHeight="26.0" prefWidth="42.0" promptText="XXXX" />
+                                                <TextField fx:id="card2" layoutX="120.0" layoutY="15.0" prefHeight="26.0" prefWidth="42.0" promptText="XXXX" />
+                                                <TextField fx:id="card3" layoutX="144.0" layoutY="15.0" prefHeight="26.0" prefWidth="42.0" promptText="XXXX" />
+                                                <TextField fx:id="card4" layoutX="167.0" layoutY="15.0" prefHeight="26.0" prefWidth="42.0" promptText="XXXX" />
+                                             </children>
+                                          </HBox>
+                                          <Label text="CVV2 : ">
+                                             <font>
+                                                <Font name="System Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER" prefHeight="18.0" prefWidth="262.0">
+                                             <children>
+                                                <TextField fx:id="cvv2" alignment="CENTER" promptText="XXX(X)" />
+                                             </children>
+                                          </HBox>
+                                          <Label layoutX="35.0" layoutY="123.0" text="Card Pass : ">
+                                             <font>
+                                                <Font name="System Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER" layoutX="35.0" layoutY="160.0" prefHeight="18.0" prefWidth="262.0">
+                                             <children>
+                                                <TextField fx:id="pass" alignment="CENTER" prefHeight="26.0" prefWidth="198.0" promptText="5 - 64 Digits" />
+                                             </children>
+                                          </HBox>
+                                          <Label layoutX="35.0" layoutY="200.0" text="Exp.  Date : ">
+                                             <font>
+                                                <Font name="System Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER" layoutX="35.0" layoutY="160.0" prefHeight="18.0" prefWidth="262.0" spacing="20.0">
+                                             <children>
+                                                <TextField fx:id="month" alignment="CENTER" prefHeight="26.0" prefWidth="66.0" promptText="Month" />
+                                                <TextField fx:id="year" alignment="CENTER" layoutX="92.0" layoutY="10.0" prefHeight="26.0" prefWidth="67.0" promptText="Year" />
+                                             </children>
+                                          </HBox>
+                                          <Region prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                          <Button fx:id="purchaseButt" mnemonicParsing="false" prefHeight="26.0" prefWidth="286.0" text="Purchase">
+                                             <font>
+                                                <Font name="System Bold" size="17.0" />
+                                             </font>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                    <VBox layoutX="14.0" layoutY="27.0" prefHeight="467.0" prefWidth="290.0"
+                                          spacing="5.0" stylesheets="@../CSSs/button.css">
+                                       <styleClass>
+                                          <String fx:value="transparentFadeForProduct" />
+                                          <String fx:value="productPane" />
+                                       </styleClass>
+                                       <padding>
+                                          <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                       </padding>
+                                       <children>
+                                          <Label text="Host Portal : ">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="CFKala">
+                                             <font>
+                                                <Font name="System Bold" size="27.0" />
+                                             </font>
+                                          </Label>
+                                          <Separator prefWidth="200.0" />
+                                          <Label text="Amount : ">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="totalPrice" layoutX="35.0" layoutY="60.0" text="185$">
+                                             <font>
+                                                <Font name="System Bold" size="27.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </center>
+                        </BorderPane>
+                     </content>
+                  </Tab>
+               </tabs>
+            </JFXTabPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

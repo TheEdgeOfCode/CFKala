@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.GaussianBlur?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" stylesheets="@../CSSs/button.css"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.codefathers.cfkclient.controllers.NewProduct">
+   <children>
+      <BorderPane prefHeight="594.0" prefWidth="960.0">
+         <left>
+            <AnchorPane prefHeight="200.0" prefWidth="367.0" BorderPane.alignment="CENTER">
+               <stylesheets>
+                  <URL value="@../CSSs/gradient.css"/>
+                  <URL value="@../CSSs/button.css"/>
+               </stylesheets>
+               <styleClass>
+                  <String fx:value="unknown" />
+                  <String fx:value="roudPaneLeft" />
+               </styleClass>
+               <children>
+                  <ImageView fitHeight="266.0" fitWidth="298.0" layoutX="39.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/product.png"/>
+                     </image>
+                     <effect>
+                        <GaussianBlur />
+                     </effect>
+                  </ImageView>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="315.0" prefHeight="59.0" prefWidth="241.0" text="Create New" textFill="WHITE">
+                     <font>
+                        <Font size="41.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="78.0" layoutY="345.0" text="Product" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="57.0" />
+                     </font>
+                     <effect>
+                        <Glow level="0.4" />
+                     </effect>
+                  </Label>
+                  <Label layoutX="71.0" layoutY="420.0" text="Start A New Way To Expand Your Business" textFill="WHITE" />
+                  <JFXButton fx:id="back" contentDisplay="CENTER" ellipsisString="" focusTraversable="false" layoutX="18.0" layoutY="14.0" prefHeight="11.0" prefWidth="42.0" styleClass="mainPageMenuButtons" text=" ">
+                     <graphic>
+                        <FontIcon iconColor="WHITE" iconLiteral="fa-arrow-circle-left" iconSize="30" text="" />
+                     </graphic>
+                     <ripplerFill>
+                        <RadialGradient centerX="0.4822222391764323" centerY="0.5" cycleMethod="REFLECT" focusAngle="-31.35" radius="0.7897196172553802">
+                           <stops>
+                              <Stop color="#ccff00" />
+                              <Stop color="#32c2aa" offset="0.49794520547945204" />
+                              <Stop color="#ff4949" offset="1.0" />
+                           </stops>
+                        </RadialGradient>
+                     </ripplerFill>
+                  </JFXButton>
+               </children>
+            </AnchorPane>
+         </left>
+         <center>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;"
+                        styleClass="roudPaneRight" stylesheets="@../CSSs/button.css" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox alignment="TOP_CENTER" layoutX="14.0" layoutY="14.0" prefHeight="564.0" prefWidth="338.0" spacing="15.0">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <JFXTextField fx:id="productName" labelFloat="true" promptText="Product Name" />
+                        <ComboBox fx:id="category" prefHeight="26.0" prefWidth="355.0" promptText="Choose Categoty" />
+                        <JFXTextField fx:id="price" labelFloat="true" promptText="Price" />
+                        <JFXTextField fx:id="stock" labelFloat="true" layoutX="25.0" layoutY="108.0" promptText="Stock" />
+                        <JFXTextField fx:id="company" labelFloat="true" layoutX="25.0" layoutY="148.0" promptText="Company" />
+                        <JFXTextArea fx:id="description" prefHeight="73.0" prefWidth="308.0" promptText="Description" />
+                        <Label prefHeight="18.0" prefWidth="331.0" text="Enter Features Of Product" />
+                        <TableView fx:id="table" disable="true" prefHeight="176.0" prefWidth="308.0">
+                          <columns>
+                            <TableColumn fx:id="Features" prefWidth="144.0000678896904" text="Feature" />
+                            <TableColumn fx:id="TextFields" prefWidth="146.39993286132812" text=" " />
+                          </columns>
+                        </TableView>
+                        <JFXButton fx:id="createProduct" buttonType="RAISED" prefHeight="26.0" prefWidth="348.0" text="Create Product" />
+                     </children>
+                  </VBox>
+                  <VBox fx:id="sellThisBox" alignment="TOP_CENTER" disable="true" layoutX="392.0" layoutY="14.0"
+                        prefHeight="381.0" prefWidth="186.0" spacing="5.0" stylesheets="@../CSSs/button.css">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <Label text="The Product You Are Going" />
+                        <Label layoutX="31.0" layoutY="25.0" text="To Sell Is Similar In Name" />
+                        <Label layoutX="36.0" layoutY="48.0" text="With These Products below ." />
+                        <Label text="View, If Your Going To Sell" />
+                        <Label text="The Same Product Just Fill" />
+                        <Label text="The Price And Stock And" />
+                        <Label text="Click &quot;Sell This&quot;">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <ListView fx:id="similarProduct" prefHeight="135.0" prefWidth="157.0"/>
+                        <Region VBox.vgrow="ALWAYS" />
+                        <Button fx:id="view" focusTraversable="false" mnemonicParsing="false" prefHeight="26.0" prefWidth="190.0" text="Viwe This" />
+                        <Button fx:id="sellThis" focusTraversable="false" layoutX="77.0" layoutY="432.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="193.0" text="Sell This" />
+                     </children>
+                     <styleClass>
+                        <String fx:value="transparentFade15" />
+                        <String fx:value="productPane" />
+                     </styleClass>
+                  </VBox>
+                  <VBox layoutX="391.0" layoutY="403.0" prefHeight="167.0" prefWidth="188.0" spacing="5.0"
+                        stylesheets="@../CSSs/button.css">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="18.0" prefWidth="218.0" text="Choose At Least One Image">
+                           <font>
+                              <Font name="System Bold" size="12.0"/>
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" prefHeight="18.0" prefWidth="218.0" text="For Your Product ">
+                           <font>
+                              <Font name="System Bold" size="12.0"/>
+                           </font>
+                        </Label>
+                        <ListView fx:id="pictureList" prefHeight="104.0" prefWidth="188.0"/>
+                        <HBox prefHeight="69.0" prefWidth="158.0">
+                           <children>
+                              <JFXButton fx:id="pickPic" prefHeight="26.0" prefWidth="112.0" text="Pick Pictures">
+                                 <font>
+                                    <Font name="System Bold" size="12.0"/>
+                                 </font>
+                                 <graphic>
+                                    <FontIcon iconLiteral="fa-picture-o" iconSize="12"/>
+                                 </graphic>
+                              </JFXButton>
+                              <Region HBox.hgrow="ALWAYS"/>
+                              <JFXButton fx:id="reset" contentDisplay="GRAPHIC_ONLY" prefHeight="26.0" prefWidth="30.0"
+                                         text=" ">
+                                 <graphic>
+                                    <FontIcon iconLiteral="fa-trash-o" iconSize="15"/>
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="productPane"/>
+                        <String fx:value="transparentFade15"/>
+                     </styleClass>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+                     </padding>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

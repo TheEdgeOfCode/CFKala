@@ -17,6 +17,7 @@ public class UserIntegerMap {
     @JoinColumn
     private User user;
 
+    @Column(name = "number")
     int integer;
 
     @ManyToOne

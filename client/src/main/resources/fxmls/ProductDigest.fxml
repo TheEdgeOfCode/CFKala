@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.Reflection?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.ProductDigest">
+   <children>
+       <BorderPane prefHeight="594.0" prefWidth="960.0" styleClass="unknown" stylesheets="@../CSSs/gradient.css">
+         <top>
+             <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" stylesheets="@../CSSs/button.css"
+                   BorderPane.alignment="CENTER">
+               <children>
+                  <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconColor="WHITE" iconLiteral="fa-arrow-circle-left" iconSize="20" text="" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="cartButt" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconColor="WHITE" iconLiteral="fa-shopping-basket" iconSize="20" text="" />
+                     </graphic>
+                  </JFXButton>
+                  <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" text=" ">
+                     <graphic>
+                        <FontIcon iconColor="WHITE" iconLiteral="fa-window-minimize" iconSize="15" text="" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" ripplerFill="RED" text=" ">
+                     <graphic>
+                        <FontIcon iconColor="WHITE" iconLiteral="fa-window-close" iconSize="15" text="" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </HBox>
+         </top>
+         <left>
+            <VBox alignment="TOP_CENTER" prefHeight="560.0" prefWidth="336.0" spacing="25.0" BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane prefHeight="323.0" prefWidth="362.0">
+                     <children>
+                        <ImageView fx:id="mainImage" fitHeight="290.0" fitWidth="290.0" layoutX="58.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                           <effect>
+                              <Reflection fraction="0.31" />
+                           </effect>
+                        </ImageView>
+                         <VBox alignment="TOP_CENTER" layoutX="15.0" layoutY="30.0" prefHeight="244.0" prefWidth="86.0"
+                               spacing="15.0" styleClass="transparentFadeForProduct" stylesheets="@../CSSs/button.css">
+                           <children>
+                              <JFXButton fx:id="video" contentDisplay="GRAPHIC_ONLY" disable="true" focusTraversable="false" ripplerFill="BLACK" text=" ">
+                                 <graphic>
+                                    <FontIcon iconColor="WHITE" iconLiteral="fa-video-camera" iconSize="28" />
+                                 </graphic>
+                              </JFXButton>
+                              <JFXButton fx:id="nextPhoto" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="32.0" layoutY="25.0" ripplerFill="BLACK" text=" ">
+                                 <graphic>
+                                    <FontIcon iconColor="WHITE" iconLiteral="fa-mail-forward" iconSize="25" />
+                                 </graphic>
+                              </JFXButton>
+                              <JFXButton fx:id="prePhoto" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="32.0" layoutY="76.0" ripplerFill="BLACK" text=" ">
+                                 <graphic>
+                                    <FontIcon iconColor="WHITE" iconLiteral="fa-mail-reply" iconSize="25" />
+                                 </graphic>
+                              </JFXButton>
+                              <JFXButton fx:id="lastPhoto" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="32.0" layoutY="128.0" ripplerFill="BLACK" text=" ">
+                                 <graphic>
+                                    <FontIcon iconColor="WHITE" iconLiteral="fa-fast-forward" iconSize="25" />
+                                 </graphic>
+                              </JFXButton>
+                              <JFXButton fx:id="firstPhoto" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="32.0" layoutY="179.0" ripplerFill="BLACK" text=" ">
+                                 <graphic>
+                                    <FontIcon iconColor="WHITE" iconLiteral="fa-fast-backward" iconSize="25" />
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                         <ImageView fx:id="specialOffer" fitHeight="93.0" fitWidth="89.0" layoutX="247.0"
+                                    layoutY="203.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                             <image>
+                                 <Image url="@../Images/dicount.png"/>
+                             </image>
+                         </ImageView>
+                         <ImageView fx:id="notAvailableSign" fitHeight="218.0" fitWidth="220.0" layoutX="121.0"
+                                    layoutY="56.0" pickOnBounds="true" preserveRatio="true">
+                             <image>
+                                 <Image url="@../Images/soldout.png"/>
+                             </image>
+                         </ImageView>
+                     </children>
+                  </AnchorPane>
+                   <Label fx:id="productName" alignment="CENTER" contentDisplay="CENTER" prefHeight="56.0"
+                          prefWidth="324.0" stylesheets="@../CSSs/gradient.css" text="Product Name" textFill="WHITE">
+                     <font>
+                        <Font name="Cookie-Regular" size="53.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="company" prefHeight="18.0" prefWidth="260.0" text="Company" textFill="WHITE" />
+                   <HBox alignment="CENTER" prefHeight="68.0" prefWidth="358.0" spacing="10.0"
+                         stylesheets="@../CSSs/gradient.css">
+                     <children>
+                        <FontIcon fx:id="star1" iconColor="#fbff00" iconLiteral="fa-star" iconSize="25" />
+                        <FontIcon fx:id="star2" iconColor="#fbff00" iconLiteral="fa-star" iconSize="25" layoutX="177.0" layoutY="53.0" />
+                        <FontIcon fx:id="star3" iconColor="#fbff00" iconLiteral="fa-star" iconSize="25" layoutX="194.0" layoutY="53.0" />
+                        <FontIcon fx:id="star4" iconColor="#fbff00" iconLiteral="fa-star" iconSize="25" layoutX="212.0" layoutY="53.0" />
+                        <FontIcon fx:id="star5" iconColor="#fbff00" iconLiteral="fa-star" iconSize="25" layoutX="228.0" layoutY="53.0" />
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </padding>
+            </VBox>
+         </left>
+         <center>
+             <VBox prefHeight="560.0" prefWidth="550.0" spacing="10.0" stylesheets="@../CSSs/button.css"
+                   BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane prefHeight="324.0" prefWidth="606.0">
+                     <children>
+                        <HBox layoutX="8.0" layoutY="7.0" prefHeight="306.0" prefWidth="562.0" spacing="10.0">
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <Text fx:id="description" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="337.60003662109375">
+                                 <font>
+                                    <Font name="Mongolian Baiti" size="24.0" />
+                                 </font>
+                              </Text>
+                               <VBox alignment="TOP_CENTER" prefHeight="276.0" prefWidth="182.0" spacing="15.0"
+                                     stylesheets="@../CSSs/button.css">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </padding>
+                                 <children>
+                                    <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="22.0" prefWidth="170.0" text="Sellect Seller And Buy !" textFill="WHITE">
+                                       <font>
+                                          <Font name="Perpetua" size="17.0" />
+                                       </font>
+                                    </Label>
+                                    <VBox prefHeight="22.0" prefWidth="153.0" spacing="3.0">
+                                       <children>
+                                           <ComboBox fx:id="sellerBox" focusTraversable="false" prefHeight="26.0"
+                                                     prefWidth="166.0" promptText="Sellect Seller">
+                                             <cursor>
+                                                 <Cursor fx:constant="NONE"/>
+                                             </cursor>
+                                          </ComboBox>
+                                           <Button fx:id="addToCart" focusTraversable="false" mnemonicParsing="false"
+                                                   prefHeight="26.0" prefWidth="195.0" text="Add To Cart">
+                                             <graphic>
+                                                 <FontIcon iconLiteral="fa-cart-plus" iconSize="20"/>
+                                             </graphic>
+                                             <cursor>
+                                                 <Cursor fx:constant="HAND"/>
+                                             </cursor>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                    <Label prefHeight="18.0" prefWidth="150.0" text="Price : " textFill="WHITE">
+                                       <font>
+                                          <Font name="Ravie" size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                           <Label fx:id="price" alignment="CENTER" prefHeight="18.0" prefWidth="162.0"
+                                                  text="---" textFill="WHITE">
+                                             <font>
+                                                 <Font name="Ravie" size="31.0"/>
+                                             </font>
+                                          </Label>
+                                           <Label fx:id="offPrice" alignment="CENTER" prefHeight="18.0"
+                                                  prefWidth="161.0" text="8964512" textFill="RED" visible="false">
+                                             <font>
+                                                 <Font name="System Bold" size="12.0"/>
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                     <Button fx:id="compare" focusTraversable="false" mnemonicParsing="false"
+                                             prefHeight="26.0" prefWidth="159.0" text="   Compare">
+                                       <graphic>
+                                           <FontIcon iconLiteral="fa-balance-scale" iconSize="20"/>
+                                       </graphic>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <cursor>
+                                           <Cursor fx:constant="HAND"/>
+                                       </cursor>
+                                    </Button>
+                                 </children>
+                                   <styleClass>
+                                       <String fx:value="transparentFade15"/>
+                                       <String fx:value="productPane"/>
+                                   </styleClass>
+                              </VBox>
+                           </children>
+                            <stylesheets>
+                                <URL value="@../CSSs/gradient.css"/>
+                                <URL value="@../CSSs/button.css"/>
+                            </stylesheets>
+                        </HBox>
+                     </children>
+                  </AnchorPane>
+                   <JFXTabPane rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
+                     <tabs>
+                        <Tab text="Features">
+                           <content>
+                              <TableView fx:id="features" opacity="0.93" prefHeight="171.0" prefWidth="579.0" tableMenuButtonVisible="true" />
+                           </content>
+                           <graphic>
+                              <FontIcon />
+                           </graphic>
+                        </Tab>
+                        <Tab text="Comments">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane prefHeight="175.0" prefWidth="578.0">
+                                       <content>
+                                           <VBox fx:id="commentVBox" alignment="TOP_CENTER" prefWidth="562.0"
+                                                 spacing="20.0">
+                                             <padding>
+                                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                             </padding>
+                                             <children>
+                                                 <JFXButton fx:id="addComment" prefHeight="26.0" prefWidth="601.0"
+                                                            text="Add A Comment">
+                                                   <font>
+                                                       <Font name="System Bold" size="13.0"/>
+                                                   </font>
+                                                </JFXButton>
+                                             </children>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </Tab>
+                     </tabs>
+                  </JFXTabPane>
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+                 <styleClass>
+                     <String fx:value="transparentFade15"/>
+                     <String fx:value="productPane"/>
+                 </styleClass>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>
