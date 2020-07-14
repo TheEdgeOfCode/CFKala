@@ -50,7 +50,7 @@ public class ProductController {
         return toReturn;
     }
 
-    private MiniProductDto dtoFromProduct(Product product) {
+    static MiniProductDto dtoFromProduct(Product product) {
         List<SellPackageDto> sellPackages = new ArrayList<>();
         product.getPackages().forEach(sellPackage -> {
             int offPercent = sellPackage.isOnOff() ? sellPackage.getOff().getOffPercentage() : 0;

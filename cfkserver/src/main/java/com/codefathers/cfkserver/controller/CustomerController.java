@@ -1,5 +1,6 @@
 package com.codefathers.cfkserver.controller;
 
+import antlr.Token;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.model.dtos.customer.CartDTO;
 import com.codefathers.cfkserver.model.dtos.customer.InCartDTO;
@@ -12,6 +13,8 @@ import com.codefathers.cfkserver.model.entities.user.Customer;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.SubCart;
 import com.codefathers.cfkserver.service.CustomerService;
+import com.codefathers.cfkserver.utils.ErrorUtil;
+import com.codefathers.cfkserver.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +22,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.codefathers.cfkserver.controller.ProductController.dtoFromProduct;
 
 
 @RestController
@@ -29,27 +36,33 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping("/customer/show_cart")
-    private ResponseEntity<?> showCart(String username) {
+    private ResponseEntity<?> showCart(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Customer customer = customerService.getCustomerByUsername(username);
-            Cart cart = customer.getCart();
-            List<InCartDTO> inCartDTOS = new ArrayList<>();
-            for (SubCart subCart : cart.getSubCarts()) {
-                InCartDTO inCartDTO = createInCartDTOFrom(subCart);
-                inCartDTOS.add(inCartDTO);
+            if (TokenUtil.checkToken(response, request)) {
+                String username = TokenUtil.getUsernameFromToken(request);
+                Customer customer = customerService.getCustomerByUsername(username);
+                Cart cart = customer.getCart();
+                List<InCartDTO> inCartDTOS = new ArrayList<>();
+                for (SubCart subCart : cart.getSubCarts()) {
+                    InCartDTO inCartDTO = createInCartDTOFrom(subCart);
+                    inCartDTOS.add(inCartDTO);
+                }
+                CartDTO cartDTO = new CartDTO(
+                        inCartDTOS,
+                        cart.getTotalPrice()
+                );
+                return ResponseEntity.ok(cartDTO);
+            } else {
+                return null;
             }
-            CartDTO cartDTO = new CartDTO(
-                    inCartDTOS,
-                    cart.getTotalPrice()
-            );
-            return ResponseEntity.ok(cartDTO);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
         }
     }
 
     private InCartDTO createInCartDTOFrom(SubCart subCart) throws NoSuchSellerException {
-        MiniProductDto miniProductDto = createMiniProductDTOFrom(subCart.getProduct());
+        MiniProductDto miniProductDto = dtoFromProduct(subCart.getProduct());
         int price = findPriceForSpecialSeller(subCart.getSeller(), subCart.getProduct());
         int offPrice = findOffPriceFor(subCart, price);
         return new InCartDTO(
@@ -74,27 +87,4 @@ public class CustomerController {
     private int findPriceForSpecialSeller(Seller seller, Product product) throws NoSuchSellerException {
         return product.findPackageBySeller(seller).getPrice();
     }
-
-    private MiniProductDto createMiniProductDTOFrom(Product product) {
-        List<SellPackageDto> sellPackageDtos = new ArrayList<>();
-        product.getPackages().forEach(sellPackage -> {
-            int offPercent = sellPackage.isOnOff()? sellPackage.getOff().getOffPercentage() : 0;
-            sellPackageDtos.add(new SellPackageDto(
-                    offPercent,
-                    sellPackage.getPrice(),
-                    sellPackage.getStock(),
-                    sellPackage.getSeller().getUsername(),
-                    sellPackage.isAvailable()));
-        });
-        return new MiniProductDto(
-                product.getName(),
-                product.getId(),
-                product.getCategory().getName(),
-                sellPackageDtos,
-                product.getCompanyClass().getName(),
-                product.getTotalScore(),
-                product.getDescription(),
-                product.isAvailable());
-    }
-
 }
