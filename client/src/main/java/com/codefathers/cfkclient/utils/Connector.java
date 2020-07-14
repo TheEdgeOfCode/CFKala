@@ -5,6 +5,10 @@ import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+<<<<<<< Updated upstream
+=======
+import org.springframework.http.HttpStatus;
+>>>>>>> Stashed changes
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,6 +35,10 @@ public class Connector {
     public List<MiniProductDto> getAllProducts(FilterSortDto dto){
         ResponseEntity<MiniProductArrayListDto> response = post("127.0.0.1:8050/product/get_all_products",
                 dto, MiniProductArrayListDto.class);
-        return response.getBody().getDtos(); // TODO: 7/14/2020 handle errors
+        if(response.getStatusCode().equals(HttpStatus.OK))
+            return response.getBody().getDtos();
+        else {
+            return null;
+        }
     }
 }
