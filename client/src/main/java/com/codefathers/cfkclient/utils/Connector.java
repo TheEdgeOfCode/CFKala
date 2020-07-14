@@ -4,6 +4,7 @@ import com.codefathers.cfkclient.dtos.product.FilterSortDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -18,18 +19,18 @@ public class Connector {
 
     public Connector(){
         token = "";
-        // TODO: 7/14/2020 fill token
         restTemplate = new RestTemplate();
     }
 
     private <T,U> ResponseEntity<U> post(String uri,T dto ,Class<U> type){
-        HttpEntity<T> requestEntity = new HttpEntity<>(dto);
-        requestEntity.getHeaders().add("Authentication","cfk! " + token);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authentication","cfk! " + token);
+        HttpEntity<T> requestEntity = new HttpEntity<>(dto,headers);
         return restTemplate.exchange(uri, POST,requestEntity,type);
     }
 
     public List<MiniProductDto> getAllProducts(FilterSortDto dto){
-        ResponseEntity<MiniProductArrayListDto> response = post("127.0.0.1:8050/product/get_all_products",
+        ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/product/get_all_products",
                 dto, MiniProductArrayListDto.class);
         if(response.getStatusCode().equals(HttpStatus.OK))
             return response.getBody().getDtos();

@@ -3,7 +3,6 @@ package com.codefathers.cfkserver.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,9 +14,9 @@ import java.util.function.Function;
 public class JwtUtil {
     private final String SECRET_KEY = "secret";
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(String userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails);
     }
 
     private String createToken(Map<String, Object> claims, String username) {
@@ -43,9 +42,9 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token, String user) {
         final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        return username.equals(user) && !isTokenExpired(token);
     }
 
     private Claims extractAllClaims(String token) {

@@ -37,7 +37,7 @@ public class ProductController {
                     )
                     , filterSortDto.getSortType());
             List<MiniProductDto> toReturn = dtosFromList(products);
-            return ResponseEntity.ok(toReturn);
+            return ResponseEntity.ok(new MiniProductListDto(new ArrayList<>(toReturn)));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

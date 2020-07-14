@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-    @PostMapping
-    private ResponseEntity<String> login(@RequestBody LoginDto dto) {
-        return null;
+    @PostMapping("/login")
+    private ResponseEntity<String> login(/*@RequestBody LoginDto dto*/) {
+        return ResponseEntity.ok("Fuck");
     }
 }
