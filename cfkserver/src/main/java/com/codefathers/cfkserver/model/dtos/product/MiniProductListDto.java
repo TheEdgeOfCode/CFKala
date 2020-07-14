@@ -1,6 +1,5 @@
-package com.codefathers.cfkserver.controller;
+package com.codefathers.cfkserver.model.dtos.product;
 
-import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

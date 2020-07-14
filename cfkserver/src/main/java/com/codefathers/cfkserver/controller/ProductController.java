@@ -2,6 +2,7 @@ package com.codefathers.cfkserver.controller;
 
 import com.codefathers.cfkserver.model.dtos.product.FilterSortDto;
 import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
+import com.codefathers.cfkserver.model.dtos.product.MiniProductListDto;
 import com.codefathers.cfkserver.model.dtos.product.SellPackageDto;
 import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.service.FilterService;
