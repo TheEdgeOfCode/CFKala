@@ -22,20 +22,23 @@ public class Connector {
         restTemplate = new RestTemplate();
     }
 
-    private <T,U> ResponseEntity<U> post(String uri,T dto ,Class<U> type){
+    private <T,U> ResponseEntity<U> post(String uri,T dto ,Class<U> type) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authentication","cfk! " + token);
         HttpEntity<T> requestEntity = new HttpEntity<>(dto,headers);
-        return restTemplate.exchange(uri, POST,requestEntity,type);
+        ResponseEntity<U> response = restTemplate.exchange(uri, POST, requestEntity, type);
+        if (response.getStatusCode().equals(HttpStatus.OK)){
+            return response;
+        }else {
+            /*this might cause problem */
+            String error = response.getHeaders().get("ERROR").get(0);
+            throw new Exception(error);
+        }
     }
 
-    public List<MiniProductDto> getAllProducts(FilterSortDto dto){
+    public List<MiniProductDto> getAllProducts(FilterSortDto dto) throws Exception {
         ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/product/get_all_products",
                 dto, MiniProductArrayListDto.class);
-        if(response.getStatusCode().equals(HttpStatus.OK))
-            return response.getBody().getDtos();
-        else {
-            return null;
-        }
+        return Objects.requireNonNull(response.getBody()).getDtos();
     }
 }

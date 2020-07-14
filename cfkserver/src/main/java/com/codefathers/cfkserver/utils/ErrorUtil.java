@@ -11,6 +11,7 @@ public class ErrorUtil {
         response.resetBuffer();
         response.setStatus(status.value());
         response.setHeader("Content-Type", "application/json");
+        response.setHeader("ERROR",message);
         try {
             response.getOutputStream().print(String.format("{\"timestamp\": \"%s\"," +
                             "\"status\": %d,\"error\": \"%s\",\"message\": \"%s\"}",
