@@ -4,11 +4,7 @@ import com.codefathers.cfkclient.dtos.product.FilterSortDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-<<<<<<< Updated upstream
-=======
 import org.springframework.http.HttpStatus;
->>>>>>> Stashed changes
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
