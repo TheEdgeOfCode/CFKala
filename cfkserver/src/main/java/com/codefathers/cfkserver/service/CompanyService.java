@@ -29,6 +29,11 @@ public class CompanyService {
         }
     }
 
+    public int createCompany(Company newCompany) {
+        companyRepository.save(newCompany);
+        return newCompany.getId();
+    }
+
     public void editCompanyName(int id, String newName)
             throws NoSuchACompanyException {
         Company company = getCompanyById(id);
