@@ -4,7 +4,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class TokenUtil {
-    public boolean checkToken(HttpServletResponse response, HttpServletRequest request) {
+    public static boolean checkToken(HttpServletResponse response, HttpServletRequest request) {
+        // TODO: 7/14/2020
         return false;
+    }
+
+    public static String getUsernameFromToken(HttpServletRequest request) {
+        // TODO: 7/14/2020
+        return null;
     }
 }
