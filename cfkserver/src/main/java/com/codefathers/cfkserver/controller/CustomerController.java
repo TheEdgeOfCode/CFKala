@@ -1,8 +1,11 @@
 package com.codefathers.cfkserver.controller;
 
 import antlr.Token;
+import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
+import com.codefathers.cfkserver.exceptions.model.user.NoSuchACustomerException;
 import com.codefathers.cfkserver.model.dtos.customer.CartDTO;
+import com.codefathers.cfkserver.model.dtos.customer.InCartArrayListDTO;
 import com.codefathers.cfkserver.model.dtos.customer.InCartDTO;
 import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
 import com.codefathers.cfkserver.model.dtos.product.SellPackageDto;
@@ -12,6 +15,7 @@ import com.codefathers.cfkserver.model.entities.user.Cart;
 import com.codefathers.cfkserver.model.entities.user.Customer;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.SubCart;
+import com.codefathers.cfkserver.service.CartService;
 import com.codefathers.cfkserver.service.CustomerService;
 import com.codefathers.cfkserver.utils.ErrorUtil;
 import com.codefathers.cfkserver.utils.TokenUtil;
@@ -19,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,8 +37,12 @@ import static com.codefathers.cfkserver.controller.ProductController.dtoFromProd
 
 @RestController
 public class CustomerController {
+
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private CartService cartService;
 
     @PostMapping("/customer/show_cart")
     private ResponseEntity<?> showCart(HttpServletRequest request, HttpServletResponse response) {
@@ -53,6 +62,49 @@ public class CustomerController {
                 );
                 return ResponseEntity.ok(cartDTO);
             } else {
+                return null;
+            }
+        } catch (Exception e) {
+            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    @PostMapping("/customer/change_amount")
+    private ResponseEntity<?> changeAmount(HttpServletRequest request, HttpServletResponse response, @RequestBody String info) {
+        try {
+            if (TokenUtil.checkToken(response, request)) {
+                String username = TokenUtil.getUsernameFromToken(request);
+                Customer customer = customerService.getCustomerByUsername(username);
+                int productId = Integer.parseInt(info.split(",")[0]);
+                int change = Integer.parseInt(info.split(",")[1]);
+                Cart cart = customer.getCart();
+                String sellerUsername = cartService.getSubCartByProductId(cart, productId).getSeller().getUsername();
+                cartService.changeProductAmountInCart(cart, productId, sellerUsername, change);
+                return ResponseEntity.ok(ResponseEntity.status(200));
+            } else {
+                return null;
+            }
+        } catch (Exception | NoSuchAProductException e) {
+            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    @PostMapping("/customer/show_products")
+    private ResponseEntity<?> showProducts(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (TokenUtil.checkToken(response, request)) {
+                String username = TokenUtil.getUsernameFromToken(request);
+                List<InCartDTO> inCartDTOS = new ArrayList<>();
+                Customer customer = customerService.getCustomerByUsername(username);
+                Cart cart = customer.getCart();
+                for (SubCart subCart : cart.getSubCarts()) {
+                    inCartDTOS.add(createInCartDTOFrom(subCart));
+                }
+                return ResponseEntity.ok(new InCartArrayListDTO(new ArrayList<>(inCartDTOS)));
+            }
+            else {
                 return null;
             }
         } catch (Exception e) {
