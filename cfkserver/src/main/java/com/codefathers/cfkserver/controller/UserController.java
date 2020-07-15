@@ -10,6 +10,7 @@ import com.codefathers.cfkserver.model.entities.product.Company;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
 import com.codefathers.cfkserver.model.entities.user.Customer;
+import com.codefathers.cfkserver.model.entities.user.Role;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.User;
 import com.codefathers.cfkserver.service.CompanyService;
@@ -30,6 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
+import static com.codefathers.cfkserver.model.entities.user.Role.SELLER;
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
 import static org.springframework.http.HttpStatus.*;
 
@@ -62,10 +65,10 @@ public class UserController {
     @PostMapping("users/create_account")
     private <T> ResponseEntity<?> createAccount(@RequestBody CreateAccountDTO<T> userDTO, HttpServletResponse response){
         try {
-            if (userDTO.getRole().equals("customer")) {
+            if (userDTO.getRole().equals(CUSTOMER)) {
                 CustomerDTO customerDTO = (CustomerDTO) userDTO.getInfo();
                 return createCustomer(customerDTO);
-            } else if (userDTO.getRole().equals("seller")) {
+            } else if (userDTO.getRole().equals(SELLER)) {
                 userService.createSeller((SellerDTO) userDTO.getInfo());
                 return ResponseEntity.ok(ResponseEntity.status(200));
             } else {

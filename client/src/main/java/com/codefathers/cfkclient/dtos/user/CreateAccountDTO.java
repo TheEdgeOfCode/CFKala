@@ -1,6 +1,5 @@
-package com.codefathers.cfkserver.model.dtos.user;
+package com.codefathers.cfkclient.dtos.user;
 
-import com.codefathers.cfkserver.model.entities.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
