@@ -69,35 +69,39 @@ public class UserController {
         }
     }
 
-    @PostMapping("users/create_account")
-    private <T> ResponseEntity<?> createAccount(@RequestBody CreateAccountDTO<T> userDTO, HttpServletResponse response){
+    @PostMapping("users/create_customer")
+    private <T> ResponseEntity<?> createCustomer(@RequestBody CustomerDTO dto, HttpServletResponse response){
         try {
-            if (userDTO.getRole().equals(CUSTOMER)) {
-                CustomerDTO customerDTO = (CustomerDTO) userDTO.getInfo();
-                return createCustomer(customerDTO);
-            } else if (userDTO.getRole().equals(SELLER)) {
-                userService.createSeller((SellerDTO) userDTO.getInfo());
-                return ResponseEntity.ok(ResponseEntity.status(200));
-            } else {
-                ManagerDTO managerDTO = (ManagerDTO) userDTO.getInfo();
-                return createManager(managerDTO);
-            }
-        } catch (UserAlreadyExistsException | NoSuchACompanyException e) {
+            userService.createCustomer(dto);
+            String token = jwtUtil.generateToken(dto.getUsername());
+            return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
+        } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
     }
 
-    private ResponseEntity<?> createManager(ManagerDTO managerDTO) throws UserAlreadyExistsException {
-        userService.createManager(managerDTO);
-        String token = jwtUtil.generateToken(managerDTO.getUsername());
-        return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
+    @PostMapping("users/create_manager")
+    private <T> ResponseEntity<?> createCustomer(@RequestBody ManagerDTO dto, HttpServletResponse response){
+        try {
+            userService.createManager(dto);
+            String token = jwtUtil.generateToken(dto.getUsername());
+            return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
+        } catch (UserAlreadyExistsException e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
     }
 
-    private <T> ResponseEntity<?> createCustomer(CustomerDTO customerDTO) throws UserAlreadyExistsException {
-        userService.createCustomer(customerDTO);
-        String token = jwtUtil.generateToken(customerDTO.getUsername());
-        return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
+    @PostMapping("users/create_seller")
+    private <T> ResponseEntity<?> createSeller(@RequestBody SellerDTO dto, HttpServletResponse response){
+        try {
+            userService.createSeller(dto);
+            return ResponseEntity.ok(ResponseEntity.status(200));
+        } catch (UserAlreadyExistsException | NoSuchACompanyException e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
     }
 
     @GetMapping("users/view")

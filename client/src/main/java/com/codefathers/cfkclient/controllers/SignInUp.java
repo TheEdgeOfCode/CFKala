@@ -1,6 +1,7 @@
 package com.codefathers.cfkclient.controllers;
 
 import com.codefathers.cfkclient.CFK;
+import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.user.*;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import static com.codefathers.cfkclient.dtos.user.Role.CUSTOMER;
 import static com.codefathers.cfkclient.dtos.user.Role.SELLER;
 
+@Component
 public class SignInUp {
     @FXML private JFXButton back;
     @FXML private JFXButton signInButton;
@@ -37,7 +39,8 @@ public class SignInUp {
     @FXML private JFXTextField usernameIn;
     @FXML private JFXPasswordField passwordIn;
 
-    private final Connector connector = Connector.getInstance();
+    private static CacheData cacheData = CacheData.getInstance();
+    private static Connector connector = Connector.getInstance();
 
     private static final Paint redColor = Paint.valueOf("#c0392b");
     private static final Paint blueColor = Paint.valueOf("#405aa8");
@@ -98,7 +101,7 @@ public class SignInUp {
     private void sellerSignUpSubmitRequest() {
         if (checkForEmptyValues()) {
             //TODO: Impl CacheData
-            //CacheData.getInstance().setSignUpData(generateInfoPack(SELLER));
+            //CacheData.getInstance().setSignUpData(getSellerDTO());
             try {
                 CFK.setRoot("sellerSignUp");
             } catch (IOException ignore) {
@@ -123,18 +126,10 @@ public class SignInUp {
 
     private void sendSignUpRequest() {
         try {
-            connector.createCustomerAccount(generateInfoPack(CUSTOMER));
+            connector.createCustomerAccount(getCustomerDTO());
         } catch (Exception e) {
             Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             e.printStackTrace();
-        }
-    }
-
-    private CreateAccountDTO generateInfoPack(Role role) {
-        if (role.equals(CUSTOMER)) {
-            return new CreateAccountDTO<>(CUSTOMER, getCustomerDTO());
-        } else {
-            return new CreateAccountDTO<>(SELLER, getSellerDTO());
         }
     }
 
