@@ -1,14 +1,16 @@
 package com.codefathers.cfkclient.controllers;
 
+import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SignInUp {
-    @FXML
-    private JFXButton back;
+    @FXML private JFXButton back;
     @FXML private JFXButton signInButton;
     @FXML private JFXButton signUpButton;
     @FXML private Pane signInPage;
@@ -26,4 +28,12 @@ public class SignInUp {
     @FXML private JFXButton signInSubmit;
     @FXML private JFXTextField usernameIn;
     @FXML private JFXPasswordField passwordIn;
+
+    private final Connector connector;
+
+    public SignInUp(Connector connector) {
+        this.connector = connector;
+    }
+
+
 }

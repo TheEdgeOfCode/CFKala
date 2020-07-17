@@ -1,5 +1,6 @@
 package com.codefathers.cfkclient.utils;
 
+import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.product.FilterSortDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
@@ -63,5 +64,14 @@ public class Connector {
     public void createSellerAccount(CreateAccountDTO<SellerDTO> dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_account", dto, TokenRoleDto.class);
         //TODO: Impl
+    }
+
+    public UserFullDTO viewPersonalInfo() throws Exception {
+        ResponseEntity<UserFullDTO> response = post("http://127.0.0.1:8050/users/view", null, UserFullDTO.class);
+        return response.getBody();
+    }
+
+    public void editPersonalInfo(UserEditAttributes attributes) throws Exception {
+        ResponseEntity responses = post("http://127.0.0.1:8050/users/edit", attributes, HttpStatus.class);
     }
 }
