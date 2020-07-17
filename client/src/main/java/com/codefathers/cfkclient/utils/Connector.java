@@ -50,7 +50,7 @@ public class Connector {
             Gson gson = new Gson();
             return gson.fromJson(response.getBody(),type);
         }else {
-            throw new Exception(new GsonJsonParser().parseMap(response.getBody()).get("error"));
+            throw new Exception(new GsonJsonParser().parseMap(response.getBody()).get("error").toString());
         }
     }
 
@@ -61,6 +61,6 @@ public class Connector {
     }
 
     public List<MainContent> mainContents() throws Exception {
-        return get("",null,new TypeToken<ArrayList<MainContent>>(){}.getType());
+        return get("http://127.0.0.1:8050/content/get_main_contents",null,new TypeToken<ArrayList<MainContent>>(){}.getType());
     }
 }
