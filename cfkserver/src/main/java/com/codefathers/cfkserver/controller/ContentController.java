@@ -14,6 +14,7 @@ import com.codefathers.cfkserver.service.ContentService;
 import com.codefathers.cfkserver.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,9 +51,9 @@ public class ContentController {
     }
 
     @GetMapping("/content/get_main_contents")
-    private List<MainContent> getMainContents() {
+    private ResponseEntity<?> getMainContents() {
         Iterable<MainContent> all = mainContentRepository.findAll();
-        return StreamSupport.stream(all.spliterator(), false).collect(Collectors.toList());
+        return ResponseEntity.ok(StreamSupport.stream(all.spliterator(), false).collect(Collectors.toList()));
     }
 
     @PostMapping("/content/add_ad")

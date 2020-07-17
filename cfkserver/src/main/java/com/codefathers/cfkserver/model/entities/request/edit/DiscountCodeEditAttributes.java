@@ -7,6 +7,8 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class DiscountCodeEditAttributes extends EditAttributes{
     @Temporal(TemporalType.DATE)
     private Date start;
@@ -14,4 +16,5 @@ public class DiscountCodeEditAttributes extends EditAttributes{
     private Date end;
     private int offPercent;
     private int maxDiscount;
+    private String code;
 }
