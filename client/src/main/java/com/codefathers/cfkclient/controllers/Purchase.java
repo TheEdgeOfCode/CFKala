@@ -68,14 +68,11 @@ public class Purchase {
     private static final Paint redColor = Paint.valueOf("#c0392b");
 
     private CartDTO cartDTO;
-    private final Connector connector;
+    private final Connector connector = Connector.getInstance();
     private List<DisCodeUserDTO> discountCodes;
     private String selectedDisCode = "";
     private boolean usedDisCodeThisTime = false;
 
-    public Purchase(Connector connector) {
-        this.connector = connector;
-    }
 
     // TODO : send notification
 
@@ -91,13 +88,13 @@ public class Purchase {
 
     private void loadDiscountCode() {
         try {
-            discountCodes = connector.showDiscountCodes();
+            //discountCodes = connector.showDiscountCodes();
         } catch (Exception ignore) {}
     }
 
     private void loadCart() {
         try {
-            cartDTO = connector.showCart();
+            //cartDTO = connector.showCart();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -203,7 +200,7 @@ public class Purchase {
 
     private void updateTotalPrice() {
         try {
-            totalPrice.setText(String.valueOf(connector.showPurchaseTotalPrice(selectedDisCode)));
+            //totalPrice.setText(String.valueOf(connector.showPurchaseTotalPrice(selectedDisCode)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -234,7 +231,7 @@ public class Purchase {
         if (checkIfCountryAndCityAreSelected() && checkIfAddressAndZipCodeIsNotEmpty() &&
                 checkCardsNumbers() && checkCVV2Numbers() && checkCardPass() && checkExpDateNumber()) {
             try {
-                connector.purchase(makePurchaseDTO());
+                //connector.purchase(makePurchaseDTO());
                 // TODO : play sound
                 reset();
                 // TODO : change scene

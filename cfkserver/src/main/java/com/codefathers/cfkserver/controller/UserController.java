@@ -85,7 +85,7 @@ public class UserController {
     private <T> ResponseEntity<?> createCustomer(@RequestBody ManagerDTO dto, HttpServletResponse response){
         try {
             userService.createManager(dto);
-            String token = jwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername());
             return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
         } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
