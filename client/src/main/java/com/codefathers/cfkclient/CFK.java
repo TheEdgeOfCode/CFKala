@@ -1,20 +1,23 @@
 package com.codefathers.cfkclient;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class CFK extends Application {
-    private static ConfigurableApplicationContext context;
     private static Stage window;
     private static Scene scene;
     private static double xOffset;
@@ -22,18 +25,35 @@ public class CFK extends Application {
 
     @Override
     public void init() throws Exception {
-        context = SpringApplication.run(CFKClientApplication.class);
+        SpringApplication.run(CFKClientApplication.class);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        context.publishEvent(new StageReadyEvent(stage));
+        SoundCenter.background();
+        window = stage;
+        loadLogo();
+        try {
+//            if (AccountController.getInstance().isTheFirstManager()) {
+//                scene = new Scene(loadFXML("CreateManager", "MainPage"));
+//            } else {
+//                scene = new Scene(loadFXML("MainPage"));
+//            }
+            scene = new Scene(loadFXML("MainPage"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        stage.setScene(scene);
+        moveSceneOnMouse(scene, stage);
+        scene.setFill(Color.TRANSPARENT);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        window.setOnCloseRequest(e-> close());
+        stage.show();
     }
 
-    @Override
-    public void stop() throws Exception {
-        context.stop();
-        Platform.exit();
+    private void loadLogo() {
+        window.getIcons().add(new Image(CFK.class.getClassLoader()
+                .getResource("./Images/logo3.1.png").toString()));
     }
 
     public static void moveSceneOnMouse(Scene scene, Stage stage) {
@@ -47,15 +67,43 @@ public class CFK extends Application {
         });
     }
 
-    public static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(CFK.class.getClassLoader().getResource("./fxmls/" + fxml + ".fxml"));
-        fxmlLoader.setControllerFactory(context :: getBean);
-        return fxmlLoader.load();
+    public static void minimize(){
+        window.setIconified(true);
+    }
+
+    public static void close(){
+        window.close();
     }
 
     public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
         window.setScene(scene);
+    }
+
+    public static Parent loadFXML(String fxml) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(CFK.class.getClassLoader().getResource("./fxmls/" + fxml + ".fxml"));
+        return fxmlLoader.load();
+    }
+
+    public static Parent loadFXML(String fxml, String... backFxml) throws IOException {
+        FXMLLoader loader = getFXMLLoader(fxml);
+        Parent parent = loader.load();
+        BackAbleController controller = loader.getController();
+        controller.setBackFxmlS(Arrays.asList(backFxml));
+        System.out.println(controller.getBackFxmlS());
+        return parent;
+    }
+
+    public static Parent loadFXML(String fxml, List<String> bax) throws IOException {
+        FXMLLoader loader = getFXMLLoader(fxml);
+        Parent parent = loader.load();
+        BackAbleController controller = loader.getController();
+        controller.setBackFxmlS(bax);
+        return parent;
+    }
+
+    public static FXMLLoader getFXMLLoader(String fxml) {
+        return new FXMLLoader(CFK.class.getClassLoader().getResource("./fxmls/" + fxml + ".fxml"));
     }
 
     public static void setSceneToStage(Node node, Scene scene) {
@@ -70,14 +118,16 @@ public class CFK extends Application {
         stage.show();
     }
 
-    class StageReadyEvent extends ApplicationEvent{
+    @Override
+    public void stop() throws Exception {
+        // TODO: 7/17/2020
+        super.stop();
+    }
 
-        public StageReadyEvent(Stage source) {
-            super(source);
-        }
-
-        public Stage getStage(){
-            return Stage.class.cast(getSource());
-        }
+    public static FadeTransition makeFade(Node node, double from, double to, int duration) {
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(duration), node);
+        fadeTransition.setToValue(to);
+        fadeTransition.setFromValue(from);
+        return fadeTransition;
     }
 }

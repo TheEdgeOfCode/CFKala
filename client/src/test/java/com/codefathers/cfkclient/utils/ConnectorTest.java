@@ -20,4 +20,9 @@ class ConnectorTest {
         List<MiniProductDto> allProducts = connector.getAllProducts(dto);
         System.out.println(allProducts);
     }
+
+    @Test
+    void getAllContents() throws Exception {
+        System.out.println(connector.mainContents());
+    }
 }
