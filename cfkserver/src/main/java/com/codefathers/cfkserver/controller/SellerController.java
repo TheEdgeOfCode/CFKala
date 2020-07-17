@@ -1,14 +1,19 @@
 package com.codefathers.cfkserver.controller;
 
+import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.model.dtos.log.SellLogDTO;
 import com.codefathers.cfkserver.model.dtos.log.SellLogListDTO;
+import com.codefathers.cfkserver.model.dtos.product.AddSellerToProductDTO;
 import com.codefathers.cfkserver.model.dtos.user.CompanyDto;
 import com.codefathers.cfkserver.model.dtos.user.UserFullDTO;
 import com.codefathers.cfkserver.model.entities.logs.SellLog;
 import com.codefathers.cfkserver.model.entities.product.Company;
+import com.codefathers.cfkserver.model.entities.product.Product;
+import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.User;
 import com.codefathers.cfkserver.service.CompanyService;
+import com.codefathers.cfkserver.service.ProductService;
 import com.codefathers.cfkserver.service.SellerService;
 import com.codefathers.cfkserver.utils.JwtUtil;
 import com.codefathers.cfkserver.utils.TokenUtil;
@@ -16,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +36,7 @@ import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
 @RestController
 public class SellerController {
     @Autowired
-    private JwtUtil jwtUtil;
+    private ProductService productService;
     @Autowired
     private SellerService sellerService;
 
@@ -69,6 +76,23 @@ public class SellerController {
             else
                 return null;
         } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    @PostMapping("seller/become_seller")
+    public ResponseEntity<?> becomeSellerOfExistingProduct(@RequestBody AddSellerToProductDTO dto, HttpServletRequest request, HttpServletResponse response){
+        try {
+            if (TokenUtil.checkToken(response, request)) {
+                Product product = productService.findById(dto.getProductId());
+                Seller seller = sellerService.findSellerByUsername(TokenUtil.getUsernameFromToken(request));
+                productService.addASellerToProduct(product, seller, dto.getAmount(), dto.getPrice());
+                return ResponseEntity.ok(HttpStatus.valueOf(200));
+            }
+            else
+                return null;
+        } catch (Exception | NoSuchAProductException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }

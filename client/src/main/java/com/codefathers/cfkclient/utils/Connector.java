@@ -86,4 +86,10 @@ public class Connector {
                 null, SellLogListDTO.class);
         return response.getBody();
     }
+
+    public void becomeSellerOfExistingProduct() throws Exception {
+        post("http://127.0.0.1:8050/seller/become_seller", null, HttpStatus.class);
+    }
+
+
 }
