@@ -12,6 +12,7 @@ import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.image.Image;
 import org.springframework.boot.json.GsonJsonParser;
 import com.codefathers.cfkclient.dtos.user.*;
 import org.springframework.http.HttpEntity;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -80,10 +82,10 @@ public class Connector {
         return get("http://127.0.0.1:8050/content/all_ads",null,new TypeToken<ArrayList<AdPM>>(){}.getType());
     }
 
-    public void login(LoginDto dto) throws Exception {
+    public String login(LoginDto dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/login", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
-        //TODO: Impl
+        return role.getBody().getRole();
     }
 
     public void createCustomerAccount(CreateAccountDTO<CustomerDTO> dto) throws Exception {
@@ -190,5 +192,14 @@ public class Connector {
         ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/seller/products",
                 null, MiniProductArrayListDto.class);
         return response.getBody();
+    }
+
+    public Image userImage(String text) throws Exception {
+        com.codefathers.cfkclient.dtos.user.Image image = get("http://127.0.0.1:8050users/getImage",null, com.codefathers.cfkclient.dtos.user.Image.class);
+        if (image.getImage() != null) {
+            return new Image(new ByteArrayInputStream(image.getImage()));
+        }else {
+            return null;
+        }
     }
 }
