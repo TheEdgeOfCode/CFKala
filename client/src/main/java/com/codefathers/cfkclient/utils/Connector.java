@@ -5,8 +5,12 @@ import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
-import com.codefathers.cfkclient.dtos.discount.DisCodeUserDTO;
+import com.codefathers.cfkclient.dtos.discount.AddUser;
+import com.codefathers.cfkclient.dtos.discount.CreateDiscount;
+import com.codefathers.cfkclient.dtos.discount.CreateDiscountSystematic;
+import com.codefathers.cfkclient.dtos.discount.DisCodeManagerPM;
 import com.codefathers.cfkclient.dtos.edit.CategoryEditAttribute;
+import com.codefathers.cfkclient.dtos.edit.DiscountCodeEditAttributes;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.product.FilterSortDto;
@@ -229,5 +233,34 @@ public class Connector {
 
     public void deleteContent(Integer id) throws Exception {
         post("http://127.0.0.1:8050/content/delete",id,String.class);
+    }
+
+    public void systematicDiscount(CreateDiscountSystematic createDiscount) throws Exception {
+        post("http://127.0.0.1:8050/discount/systematic",createDiscount,String.class);
+    }
+
+    public void removeDiscountCode(String discountCode) throws Exception {
+        post("http://127.0.0.1:8050/discount/delete",discountCode,String.class);
+    }
+
+    public void editDiscountCode(DiscountCodeEditAttributes attributes) throws Exception {
+        post("http://127.0.0.1:8050/discount/edit",attributes,String.class);
+    }
+
+    public void createDiscount(CreateDiscount dto) throws Exception {
+        post("http://127.0.0.1:8050/discount/create",dto,String.class);
+    }
+
+    public void removeUserFromDiscountCodeUsers(String code, String username) throws Exception {
+        post("http://127.0.0.1:8050/discount/remove_user",code + "~~~" + username,String.class);
+    }
+
+    public void addUserToDiscountCode(AddUser dto) throws Exception {
+        post("http://127.0.0.1:8050/discount/add_user",dto,String.class);
+    }
+
+    public ArrayList<DisCodeManagerPM> getDiscountCodes() throws Exception {
+        return get("http://127.0.0.1:8050/discount/get_discounts",null,
+                new TypeToken<ArrayList<DisCodeManagerPM>>(){}.getType());
     }
 }
