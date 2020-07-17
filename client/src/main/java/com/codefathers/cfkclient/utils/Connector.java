@@ -91,5 +91,15 @@ public class Connector {
         post("http://127.0.0.1:8050/seller/become_seller", null, HttpStatus.class);
     }
 
+    public Long viewBalance() throws Exception {
+        ResponseEntity<Long> response = post("http://127.0.0.1:8050/seller/balance",
+                null, Long.class);
+        return response.getBody();
+    }
 
+    public MiniProductArrayListDto manageSellerProducts() throws Exception {
+        ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/seller/products",
+                null, MiniProductArrayListDto.class);
+        return response.getBody();
+    }
 }

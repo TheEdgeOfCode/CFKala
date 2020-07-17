@@ -5,6 +5,9 @@ import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.model.dtos.log.SellLogDTO;
 import com.codefathers.cfkserver.model.dtos.log.SellLogListDTO;
 import com.codefathers.cfkserver.model.dtos.product.AddSellerToProductDTO;
+import com.codefathers.cfkserver.model.dtos.product.MicroProductDto;
+import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
+import com.codefathers.cfkserver.model.dtos.product.MiniProductListDto;
 import com.codefathers.cfkserver.model.dtos.user.CompanyDto;
 import com.codefathers.cfkserver.model.dtos.user.UserFullDTO;
 import com.codefathers.cfkserver.model.entities.logs.SellLog;
@@ -82,7 +85,8 @@ public class SellerController {
     }
 
     @PostMapping("seller/become_seller")
-    public ResponseEntity<?> becomeSellerOfExistingProduct(@RequestBody AddSellerToProductDTO dto, HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<?> becomeSellerOfExistingProduct(@RequestBody AddSellerToProductDTO dto,
+                                                           HttpServletRequest request, HttpServletResponse response){
         try {
             if (TokenUtil.checkToken(response, request)) {
                 Product product = productService.findById(dto.getProductId());
@@ -93,6 +97,72 @@ public class SellerController {
             else
                 return null;
         } catch (Exception | NoSuchAProductException e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    @GetMapping("seller/balance")
+    public ResponseEntity<?> viewBalance(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (TokenUtil.checkToken(response, request)) {
+                Seller seller = sellerService.findSellerByUsername(TokenUtil.getUsernameFromToken(request));
+                return ResponseEntity.ok(seller.getBalance());
+            }
+            else
+                return null;
+        } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    @GetMapping("seller/products")
+    public ResponseEntity<?> manageProducts(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (TokenUtil.checkToken(response, request)) {
+                List<Product> sellerProducts = sellerService.viewProducts(TokenUtil.getUsernameFromToken(request));
+                //List<Product> sortedSellerProducts = sortManager.sort(sellerProducts,sort.getSortType());
+                //if (!sort.isAscending()) Collections.reverse(sortedSellerProducts);
+                ArrayList<MiniProductDto> miniProductDTOs = new ArrayList<>();
+                for (Product sellerProduct : sellerProducts) {
+                    miniProductDTOs.add(ProductController.dtoFromProduct(sellerProduct));
+                }
+                return ResponseEntity.ok(new MiniProductListDto(miniProductDTOs));
+            }
+            else
+                return null;
+        } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    /*public List<MiniProductPM> manageProducts(String sellerUserName, SortPackage sortPackage, FilterPackage filterPackage)
+            throws UserNotAvailableException {
+        List<Product> sortedSellerProducts = sortManager.sort(sellerManager.viewProducts(sellerUserName), sortPackage.getSortType());
+        int[] priceRange = new int[2];
+        priceRange[0] = filterPackage.getDownPriceLimit();
+        priceRange[1] = filterPackage.getUpPriceLimit();
+        List<Product> filteredSellerProducts = FilterManager.filterList(sortedSellerProducts, filterPackage.getActiveFilters(), priceRange);
+        ArrayList<MiniProductPM> miniProductPMs = new ArrayList<>();
+        //System.err.println(filteredSellerProducts);
+        filteredSellerProducts.forEach(product -> miniProductPMs.add(createMiniProductPM(product)));
+        return miniProductPMs;
+    }*/
+
+    public ResponseEntity<?> getProductsForSeller(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (TokenUtil.checkToken(response, request)) {
+                List<Product> sellerProducts = sellerService.viewProducts(TokenUtil.getUsernameFromToken(request));
+                List<MicroProductDto> list = new ArrayList<>();
+                if (sellerProducts != null)
+                    sellerProducts.forEach(product -> list.add(new MicroProductDto(product.getName(), product.getId())));
+                return ResponseEntity.ok(list);
+            }
+            else
+                return null;
+        } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
