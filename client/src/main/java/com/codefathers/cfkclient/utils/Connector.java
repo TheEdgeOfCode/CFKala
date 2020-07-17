@@ -83,19 +83,19 @@ public class Connector {
         //TODO: Impl
     }
 
-    public void createCustomerAccount(CreateAccountDTO<CustomerDTO> dto) throws Exception {
-        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_account", dto, TokenRoleDto.class);
+    public void createCustomerAccount(CustomerDTO dto) throws Exception {
+        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_customer", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
         //TODO: Impl
     }
 
-    public void createManagerAccount(CreateAccountDTO<ManagerDTO> dto) throws Exception {
-        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_account", dto, TokenRoleDto.class);
+    public void createManagerAccount(ManagerDTO dto) throws Exception {
+        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_manager", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
         //TODO: Impl
     }
-    public void createSellerAccount(CreateAccountDTO<SellerDTO> dto) throws Exception {
-        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_account", dto, TokenRoleDto.class);
+    public void createSellerAccount(SellerDTO dto) throws Exception {
+        ResponseEntity<HttpStatus> role = post("http://127.0.0.1:8050/users/create_seller", dto, HttpStatus.class);
         //TODO: Impl
     }
 
@@ -124,7 +124,7 @@ public class Connector {
     }
 
     public Long viewBalance() throws Exception {
-        ResponseEntity<Long> response = post("http://127.0.0.1:8050/seller/balance",
+        ResponseEntity<Long> response = get("http://127.0.0.1:8050/seller/balance",
                 null, Long.class);
         return response.getBody();
     }
