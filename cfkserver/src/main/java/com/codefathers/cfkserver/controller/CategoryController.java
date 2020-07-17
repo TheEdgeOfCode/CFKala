@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
 import static com.codefathers.cfkserver.utils.TokenUtil.checkToken;
@@ -87,8 +88,13 @@ public class CategoryController {
         }
     }
 
+    @GetMapping("/category/get_public")
+    public List<String> getPublicFeatures() {
+        return categoryService.getPublicFeatures();
+    }
+
     @GetMapping("/category/get_all")
-    private ArrayList<CategoryPM> getAllCAtegories(){
+    private ArrayList<CategoryPM> getAllCategories(){
         return categoryService.getAllCategories();
     }
 }

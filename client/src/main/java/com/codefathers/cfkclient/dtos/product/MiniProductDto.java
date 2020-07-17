@@ -18,4 +18,9 @@ public class MiniProductDto {
     private double score;
     private String description;
     private boolean available;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

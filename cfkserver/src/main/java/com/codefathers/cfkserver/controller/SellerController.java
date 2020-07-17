@@ -1,5 +1,6 @@
 package com.codefathers.cfkserver.controller;
 
+import com.codefathers.cfkserver.exceptions.model.off.ThisOffDoesNotBelongsToYouException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.model.user.NoSuchAPackageException;
@@ -7,19 +8,20 @@ import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.log.SellLogDTO;
 import com.codefathers.cfkserver.model.dtos.log.SellLogListDTO;
+import com.codefathers.cfkserver.model.dtos.off.CreateOffDTO;
 import com.codefathers.cfkserver.model.dtos.off.OffDTO;
 import com.codefathers.cfkserver.model.dtos.off.OffListDTO;
 import com.codefathers.cfkserver.model.dtos.product.*;
 import com.codefathers.cfkserver.model.dtos.user.CompanyDto;
 import com.codefathers.cfkserver.model.entities.logs.SellLog;
 import com.codefathers.cfkserver.model.entities.offs.Off;
+import com.codefathers.cfkserver.model.entities.product.Category;
 import com.codefathers.cfkserver.model.entities.product.Company;
 import com.codefathers.cfkserver.model.entities.product.Product;
+import com.codefathers.cfkserver.model.entities.request.edit.OffChangeAttributes;
+import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribute;
 import com.codefathers.cfkserver.model.entities.user.Seller;
-import com.codefathers.cfkserver.service.FilterService;
-import com.codefathers.cfkserver.service.ProductService;
-import com.codefathers.cfkserver.service.SellerService;
-import com.codefathers.cfkserver.service.Sorter;
+import com.codefathers.cfkserver.service.*;
 import com.codefathers.cfkserver.utils.TokenUtil;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +32,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.text.ParseException;
+import java.util.*;
 
 import static com.codefathers.cfkserver.controller.ProductController.dtoFromProduct;
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
@@ -48,6 +48,10 @@ public class SellerController {
     private SellerService sellerService;
     @Autowired
     private Sorter sorter;
+    @Autowired
+    private OffService offService;
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("seller/view_company")
     public ResponseEntity<?> viewCompanyInfo(HttpServletRequest request, HttpServletResponse response){
@@ -236,87 +240,49 @@ public class SellerController {
         return products;
     }
 
-    @PostMapping("product/save_image")
-    public void saveImagesForProduct(@RequestBody SaveImageDTO dto, HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/off/create")
+    public void addOff(@RequestBody CreateOffDTO dto, HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (checkToken(response, request)) {
-                int id = dto.getProductId();
-                File directory = new File("src/main/resources/db/images/products/" + id);
-                if (!directory.exists()) directory.mkdirs();
-                saveMainImage(id, dto.getMainImage());
-                dto.getFiles().forEach(file -> saveImageForProduct(id, file));
-            }
-        } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
-
-    private void saveMainImage(int id, InputStream data) {
-        File image = new File("src/main/resources/db/images/products/" + id + "/main.jpg");
-        if (!image.exists()) {
-            try {
-                image.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            saveDataToFile(data, image);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveDataToFile(InputStream data, File file) throws IOException {
-        byte[] buffer = new byte[data.available()];
-        data.read(buffer);
-        OutputStream outStream = new FileOutputStream(file);
-        outStream.write(buffer);
-        outStream.close();
-    }
-
-    private void saveImageForProduct(int id, InputStream data) {
-        File directory = new File("src/main/resources/db/images/products/" + id + "/other");
-        directory.mkdirs();
-        File image = new File("src/main/resources/db/images/products/" + id + "/other/" + generateUniqueFileName() + ".jpg");
-        try {
-            if (image.createNewFile()) {
-                saveDataToFile(data, image);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @PutMapping("product/update_pic")
-    public void updateProductPicture(@RequestBody SaveImageDTO dto, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            if (checkToken(response, request)) {
-                File directory = new File("src/main/resources/db/images/products/" + dto.getProductId());
+            if (checkToken(response,request)){
                 try {
-                    FileUtils.cleanDirectory(directory);
-                    saveImagesForProduct(dto, request, response);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    Seller seller = sellerService.findSellerByUsername(getUsernameFromToken(request));
+                    offService.createOff(seller, dto);
+                } catch (Exception e) {
+                    sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
                 }
             }
         } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
         }
     }
 
-    public void addVideo(int id, InputStream data) {
-        File video = new File("src/main/resources/db/videos/products/" + id + ".mp4");
+    @PostMapping("/off/edit")
+    public void editOff(@RequestBody OffChangeAttributes editAttributes, HttpServletRequest request, HttpServletResponse response) {
         try {
-            video.createNewFile();
-            saveDataToFile(data, video);
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (checkToken(response,request)){
+                try {
+                    offService.editOff(editAttributes, getUsernameFromToken(request));
+                } catch (Exception | ThisOffDoesNotBelongsToYouException e) {
+                    sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+                }
+            }
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
         }
     }
 
-    private String generateUniqueFileName() {
-        Random random = new Random();
-        return String.format("%s%s", System.currentTimeMillis(), random.nextInt(100000));
+    @PostMapping("/off/delete")
+    public void deleteOff(@RequestBody int id, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (checkToken(response,request)){
+                try {
+                    offService.deleteOff(id, getUsernameFromToken(request));
+                } catch (Exception | ThisOffDoesNotBelongsToYouException e) {
+                    sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+                }
+            }
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
+        }
     }
 }
