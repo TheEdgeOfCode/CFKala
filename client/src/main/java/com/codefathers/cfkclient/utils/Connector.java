@@ -27,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -116,6 +117,10 @@ public class Connector {
 
     public void editPersonalInfo(UserEditAttributes attributes) throws Exception {
         post("http://127.0.0.1:8050/users/edit", attributes, HttpStatus.class);
+    }
+
+    public void saveUserImage(InputStream inputStream) throws Exception {
+        post("http://127.0.0.1:8050/users/save_image", inputStream, HttpStatus.class);
     }
 
     public CartDTO showCart() throws Exception {

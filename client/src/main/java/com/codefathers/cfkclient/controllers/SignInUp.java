@@ -100,8 +100,7 @@ public class SignInUp {
 
     private void sellerSignUpSubmitRequest() {
         if (checkForEmptyValues()) {
-            //TODO: Impl CacheData
-            //CacheData.getInstance().setSignUpData(getSellerDTO());
+            cacheData.setSignUpData(getSellerDTO());
             try {
                 CFK.setRoot("sellerSignUp");
             } catch (IOException ignore) {
@@ -221,32 +220,17 @@ public class SignInUp {
     }
 
     private void sendSignInRequest() {
-        //TODO: Handle Exceptions on client side
         try {
-           /* CacheData.getInstance().setRole(accountController.login(usernameIn.getText(), passwordIn.getText()));
-            CacheData.getInstance().setUsername(usernameIn.getText());*/
+            CacheData.getInstance().setRole(connector.login(new LoginDto(usernameIn.getText(), passwordIn.getText())));
+            CacheData.getInstance().setUsername(usernameIn.getText());
             connector.login(new LoginDto(usernameIn.getText(), passwordIn.getText()));
             Notification.show("Successful", "Logged In Successfully!!!", back.getScene().getWindow(), false);
-        } /*catch (NotVerifiedSeller e) {
-            new OopsAlert().show("Your Account Isn't Verified Yet");
-        } catch (UserNotAvailableException e) {
+        } /*catch (UserNotAvailableException e) {
             errorField(usernameIn, "Username Not Exist");
         } catch (WrongPasswordException e) {
             errorField(passwordIn, "Incorrect Password");
         }*/ catch (Exception e) {
-            String message = e.getMessage();
-            if (message.contains("verified")){
-                Notification.show("Error", "Your Account Isn't Verified Yet", back.getScene().getWindow(), true);
-                e.printStackTrace();
-            } else if (message.contains("exist")){
-                Notification.show("Error", "Username Not Exist", back.getScene().getWindow(), true);
-                e.printStackTrace();
-            } else if (message.contains("wrong")){
-                Notification.show("Error", "Incorrect Password", back.getScene().getWindow(), true);
-                e.printStackTrace();
-            } else {
-                //TODO
-            }
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
         }
     }
 

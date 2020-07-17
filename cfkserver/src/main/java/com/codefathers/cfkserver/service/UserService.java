@@ -18,6 +18,7 @@ import com.codefathers.cfkserver.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.Optional;
 
 @Service
@@ -159,5 +160,15 @@ public class UserService {
 
     private boolean isCorrectPassword(User user, String password) {
         return user.getPassword().equals(password);
+    }
+
+    public void saveNewImage(InputStream inputStream, String username) throws IOException {
+        File file = new File("src\\main\\resources\\db\\images\\users\\" + username + ".jpg");
+        byte[] buffer = new byte[inputStream.available()];
+        if (!file.exists()) file.createNewFile();
+        inputStream.read(buffer);
+        OutputStream outStream = new FileOutputStream(file);
+        outStream.write(buffer);
+        outStream.close();
     }
 }
