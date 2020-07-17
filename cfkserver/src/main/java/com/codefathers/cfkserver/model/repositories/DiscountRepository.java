@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface DiscountRepository extends CrudRepository<DiscountCode, String> {
     List<DiscountCode> findAllByEndTimeBefore(Date date);
+
+    List<DiscountCode> findAllBy();
 }

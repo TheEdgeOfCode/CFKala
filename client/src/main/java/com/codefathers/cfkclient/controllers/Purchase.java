@@ -1,6 +1,8 @@
 package com.codefathers.cfkclient.controllers;
 
 import com.codefathers.cfkclient.CFK;
+import com.codefathers.cfkclient.Sound;
+import com.codefathers.cfkclient.SoundCenter;
 import com.codefathers.cfkclient.dtos.customer.CartDTO;
 import com.codefathers.cfkclient.dtos.customer.PurchaseDTO;
 import com.codefathers.cfkclient.dtos.discount.DisCodeUserDTO;
@@ -13,6 +15,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
@@ -68,11 +71,14 @@ public class Purchase {
     private static final Paint redColor = Paint.valueOf("#c0392b");
 
     private CartDTO cartDTO;
-    private final Connector connector = Connector.getInstance();
+    private final Connector connector;
     private List<DisCodeUserDTO> discountCodes;
     private String selectedDisCode = "";
     private boolean usedDisCodeThisTime = false;
 
+    public Purchase(Connector connector) {
+        this.connector = connector;
+    }
 
     // TODO : send notification
 
@@ -88,13 +94,13 @@ public class Purchase {
 
     private void loadDiscountCode() {
         try {
-            //discountCodes = connector.showDiscountCodes();
+            discountCodes = connector.showDiscountCodes();
         } catch (Exception ignore) {}
     }
 
     private void loadCart() {
         try {
-            //cartDTO = connector.showCart();
+            cartDTO = connector.showCart();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -195,12 +201,13 @@ public class Purchase {
             usedDisCodeThisTime = true;
             selectedDisCode = disCodeId;
             updateTotalPrice();
+            Notification.show("Successful", "You use discount code successfully!", back.getScene().getWindow(), false);
         }
     }
 
     private void updateTotalPrice() {
         try {
-            //totalPrice.setText(String.valueOf(connector.showPurchaseTotalPrice(selectedDisCode)));
+            totalPrice.setText(String.valueOf(connector.showPurchaseTotalPrice(selectedDisCode)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -231,8 +238,10 @@ public class Purchase {
         if (checkIfCountryAndCityAreSelected() && checkIfAddressAndZipCodeIsNotEmpty() &&
                 checkCardsNumbers() && checkCVV2Numbers() && checkCardPass() && checkExpDateNumber()) {
             try {
-                //connector.purchase(makePurchaseDTO());
-                // TODO : play sound
+                connector.purchase(makePurchaseDTO());
+                SoundCenter.play(Sound.PURCHASE);
+                Notification.show("Successful", "Your purchase has been done successfully",
+                        back.getScene().getWindow(), false);
                 reset();
                 // TODO : change scene
             } catch (Exception e) {
@@ -283,12 +292,11 @@ public class Purchase {
     private boolean checkCardsNumbers() {
         if (card1.getText().isEmpty() || card2.getText().isEmpty() ||
                 card3.getText().isEmpty() || card4.getText().isEmpty()) {
-            // notification : "Fill The Field, Please!"
-            Notification.show("", "Fill The Field, Please!", back.getScene().getWindow(), false);
+            Notification.show("Error", "Fill The Field, Please!", back.getScene().getWindow(), true);
             return false;
         } else if (!card1.getText().matches(CARD_REGEX) || !card2.getText().matches(CARD_REGEX) ||
                 !card3.getText().matches(CARD_REGEX) || !card4.getText().matches(CARD_REGEX)) {
-            // notification : "Invalid Card Number!"
+            Notification.show("Error", "Invalid Card Number!", back.getScene().getWindow(), true);
             return false;
         }
         return true;
@@ -296,11 +304,11 @@ public class Purchase {
 
     private boolean checkCVV2Numbers() {
         if (cvv2.getText().isEmpty()) {
-            // notification : "Fill CVV2 field, please!"
+            Notification.show("Error", "Fill CVV2 field, please!", back.getScene().getWindow(), true);
             return false;
         }
         if (!cvv2.getText().matches(CVV2_REGEX)) {
-            // notification : "Invalid CVV2!"
+            Notification.show("Error", "Invalid CVV2!", back.getScene().getWindow(), true);
             return false;
         }
         return true;
@@ -308,10 +316,10 @@ public class Purchase {
 
     private boolean checkCardPass() {
         if (pass.getText().isEmpty()) {
-            // notification : "Enter Your Card Password, please!!"
+            Notification.show("Error", "Enter Your Card Password, please!!", back.getScene().getWindow(), true);
             return false;
         } else if (!pass.getText().matches(CARD_PASS_REGEX)) {
-            // notification : "Invalid Card Password!!"
+            Notification.show("Error", "Invalid Card Password!!", back.getScene().getWindow(), true);
             return false;
         }
         return true;
@@ -319,10 +327,10 @@ public class Purchase {
 
     private boolean checkExpDateNumber() {
         if (year.getText().isEmpty() || month.getText().isEmpty()) {
-            // notification : "Fill Exp. Date, please!"
+            Notification.show("Error", "Fill Exp. Date, please!", back.getScene().getWindow(), true);
             return false;
         } else if(!year.getText().matches(YEAR_REGEX) || !month.getText().matches(MONTH_REGEX)) {
-            // notification : "Invalid Exp. Date!"
+            Notification.show("Error", "Invalid Exp. Date!", back.getScene().getWindow(), true);
             return false;
         }
         return true;
@@ -338,10 +346,10 @@ public class Purchase {
         window.setIconified(true);
     }
 
-    // TODO : check root!!!
     private void handleBackButton() {
         try {
-            CFK.setRoot("CustomerAccount");
+            Scene scene = new Scene(CFK.loadFXML("CustomerAccount"));
+            CFK.setSceneToStage(back, scene);
         } catch (IOException ignore){}
     }
 

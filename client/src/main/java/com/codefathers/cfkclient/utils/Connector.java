@@ -5,16 +5,17 @@ import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
-import com.codefathers.cfkclient.dtos.discount.DisCodeUserDTO;
+import com.codefathers.cfkclient.dtos.discount.AddUser;
+import com.codefathers.cfkclient.dtos.discount.CreateDiscount;
+import com.codefathers.cfkclient.dtos.discount.CreateDiscountSystematic;
+import com.codefathers.cfkclient.dtos.discount.DisCodeManagerPM;
 import com.codefathers.cfkclient.dtos.edit.CategoryEditAttribute;
-import com.codefathers.cfkclient.dtos.edit.OffChangeAttributes;
-import com.codefathers.cfkclient.dtos.edit.ProductEditAttribute;
+import com.codefathers.cfkclient.dtos.edit.DiscountCodeEditAttributes;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
-import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
-import com.codefathers.cfkclient.dtos.off.OffDTO;
-import com.codefathers.cfkclient.dtos.off.OffListDTO;
-import com.codefathers.cfkclient.dtos.product.*;
+import com.codefathers.cfkclient.dtos.product.FilterSortDto;
+import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
+import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.Image;
@@ -27,7 +28,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -97,17 +97,13 @@ public class Connector {
     public void createCustomerAccount(CustomerDTO dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_customer", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
-        //TODO: Impl
     }
 
     public void createManagerAccount(ManagerDTO dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_manager", dto, TokenRoleDto.class);
-        token = Objects.requireNonNull(role.getBody()).getToken();
-        //TODO: Impl
     }
     public void createSellerAccount(SellerDTO dto) throws Exception {
-        ResponseEntity<HttpStatus> role = post("http://127.0.0.1:8050/users/create_seller", dto, HttpStatus.class);
-        //TODO: Impl
+        post("http://127.0.0.1:8050/users/create_seller", dto, String.class);
     }
 
     public UserFullDTO viewPersonalInfo() throws Exception {
@@ -117,10 +113,6 @@ public class Connector {
 
     public void editPersonalInfo(UserEditAttributes attributes) throws Exception {
         post("http://127.0.0.1:8050/users/edit", attributes, HttpStatus.class);
-    }
-
-    public void saveUserImage(InputStream inputStream) throws Exception {
-        post("http://127.0.0.1:8050/users/save_image", inputStream, HttpStatus.class);
     }
 
     public CartDTO showCart() throws Exception {
@@ -205,29 +197,11 @@ public class Connector {
         return response.getBody();
     }
 
-    public void removeProduct(Integer productId) throws Exception {
-        post("http://127.0.0.1:8050/seller/remove_product", productId, String.class);
-    }
-
-    public List<OffDTO> viewAllOffs(FilterSortDto filterSortDto) throws Exception {
-        ResponseEntity<OffListDTO> response = post("http://127.0.0.1:8050/seller/offs",
-                filterSortDto, OffListDTO.class);
-        return Objects.requireNonNull(response.getBody()).getOffs();
-    }
-
-    public void saveImageForProduct(SaveImageDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/product/save_image", dto, String.class);
-    }
-
-    public void updateImageForProduct(SaveImageDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/product/update_pic", dto, String.class);
-    }
-
     public Image userImage(String text) throws Exception {
-        com.codefathers.cfkclient.dtos.user.Image image = get("http://127.0.0.1:8050users/getImage",null,
-                com.codefathers.cfkclient.dtos.user.Image.class);
-        if (image.getImage() != null) {
-            return new Image(new ByteArrayInputStream(image.getImage()));
+        byte[] image = get("http://127.0.0.1:8050users/getImage",null,
+                byte[].class);
+        if (image != null) {
+            return new Image(new ByteArrayInputStream(image));
         }else {
             return null;
         }
@@ -246,30 +220,47 @@ public class Connector {
     }
 
     public ArrayList<String> getSpecialFeatureOfCategory(Integer id) throws Exception {
-        return get("http://127.0.0.1:805/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
+        return get("http://127.0.0.1:8050/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
     }
 
     public ArrayList<CategoryPM> getAllCategories() throws Exception {
         return get("",null,new TypeToken<ArrayList<CategoryPM>>(){}.getType());
     }
 
-    public void addOff(CreateOffDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/off/create", dto, String.class);
+    public void addContent(String title, String content) throws Exception {
+        post("http://127.0.0.1:8050/content/add_content",title + "~~~" + content,String.class);
     }
 
-    public void editOff(OffChangeAttributes dto) throws Exception {
-        post("http://127.0.0.1:8050/off/edit", dto, String.class);
+    public void deleteContent(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/content/delete",id,String.class);
     }
 
-    public void removeOff(Integer id) throws Exception {
-        post("http://127.0.0.1:8050/off/remove", id, String.class);
+    public void systematicDiscount(CreateDiscountSystematic createDiscount) throws Exception {
+        post("http://127.0.0.1:8050/discount/systematic",createDiscount,String.class);
     }
 
-    public void createProduct(CreateProductDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/products/create", dto, String.class);
+    public void removeDiscountCode(String discountCode) throws Exception {
+        post("http://127.0.0.1:8050/discount/delete",discountCode,String.class);
     }
 
-    public void editProduct(ProductEditAttribute dto) throws Exception {
-        post("http://127.0.0.1:8050/off/edit", dto, String.class);
+    public void editDiscountCode(DiscountCodeEditAttributes attributes) throws Exception {
+        post("http://127.0.0.1:8050/discount/edit",attributes,String.class);
+    }
+
+    public void createDiscount(CreateDiscount dto) throws Exception {
+        post("http://127.0.0.1:8050/discount/create",dto,String.class);
+    }
+
+    public void removeUserFromDiscountCodeUsers(String code, String username) throws Exception {
+        post("http://127.0.0.1:8050/discount/remove_user",code + "~~~" + username,String.class);
+    }
+
+    public void addUserToDiscountCode(AddUser dto) throws Exception {
+        post("http://127.0.0.1:8050/discount/add_user",dto,String.class);
+    }
+
+    public ArrayList<DisCodeManagerPM> getDiscountCodes() throws Exception {
+        return get("http://127.0.0.1:8050/discount/get_discounts",null,
+                new TypeToken<ArrayList<DisCodeManagerPM>>(){}.getType());
     }
 }

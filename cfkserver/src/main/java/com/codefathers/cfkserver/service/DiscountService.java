@@ -2,6 +2,8 @@ package com.codefathers.cfkserver.service;
 
 import com.codefathers.cfkserver.exceptions.model.discount.*;
 import com.codefathers.cfkserver.exceptions.model.off.InvalidTimesException;
+import com.codefathers.cfkserver.model.dtos.discount.DisCodeManagerPM;
+import com.codefathers.cfkserver.model.dtos.discount.UserIntegerPM;
 import com.codefathers.cfkserver.model.entities.maps.DiscountcodeIntegerMap;
 import com.codefathers.cfkserver.model.entities.maps.UserIntegerMap;
 import com.codefathers.cfkserver.model.entities.offs.DiscountCode;
@@ -242,5 +244,24 @@ public class DiscountService {
 
     private List<Customer> getCustomersWithMorePurchase(int i) {
         return customerRepository.findAllByAllPurchaseIsGreaterThan(i);
+    }
+
+    public ArrayList<DisCodeManagerPM> getDiscountCodes() {
+        List<DiscountCode> discountCodes = discountRepository.findAllBy();
+        ArrayList<DisCodeManagerPM> disCodeManagerPMS = new ArrayList<>();
+        discountCodes.forEach(discountCode -> disCodeManagerPMS.add(createDiscountCodeManagerPM(discountCode)));
+        return disCodeManagerPMS;
+    }
+
+    private DisCodeManagerPM createDiscountCodeManagerPM(DiscountCode discountCode) {
+        ArrayList<UserIntegerPM> list = new ArrayList<>();
+        discountCode.getUsers().forEach(map -> list.add(new UserIntegerPM(map.getUser().getUsername(), map.getInteger())));
+        return new DisCodeManagerPM(
+                discountCode.getCode(),
+                discountCode.getStartTime(),
+                discountCode.getEndTime(),
+                discountCode.getOffPercentage(),
+                discountCode.getMaxDiscount(), list
+        );
     }
 }
