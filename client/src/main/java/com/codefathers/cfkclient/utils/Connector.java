@@ -76,10 +76,10 @@ public class Connector {
         return get("http://127.0.0.1:8050/content/all_ads",null,new TypeToken<ArrayList<AdPM>>(){}.getType());
     }
 
-    public void login(LoginDto dto) throws Exception {
+    public String login(LoginDto dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/login", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
-        //TODO: Impl
+        return role.getBody().getRole();
     }
 
     public void createCustomerAccount(CreateAccountDTO<CustomerDTO> dto) throws Exception {

@@ -17,7 +17,6 @@ import java.io.IOException;
 import static com.codefathers.cfkclient.dtos.user.Role.CUSTOMER;
 import static com.codefathers.cfkclient.dtos.user.Role.SELLER;
 
-@Component
 public class SignInUp {
     @FXML private JFXButton back;
     @FXML private JFXButton signInButton;
@@ -38,11 +37,7 @@ public class SignInUp {
     @FXML private JFXTextField usernameIn;
     @FXML private JFXPasswordField passwordIn;
 
-    private final Connector connector;
-
-    public SignInUp(Connector connector) {
-        this.connector = connector;
-    }
+    private final Connector connector = Connector.getInstance();
 
     private static final Paint redColor = Paint.valueOf("#c0392b");
     private static final Paint blueColor = Paint.valueOf("#405aa8");
