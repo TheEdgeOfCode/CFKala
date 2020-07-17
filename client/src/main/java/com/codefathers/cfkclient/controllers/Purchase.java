@@ -287,6 +287,7 @@ public class Purchase {
         if (card1.getText().isEmpty() || card2.getText().isEmpty() ||
                 card3.getText().isEmpty() || card4.getText().isEmpty()) {
             // notification : "Fill The Field, Please!"
+            Notification.show("", "Fill The Field, Please!", back.getScene().getWindow(), false);
             return false;
         } else if (!card1.getText().matches(CARD_REGEX) || !card2.getText().matches(CARD_REGEX) ||
                 !card3.getText().matches(CARD_REGEX) || !card4.getText().matches(CARD_REGEX)) {
