@@ -5,6 +5,8 @@ import com.codefathers.cfkserver.exceptions.model.user.NotVerifiedSeller;
 import com.codefathers.cfkserver.exceptions.model.user.UserAlreadyExistsException;
 import com.codefathers.cfkserver.exceptions.model.user.UserNotFoundException;
 import com.codefathers.cfkserver.exceptions.model.user.WrongPasswordException;
+import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
+import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.user.*;
 import com.codefathers.cfkserver.model.entities.product.Company;
 import com.codefathers.cfkserver.model.entities.request.Request;
@@ -214,18 +216,23 @@ public class UserController {
 
     @GetMapping("/users/getImage")
     private ResponseEntity<?> getImage(HttpServletRequest request, HttpServletResponse response) {
-        if (checkToken(response, request)) {
-            try {
-                String username = getUsernameFromToken(request);
-                File file = new File("src\\main\\resources\\db\\images\\users\\" + username + ".jpg");
-                byte[] image = new FileInputStream(file).readAllBytes();
-                Image image1 = new Image(image);
-                return ResponseEntity.ok(image1);
-            } catch (Exception e) {
-                sendError(response, BAD_REQUEST, e.getMessage());
+        try {
+            if (checkToken(response, request)) {
+                try {
+                    String username = getUsernameFromToken(request);
+                    File file = new File("src\\main\\resources\\db\\images\\users\\" + username + ".jpg");
+                    byte[] image = new FileInputStream(file).readAllBytes();
+                    Image image1 = new Image(image);
+                    return ResponseEntity.ok(image1);
+                } catch (Exception e) {
+                    sendError(response, BAD_REQUEST, e.getMessage());
+                    return null;
+                }
+            } else {
                 return null;
             }
-        } else {
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, BAD_REQUEST, e.getMessage());
             return null;
         }
     }
