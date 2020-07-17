@@ -9,10 +9,10 @@ import com.codefathers.cfkclient.dtos.discount.AddUser;
 import com.codefathers.cfkclient.dtos.discount.CreateDiscount;
 import com.codefathers.cfkclient.dtos.discount.CreateDiscountSystematic;
 import com.codefathers.cfkclient.dtos.discount.DisCodeManagerPM;
-import com.codefathers.cfkclient.dtos.edit.CategoryEditAttribute;
-import com.codefathers.cfkclient.dtos.edit.DiscountCodeEditAttributes;
-import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
+import com.codefathers.cfkclient.dtos.edit.*;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
+import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
+import com.codefathers.cfkclient.dtos.product.CreateProductDTO;
 import com.codefathers.cfkclient.dtos.product.FilterSortDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
@@ -262,5 +262,25 @@ public class Connector {
     public ArrayList<DisCodeManagerPM> getDiscountCodes() throws Exception {
         return get("http://127.0.0.1:8050/discount/get_discounts",null,
                 new TypeToken<ArrayList<DisCodeManagerPM>>(){}.getType());
+    }
+
+    public void addOff(CreateOffDTO dto) throws Exception {
+        post("http://127.0.0.1:8050/off/create", dto, String.class);
+    }
+
+    public void editOff(OffChangeAttributes dto) throws Exception {
+        post("http://127.0.0.1:8050/off/edit", dto, String.class);
+    }
+
+    public void removeOff(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/off/remove", id, String.class);
+    }
+
+    public void createProduct(CreateProductDTO dto) throws Exception {
+        post("http://127.0.0.1:8050/products/create", dto, String.class);
+    }
+
+    public void editProduct(ProductEditAttribute dto) throws Exception {
+        post("http://127.0.0.1:8050/off/edit", dto, String.class);
     }
 }
