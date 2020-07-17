@@ -1,6 +1,7 @@
 package com.codefathers.cfkclient.utils;
 
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
+import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.product.FilterSortDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
@@ -73,5 +74,16 @@ public class Connector {
 
     public void editPersonalInfo(UserEditAttributes attributes) throws Exception {
         post("http://127.0.0.1:8050/users/edit", attributes, HttpStatus.class);
+    }
+
+    public CompanyDTO viewCompanyInfo() throws Exception {
+        ResponseEntity<CompanyDTO> response = post("http://127.0.0.1:8050/seller/view_company", null, CompanyDTO.class);
+        return response.getBody();
+    }
+
+    public SellLogListDTO viewSalesHistory() throws Exception {
+        ResponseEntity<SellLogListDTO> response = post("http://127.0.0.1:8050/seller/sellLog",
+                null, SellLogListDTO.class);
+        return response.getBody();
     }
 }

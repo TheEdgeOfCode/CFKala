@@ -33,6 +33,7 @@ import java.util.List;
 
 import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
 import static com.codefathers.cfkserver.model.entities.user.Role.SELLER;
+import static com.codefathers.cfkserver.utils.ErrorUtil.*;
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
 import static org.springframework.http.HttpStatus.*;
 
@@ -127,7 +128,7 @@ public class UserController {
             else
                 return null;
         } catch (Exception e) {
-            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
     }
