@@ -3,7 +3,6 @@ package com.codefathers.cfkclient.controllers;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.utils.Connector;
-import com.sun.tools.javac.Main;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

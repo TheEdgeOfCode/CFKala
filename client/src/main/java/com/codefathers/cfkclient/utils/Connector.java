@@ -1,10 +1,12 @@
 package com.codefathers.cfkclient.utils;
 
+import com.codefathers.cfkclient.dtos.category.CategoryPM;
+import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
 import com.codefathers.cfkclient.dtos.discount.DisCodeUserDTO;
-import com.codefathers.cfkclient.dtos.discount.DisCodeUserListDTO;
+import com.codefathers.cfkclient.dtos.edit.CategoryEditAttribute;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.product.FilterSortDto;
@@ -156,11 +158,12 @@ public class Connector {
                 productId, String.class);
     }
 
+    /*
     public List<DisCodeUserDTO> showDiscountCodes() throws Exception {
         ResponseEntity<DisCodeUserListDTO> response = post("http://127.0.0.1:8050/customer/show_discounts",
                 null, DisCodeUserListDTO.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
-    }
+    }*/
 
     public void assignAScore(String info) throws Exception {
         post("http://127.0.0.1:8050/customer/assign_score",
@@ -195,11 +198,32 @@ public class Connector {
     }
 
     public Image userImage(String text) throws Exception {
-        com.codefathers.cfkclient.dtos.user.Image image = get("http://127.0.0.1:8050users/getImage",null, com.codefathers.cfkclient.dtos.user.Image.class);
+        com.codefathers.cfkclient.dtos.user.Image image = get("http://127.0.0.1:8050users/getImage",null,
+                com.codefathers.cfkclient.dtos.user.Image.class);
         if (image.getImage() != null) {
             return new Image(new ByteArrayInputStream(image.getImage()));
         }else {
             return null;
         }
+    }
+
+    public void editCategory(CategoryEditAttribute attribute) throws Exception {
+        post("http://127.0.0.1:8050/category/edit",attribute,String.class);
+    }
+
+    public void removeCategory(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/category/remove",id,String.class);
+    }
+
+    public void addCategory(CreateDTO createDTO) throws Exception {
+        post("http://127.0.0.1:8050/category/remove",createDTO,String.class);
+    }
+
+    public ArrayList<String> getSpecialFeatureOfCategory(Integer id) throws Exception {
+        return get("http://127.0.0.1:805/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
+    }
+
+    public ArrayList<CategoryPM> getAllCategories() throws Exception {
+        return get("",null,new TypeToken<ArrayList<CategoryPM>>(){}.getType());
     }
 }
