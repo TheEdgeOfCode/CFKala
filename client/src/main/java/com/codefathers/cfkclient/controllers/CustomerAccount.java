@@ -24,8 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class CustomerAccount extends BackAbleController {
-    @FXML
-    private JFXButton back;
+    @FXML private JFXButton back;
     @FXML private JFXButton cartButt;
     @FXML private JFXButton minimize;
     @FXML private JFXButton close;
