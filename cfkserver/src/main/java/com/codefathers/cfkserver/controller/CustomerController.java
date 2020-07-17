@@ -5,6 +5,8 @@ import com.codefathers.cfkserver.exceptions.model.log.NoSuchALogException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.model.user.NoSuchACustomerException;
+import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
+import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.customer.*;
 import com.codefathers.cfkserver.model.dtos.discount.DisCodeUserDTO;
 import com.codefathers.cfkserver.model.dtos.discount.DisCodeUserListDTO;
@@ -223,6 +225,9 @@ public class CustomerController {
         } catch (NoSuchAProductException e) {
             ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            ErrorUtil.sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            return null;
         }
     }
 
@@ -261,6 +266,9 @@ public class CustomerController {
             }
         } catch (NoSuchACustomerException | NoSuchAProductException | NotABuyer e) {
             ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            ErrorUtil.sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
             return null;
         }
     }

@@ -48,7 +48,7 @@ public class Sorter {
         return toSortList;
     }
 
-    public void sortCategories(List<Category> list){
+    public static void sortCategories(List<Category> list){
         for (Category category : list) {
             if (!category.getSubCategories().isEmpty()){
                 sortCategories(category.getSubCategories());

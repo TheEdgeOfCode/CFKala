@@ -5,6 +5,8 @@ import com.codefathers.cfkserver.exceptions.model.user.NotVerifiedSeller;
 import com.codefathers.cfkserver.exceptions.model.user.UserAlreadyExistsException;
 import com.codefathers.cfkserver.exceptions.model.user.UserNotFoundException;
 import com.codefathers.cfkserver.exceptions.model.user.WrongPasswordException;
+import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
+import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.user.*;
 import com.codefathers.cfkserver.model.entities.product.Company;
 import com.codefathers.cfkserver.model.entities.request.Request;
@@ -27,6 +29,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +40,7 @@ import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
 import static com.codefathers.cfkserver.model.entities.user.Role.SELLER;
 import static com.codefathers.cfkserver.utils.ErrorUtil.*;
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
+import static com.codefathers.cfkserver.utils.TokenUtil.*;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -63,41 +69,45 @@ public class UserController {
         }
     }
 
-    @PostMapping("users/create_account")
-    private <T> ResponseEntity<?> createAccount(@RequestBody CreateAccountDTO<T> userDTO, HttpServletResponse response){
+    @PostMapping("users/create_customer")
+    private <T> ResponseEntity<?> createCustomer(@RequestBody CustomerDTO dto, HttpServletResponse response){
         try {
-            if (userDTO.getRole().equals(CUSTOMER)) {
-                CustomerDTO customerDTO = (CustomerDTO) userDTO.getInfo();
-                return createCustomer(customerDTO);
-            } else if (userDTO.getRole().equals(SELLER)) {
-                userService.createSeller((SellerDTO) userDTO.getInfo());
-                return ResponseEntity.ok(ResponseEntity.status(200));
-            } else {
-                ManagerDTO managerDTO = (ManagerDTO) userDTO.getInfo();
-                return createManager(managerDTO);
-            }
+            userService.createCustomer(dto);
+            String token = jwtUtil.generateToken(dto.getUsername());
+            return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
+        } catch (UserAlreadyExistsException e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    @PostMapping("users/create_manager")
+    private <T> ResponseEntity<?> createCustomer(@RequestBody ManagerDTO dto, HttpServletResponse response){
+        try {
+            userService.createManager(dto);
+            String token = jwtUtil.generateToken(dto.getUsername());
+            return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
+        } catch (UserAlreadyExistsException e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    @PostMapping("users/create_seller")
+    private <T> ResponseEntity<?> createSeller(@RequestBody SellerDTO dto, HttpServletResponse response){
+        try {
+            userService.createSeller(dto);
+            return ResponseEntity.ok(ResponseEntity.status(200));
         } catch (UserAlreadyExistsException | NoSuchACompanyException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
     }
 
-    private ResponseEntity<?> createManager(ManagerDTO managerDTO) throws UserAlreadyExistsException {
-        userService.createManager(managerDTO);
-        String token = jwtUtil.generateToken(managerDTO.getUsername());
-        return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
-    }
-
-    private <T> ResponseEntity<?> createCustomer(CustomerDTO customerDTO) throws UserAlreadyExistsException {
-        userService.createCustomer(customerDTO);
-        String token = jwtUtil.generateToken(customerDTO.getUsername());
-        return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
-    }
-
     @GetMapping("users/view")
     public ResponseEntity<?> viewPersonalInfo(HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
+            if (checkToken(response, request)) {
                 User user = userService.viewPersonalInfo(TokenUtil.getUsernameFromToken(request));
                 UserFullDTO dto = new UserFullDTO(
                         user.getUsername(),
@@ -121,7 +131,7 @@ public class UserController {
     public ResponseEntity<?> editPersonalInfo(HttpServletRequest request, HttpServletResponse response,
                                               @RequestBody UserEditAttributes editAttributes) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
+            if (checkToken(response, request)) {
                 userService.changeInfo(TokenUtil.getUsernameFromToken(request), editAttributes);
                 return ResponseEntity.ok(HttpStatus.valueOf(200));
             }
@@ -136,7 +146,7 @@ public class UserController {
     @PostMapping("users/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
+            if (checkToken(response, request)) {
                 String username = TokenUtil.getUsernameFromToken(request);
                 userService.logout(username);
                 tokens.remove(username);
@@ -160,7 +170,7 @@ public class UserController {
     @GetMapping("users/requests")
     public ResponseEntity<?> viewRequestSent(HttpServletRequest request, HttpServletResponse response, @RequestBody String role) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
+            if (checkToken(response, request)) {
                 String username = TokenUtil.getUsernameFromToken(request);
                 List<Request> requests = new ArrayList<>();
                 if (role.equalsIgnoreCase("seller")) {
@@ -209,4 +219,24 @@ public class UserController {
         return new RequestDTO(req.getRequestId(), status, req.getRequest());
     }
 
+    @GetMapping("/users/getImage")
+    private @ResponseBody byte[] getImage(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (checkToken(response, request)) {
+                try {
+                    String username = getUsernameFromToken(request);
+                    File file = new File("src\\main\\resources\\db\\images\\users\\" + username + ".jpg");
+                    return new FileInputStream(file).readAllBytes();
+                } catch (Exception e) {
+                    sendError(response, BAD_REQUEST, e.getMessage());
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
 }

@@ -1,10 +1,16 @@
 package com.codefathers.cfkclient.utils;
 
+import com.codefathers.cfkclient.dtos.category.CategoryPM;
+import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
-import com.codefathers.cfkclient.dtos.discount.DisCodeUserDTO;
-import com.codefathers.cfkclient.dtos.discount.DisCodeUserListDTO;
+import com.codefathers.cfkclient.dtos.discount.AddUser;
+import com.codefathers.cfkclient.dtos.discount.CreateDiscount;
+import com.codefathers.cfkclient.dtos.discount.CreateDiscountSystematic;
+import com.codefathers.cfkclient.dtos.discount.DisCodeManagerPM;
+import com.codefathers.cfkclient.dtos.edit.CategoryEditAttribute;
+import com.codefathers.cfkclient.dtos.edit.DiscountCodeEditAttributes;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.product.FilterSortDto;
@@ -12,6 +18,7 @@ import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.image.Image;
 import org.springframework.boot.json.GsonJsonParser;
 import com.codefathers.cfkclient.dtos.user.*;
 import org.springframework.http.HttpEntity;
@@ -20,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -80,26 +88,22 @@ public class Connector {
         return get("http://127.0.0.1:8050/content/all_ads",null,new TypeToken<ArrayList<AdPM>>(){}.getType());
     }
 
-    public void login(LoginDto dto) throws Exception {
+    public String login(LoginDto dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/login", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
-        //TODO: Impl
+        return role.getBody().getRole();
     }
 
-    public void createCustomerAccount(CreateAccountDTO<CustomerDTO> dto) throws Exception {
-        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_account", dto, TokenRoleDto.class);
+    public void createCustomerAccount(CustomerDTO dto) throws Exception {
+        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_customer", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
-        //TODO: Impl
     }
 
-    public void createManagerAccount(CreateAccountDTO<ManagerDTO> dto) throws Exception {
-        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_account", dto, TokenRoleDto.class);
-        token = Objects.requireNonNull(role.getBody()).getToken();
-        //TODO: Impl
+    public void createManagerAccount(ManagerDTO dto) throws Exception {
+        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_manager", dto, TokenRoleDto.class);
     }
-    public void createSellerAccount(CreateAccountDTO<SellerDTO> dto) throws Exception {
-        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_account", dto, TokenRoleDto.class);
-        //TODO: Impl
+    public void createSellerAccount(SellerDTO dto) throws Exception {
+        post("http://127.0.0.1:8050/users/create_seller", dto, String.class);
     }
 
     public UserFullDTO viewPersonalInfo() throws Exception {
@@ -154,11 +158,12 @@ public class Connector {
                 productId, String.class);
     }
 
+    /*
     public List<DisCodeUserDTO> showDiscountCodes() throws Exception {
         ResponseEntity<DisCodeUserListDTO> response = post("http://127.0.0.1:8050/customer/show_discounts",
                 null, DisCodeUserListDTO.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
-    }
+    }*/
 
     public void assignAScore(String info) throws Exception {
         post("http://127.0.0.1:8050/customer/assign_score",
@@ -181,7 +186,7 @@ public class Connector {
     }
 
     public Long viewBalance() throws Exception {
-        ResponseEntity<Long> response = post("http://127.0.0.1:8050/seller/balance",
+        ResponseEntity<Long> response = get("http://127.0.0.1:8050/seller/balance",
                 null, Long.class);
         return response.getBody();
     }
@@ -190,5 +195,72 @@ public class Connector {
         ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/seller/products",
                 null, MiniProductArrayListDto.class);
         return response.getBody();
+    }
+
+    public Image userImage(String text) throws Exception {
+        byte[] image = get("http://127.0.0.1:8050users/getImage",null,
+                byte[].class);
+        if (image != null) {
+            return new Image(new ByteArrayInputStream(image));
+        }else {
+            return null;
+        }
+    }
+
+    public void editCategory(CategoryEditAttribute attribute) throws Exception {
+        post("http://127.0.0.1:8050/category/edit",attribute,String.class);
+    }
+
+    public void removeCategory(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/category/remove",id,String.class);
+    }
+
+    public void addCategory(CreateDTO createDTO) throws Exception {
+        post("http://127.0.0.1:8050/category/remove",createDTO,String.class);
+    }
+
+    public ArrayList<String> getSpecialFeatureOfCategory(Integer id) throws Exception {
+        return get("http://127.0.0.1:8050/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
+    }
+
+    public ArrayList<CategoryPM> getAllCategories() throws Exception {
+        return get("",null,new TypeToken<ArrayList<CategoryPM>>(){}.getType());
+    }
+
+    public void addContent(String title, String content) throws Exception {
+        post("http://127.0.0.1:8050/content/add_content",title + "~~~" + content,String.class);
+    }
+
+    public void deleteContent(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/content/delete",id,String.class);
+    }
+
+    public void systematicDiscount(CreateDiscountSystematic createDiscount) throws Exception {
+        post("http://127.0.0.1:8050/discount/systematic",createDiscount,String.class);
+    }
+
+    public void removeDiscountCode(String discountCode) throws Exception {
+        post("http://127.0.0.1:8050/discount/delete",discountCode,String.class);
+    }
+
+    public void editDiscountCode(DiscountCodeEditAttributes attributes) throws Exception {
+        post("http://127.0.0.1:8050/discount/edit",attributes,String.class);
+    }
+
+    public void createDiscount(CreateDiscount dto) throws Exception {
+        post("http://127.0.0.1:8050/discount/create",dto,String.class);
+    }
+
+    public void removeUserFromDiscountCodeUsers(String code, String username) throws Exception {
+        post("http://127.0.0.1:8050/discount/remove_user",code + "~~~" + username,String.class);
+    }
+
+    public void addUserToDiscountCode(AddUser dto) throws Exception {
+        post("http://127.0.0.1:8050/discount/add_user",dto,String.class);
+    }
+
+    public ArrayList<DisCodeManagerPM> getDiscountCodes() throws Exception {
+        return get("http://127.0.0.1:8050/discount/get_discounts",null,
+                new TypeToken<ArrayList<DisCodeManagerPM>>(){}.getType());
     }
 }

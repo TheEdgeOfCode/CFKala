@@ -1,5 +1,6 @@
 package com.codefathers.cfkclient.controllers;
 
+import com.codefathers.cfkclient.BackAbleController;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.SoundCenter;
@@ -23,7 +24,7 @@ import static com.codefathers.cfkclient.Sound.CLICK;
 import static com.codefathers.cfkclient.Sound.POP_UP;
 import static com.codefathers.cfkclient.controllers.Notification.show;
 
-public class MainPage {
+public class MainPage extends BackAbleController {
     @FXML
     private JFXButton minimize;
     @FXML private JFXButton close;

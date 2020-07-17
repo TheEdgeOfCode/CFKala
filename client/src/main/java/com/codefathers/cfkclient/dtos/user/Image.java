@@ -2,10 +2,11 @@ package com.codefathers.cfkclient.dtos.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class CreateAccountDTO<T> {
-    private Role role;
-    private T info;
+@NoArgsConstructor
+public class Image {
+    byte[] image;
 }

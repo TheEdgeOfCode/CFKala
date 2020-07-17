@@ -5,6 +5,7 @@ import com.codefathers.cfkserver.exceptions.model.category.NoSuchAProductInCateg
 import com.codefathers.cfkserver.exceptions.model.category.RepeatedFeatureException;
 import com.codefathers.cfkserver.exceptions.model.category.RepeatedNameInParentCategoryException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
+import com.codefathers.cfkserver.model.dtos.category.CategoryPM;
 import com.codefathers.cfkserver.model.dtos.product.MicroProductDto;
 import com.codefathers.cfkserver.model.entities.product.Category;
 import com.codefathers.cfkserver.model.entities.product.Product;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class CategoryService {
@@ -304,5 +307,29 @@ public class CategoryService {
 
     public ArrayList<String> getPublicFeatures() {
         return publicFeatures;
+    }
+
+    public ArrayList<CategoryPM> getAllCategories(){
+        List<Category> cats = getBaseCats();
+        Sorter.sortCategories(cats);
+        ArrayList<CategoryPM> toReturn = new ArrayList<>();
+        for (Category cat : cats) {
+            toReturn.addAll(getAllCategoriesIn(0,cat));
+        }
+        return toReturn;
+    }
+
+    private List<CategoryPM> getAllCategoriesIn(int currentIndent,Category category){
+        List<CategoryPM> toReturn = new ArrayList<>();
+        toReturn.add(createCatPM(category,currentIndent));
+        if (!category.getSubCategories().isEmpty())
+            for (Category subCategory : category.getSubCategories()) {
+                toReturn.addAll(getAllCategoriesIn(currentIndent+1,subCategory));
+            }
+        return toReturn;
+    }
+
+    private CategoryPM createCatPM(Category category,int indent){
+        return new CategoryPM(category.getName(),category.getId(),indent);
     }
 }
