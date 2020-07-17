@@ -7,6 +7,7 @@ import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.model.user.NoSuchACustomerException;
 import com.codefathers.cfkserver.model.dtos.customer.*;
 import com.codefathers.cfkserver.model.dtos.discount.DisCodeUserDTO;
+import com.codefathers.cfkserver.model.dtos.discount.DisCodeUserListDTO;
 import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
 import com.codefathers.cfkserver.model.entities.logs.PurchaseLog;
 import com.codefathers.cfkserver.model.entities.maps.DiscountcodeIntegerMap;
@@ -125,7 +126,7 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("/customer/delete_product")
+    @PostMapping("/customer/delete_product_from_cart")
     private ResponseEntity<?> deleteProductFromCart(HttpServletRequest request, HttpServletResponse response, @RequestBody String info) {
         try {
             if (TokenUtil.checkToken(response, request)) {
@@ -178,7 +179,7 @@ public class CustomerController {
                 String username = TokenUtil.getUsernameFromToken(request);
                 Customer customer = customerService.getCustomerByUsername(username);
                 DiscountCode discountCode = discountService.findByCode(disCode);
-                long totalPrice = customerService.getTotalPrice(discountCode, customer);
+                Long totalPrice = customerService.getTotalPrice(discountCode, customer);
                 return ResponseEntity.ok(totalPrice);
             }
             else
@@ -200,7 +201,7 @@ public class CustomerController {
                 for (PurchaseLog purchaseLog : purchaseLogs) {
                     orderLogDTOS.add(createOrder(purchaseLog.getLogId()));
                 }
-                return ResponseEntity.ok(orderLogDTOS);
+                return ResponseEntity.ok(new OrderLogListDTO(new ArrayList<>(orderLogDTOS)));
             }
             else
                 return null;
@@ -236,7 +237,7 @@ public class CustomerController {
                 for (DiscountcodeIntegerMap disCode : disCodes) {
                     disCodeUserDTOS.add(createDisCodeDTOFrom(disCode));
                 }
-                return ResponseEntity.ok(disCodeUserDTOS);
+                return ResponseEntity.ok(new DisCodeUserListDTO(new ArrayList<>(disCodeUserDTOS)));
             } else {
                 return null;
             }
