@@ -51,10 +51,8 @@ public class Connector {
         return Objects.requireNonNull(response.getBody());
     }
 
-    // TODO : check void methods
-
     public void changeAmount(String info) throws Exception {
-        post("http://127.0.0.1:8050/customer/change_amount", info, Void.class);
+        post("http://127.0.0.1:8050/customer/change_amount", info, String.class);
     }
 
     public List<InCartDTO> showProducts() throws Exception {
@@ -65,12 +63,12 @@ public class Connector {
 
     public void deleteProductFromCart(String info) throws Exception {
         post("http://127.0.0.1:8050/customer/delete_product_from_cart",
-                info, Void.class);
+                info, String.class);
     }
 
     public void purchase(PurchaseDTO dto) throws Exception {
         post("http://127.0.0.1:8050/customer/purchase",
-                dto, Void.class);
+                dto, String.class);
     }
 
     public Long showPurchaseTotalPrice(String disCode) throws Exception {
@@ -87,7 +85,7 @@ public class Connector {
 
     public void addViewDigest(String productId) throws Exception {
         post("http://127.0.0.1:8050/customer/add_view",
-                productId, Void.class);
+                productId, String.class);
     }
 
     public List<DisCodeUserDTO> showDiscountCodes() throws Exception {
@@ -98,6 +96,6 @@ public class Connector {
 
     public void assignAScore(String info) throws Exception {
         post("http://127.0.0.1:8050/customer/assign_score",
-                info, Void.class);
+                info, String.class);
     }
 }
