@@ -19,5 +19,12 @@ public class Receipt {
     String description;
     long money;
     boolean paid;
+
+    public Receipt(ReceiptType type, int sourceAccount, int destAccount, long money) {
+        this.type = type;
+        this.sourceAccount = sourceAccount;
+        this.destAccount = destAccount;
+        this.money = money;
+    }
 }
 

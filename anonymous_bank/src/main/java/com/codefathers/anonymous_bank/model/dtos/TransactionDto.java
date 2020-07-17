@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data @AllArgsConstructor
-public class ReceiptDTO {
-    private ReceiptType type;
+public class TransactionDto {
+    private int id;
+    private ReceiptType receiptType;
     private long money;
-    private int source;
-    private int dest;
+    private int sourceAccountID;
+    private int destAccountID;
     private String description;
+    private boolean paid;
 }
