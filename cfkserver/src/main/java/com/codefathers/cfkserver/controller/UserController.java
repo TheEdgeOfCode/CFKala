@@ -220,15 +220,13 @@ public class UserController {
     }
 
     @GetMapping("/users/getImage")
-    private ResponseEntity<?> getImage(HttpServletRequest request, HttpServletResponse response) {
+    private @ResponseBody byte[] getImage(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
                 try {
                     String username = getUsernameFromToken(request);
                     File file = new File("src\\main\\resources\\db\\images\\users\\" + username + ".jpg");
-                    byte[] image = new FileInputStream(file).readAllBytes();
-                    Image image1 = new Image(image);
-                    return ResponseEntity.ok(image1);
+                    return new FileInputStream(file).readAllBytes();
                 } catch (Exception e) {
                     sendError(response, BAD_REQUEST, e.getMessage());
                     return null;

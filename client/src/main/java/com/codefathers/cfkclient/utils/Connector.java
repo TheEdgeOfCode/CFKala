@@ -93,17 +93,13 @@ public class Connector {
     public void createCustomerAccount(CustomerDTO dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_customer", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
-        //TODO: Impl
     }
 
     public void createManagerAccount(ManagerDTO dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_manager", dto, TokenRoleDto.class);
-        token = Objects.requireNonNull(role.getBody()).getToken();
-        //TODO: Impl
     }
     public void createSellerAccount(SellerDTO dto) throws Exception {
-        ResponseEntity<HttpStatus> role = post("http://127.0.0.1:8050/users/create_seller", dto, HttpStatus.class);
-        //TODO: Impl
+        post("http://127.0.0.1:8050/users/create_seller", dto, String.class);
     }
 
     public UserFullDTO viewPersonalInfo() throws Exception {
@@ -198,10 +194,10 @@ public class Connector {
     }
 
     public Image userImage(String text) throws Exception {
-        com.codefathers.cfkclient.dtos.user.Image image = get("http://127.0.0.1:8050users/getImage",null,
-                com.codefathers.cfkclient.dtos.user.Image.class);
-        if (image.getImage() != null) {
-            return new Image(new ByteArrayInputStream(image.getImage()));
+        byte[] image = get("http://127.0.0.1:8050users/getImage",null,
+                byte[].class);
+        if (image != null) {
+            return new Image(new ByteArrayInputStream(image));
         }else {
             return null;
         }
