@@ -43,7 +43,7 @@ public class CFK extends Application {
         }
 
         public Stage getStage(){
-            Stage.class.cast(getSource());
+            return Stage.class.cast(getSource());
         }
     }
 }

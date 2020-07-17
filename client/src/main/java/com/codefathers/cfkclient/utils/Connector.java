@@ -72,6 +72,6 @@ public class Connector {
     }
 
     public void editPersonalInfo(UserEditAttributes attributes) throws Exception {
-        ResponseEntity responses = post("http://127.0.0.1:8050/users/edit", attributes, HttpStatus.class);
+        post("http://127.0.0.1:8050/users/edit", attributes, HttpStatus.class);
     }
 }
