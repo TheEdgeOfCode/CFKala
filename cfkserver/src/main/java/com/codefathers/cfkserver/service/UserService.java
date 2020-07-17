@@ -2,6 +2,7 @@ package com.codefathers.cfkserver.service;
 
 import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
 import com.codefathers.cfkserver.exceptions.model.user.NotVerifiedSeller;
+import com.codefathers.cfkserver.exceptions.model.user.UserAlreadyExistsException;
 import com.codefathers.cfkserver.exceptions.model.user.UserNotFoundException;
 import com.codefathers.cfkserver.exceptions.model.user.WrongPasswordException;
 import com.codefathers.cfkserver.model.dtos.user.CustomerDTO;
@@ -44,7 +45,8 @@ public class UserService {
         }
     }
 
-    public void createSeller(SellerDTO sellerDTO) throws NoSuchACompanyException {
+    public void createSeller(SellerDTO sellerDTO) throws NoSuchACompanyException, UserAlreadyExistsException {
+        checkUsername(sellerDTO.getUsername());
         Seller seller = new Seller(
                 sellerDTO.getUsername(),
                 sellerDTO.getPassword(),
@@ -64,7 +66,8 @@ public class UserService {
         seller.addRequest(request);*/
     }
 
-    public void createCustomer(CustomerDTO customerDTO){
+    public void createCustomer(CustomerDTO customerDTO) throws UserAlreadyExistsException {
+        checkUsername(customerDTO.getUsername());
         Customer customer = new Customer(
                 customerDTO.getUsername(),
                 customerDTO.getPassword(),
@@ -78,7 +81,8 @@ public class UserService {
         customerRepository.save(customer);
     }
 
-    public void createManager(ManagerDTO managerDTO){
+    public void createManager(ManagerDTO managerDTO) throws UserAlreadyExistsException {
+        checkUsername(managerDTO.getUsername());
         Manager manager = new Manager(
                 managerDTO.getUsername(),
                 managerDTO.getPassword(),
@@ -89,6 +93,12 @@ public class UserService {
                 new Cart()
         );
         managerRepository.save(manager);
+    }
+
+    private void checkUsername(String username) throws UserAlreadyExistsException {
+        if(userRepository.findById(username).isPresent()){
+            throw new UserAlreadyExistsException();
+        }
     }
 
     public String login(String username, String password) throws UserNotFoundException, NotVerifiedSeller, WrongPasswordException {
