@@ -13,9 +13,9 @@ public class MiniProductDto {
     private String name;
     private int id;
     private String categoryName;
-    private List<SellPackageDto> sellPackages;
     private String brand;
     private double score;
+    private List<SellPackageDto> sellPackages;
     private String description;
     private boolean available;
 

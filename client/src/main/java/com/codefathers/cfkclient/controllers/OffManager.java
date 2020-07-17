@@ -1,7 +1,12 @@
 package com.codefathers.cfkclient.controllers;
 
+import com.codefathers.cfkclient.BackAbleController;
+import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
+import com.codefathers.cfkclient.dtos.edit.OffChangeAttributes;
+import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
 import com.codefathers.cfkclient.dtos.off.OffDTO;
+import com.codefathers.cfkclient.dtos.off.OffStatus;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
@@ -21,7 +26,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
-public class OffManager {
+import static com.codefathers.cfkclient.dtos.off.OffStatus.*;
+
+public class OffManager extends BackAbleController {
     @FXML
     private JFXButton back;
     @FXML private JFXButton minimize;
@@ -93,12 +100,12 @@ public class OffManager {
         } else {
             try {
                 connector.addOff(
-                        convertToDateViaInstant(crStartDt.getValue()),
-                        convertToDateViaInstant(crEndDate.getValue()),
-                        (int) createPercentage.getValue(),
-                        username
+                        new CreateOffDTO(
+                                convertToDateViaInstant(crStartDt.getValue()),
+                                convertToDateViaInstant(crEndDate.getValue()),
+                                (int) createPercentage.getValue())
                 );
-            } catch (ParseException | InvalidTimes | UserNotAvailableException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -136,8 +143,8 @@ public class OffManager {
 
     private void handleBack() {
         try {
-            Scene scene = new Scene(Main.loadFXML(back(), backForBackward()));
-            Main.setSceneToStage(back, scene);
+            Scene scene = new Scene(CFK.loadFXML(back(), backForBackward()));
+            CFK.setSceneToStage(back, scene);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -151,21 +158,22 @@ public class OffManager {
         offsList.getSelectionModel().selectedItemProperty().addListener((v, oldOff, newOff) -> changeData(newOff));
     }
 
-    private ObservableList<OffPM> getOffs() {
-        ObservableList<OffPM> offs = FXCollections.observableArrayList();
+    private ObservableList<OffDTO> getOffs() {
+        ObservableList<OffDTO> offs = FXCollections.observableArrayList();
 
-        try {
-            offs.addAll(sellerController.viewAllOffs(username, cacheData.getSorts()));
+        /*try {
+            //TODO: CacheData Sort!!!
+            //offs.addAll(connector.viewAllOffs(cacheData.getSorts()));
         } catch (UserNotAvailableException e) {
             e.printStackTrace();
-        }
+        }*/
 
         return offs;
     }
 
-    private ObservableList<OffPM> getTestOffs() {
-        ObservableList<OffPM> offs = FXCollections.observableArrayList();
-        offs.add(new OffPM(
+    private ObservableList<OffDTO> getTestOffs() {
+        ObservableList<OffDTO> offs = FXCollections.observableArrayList();
+        offs.add(new OffDTO(
                 12456,
                 getTestProducts(),
                 "marmof",
@@ -174,7 +182,7 @@ public class OffManager {
                 50,
                 EDIT.toString()
         ));
-        offs.add(new OffPM(
+        offs.add(new OffDTO(
                 48662,
                 getTestProducts(),
                 "sapa",
@@ -183,7 +191,7 @@ public class OffManager {
                 0,
                 CREATION.toString()
         ));
-        offs.add(new OffPM(
+        offs.add(new OffDTO(
                 21556,
                 getTestProducts(),
                 "memo",
@@ -196,17 +204,17 @@ public class OffManager {
         return offs;
     }
 
-    private ArrayList<MiniProductPM> getTestProducts() {
-        ArrayList<MiniProductPM> products = new ArrayList<>();
-        products.add(new MiniProductPM("asus rog g512", 112, "Laptop", "Asus", 5.42, null, null));
-        products.add(new MiniProductPM("skirt for kimmi", 245, "Clothes", "Adidas", 5.42, null, null));
-        products.add(new MiniProductPM("asus zenbook e333", 230, "Laptop", "Asus", 5.42, null, null));
-        products.add(new MiniProductPM("asus vivobook d551", 7885, "Laptop", "Asus", 5.42, null, null));
+    private ArrayList<MiniProductDto> getTestProducts() {
+        ArrayList<MiniProductDto> products = new ArrayList<>();
+        products.add(new MiniProductDto("asus rog g512", 112, "Laptop", "Asus", 5.42, null, null, false));
+        products.add(new MiniProductDto("skirt for kimmi", 245, "Clothes", "Adidas", 5.42, null, null, false));
+        products.add(new MiniProductDto("asus zenbook e333", 230, "Laptop", "Asus", 5.42, null, null, true));
+        products.add(new MiniProductDto("asus vivobook d551", 7885, "Laptop", "Asus", 5.42, null, null, true));
 
         return products;
     }
 
-    private void changeData(OffPM off) {
+    private void changeData(OffDTO off) {
         if (off == null) {
             return;
         }
@@ -219,11 +227,12 @@ public class OffManager {
         productsList.getItems().addAll(off.getProducts());
 
         availableProducts.getItems().clear();
-        try {
-            availableProducts.getItems().addAll(sellerController.manageProducts(username, cacheData.getSorts()));
+        /*try {
+            //TODO: CacheData Sort!!!
+            //availableProducts.getItems().addAll(connector.getAllProducts(username, cacheData.getSorts()));
         } catch (UserNotAvailableException e) {
             e.printStackTrace();
-        }
+        }*/
 
         initListeners();
         confirm.setDisable(true);
@@ -231,45 +240,45 @@ public class OffManager {
     }
 
     private void handleRemoveOff() {
-        ObservableList<OffPM> offs = offsList.getItems();
+        ObservableList<OffDTO> offs = offsList.getItems();
 
-        OffPM selected = offsList.getSelectionModel().getSelectedItem();
+        OffDTO selected = offsList.getSelectionModel().getSelectedItem();
         offs.remove(selected);
 
         try {
-            sellerController.deleteOff(selected.getOffId(), username);
-        } catch (NoSuchAOffException | ThisOffDoesNotBelongssToYouException e) {
+            connector.removeOff(selected.getOffId());
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void handleDeleteProduct() {
-        ObservableList<MiniProductPM> products = productsList.getItems();
+        ObservableList<MiniProductDto> products = productsList.getItems();
 
 
-        MiniProductPM selected = productsList.getSelectionModel().getSelectedItem();
+        MiniProductDto selected = productsList.getSelectionModel().getSelectedItem();
         products.remove(selected);
 
         OffChangeAttributes attributes = new OffChangeAttributes();
         attributes.setProductIdToRemove(selected.getId());
-        OffPM off = offsList.getSelectionModel().getSelectedItem();
+        OffDTO off = offsList.getSelectionModel().getSelectedItem();
         attributes.setSourceId(off.getOffId());
         try {
-            sellerController.editOff(username, attributes);
-        } catch (ThisOffDoesNotBelongssToYouException | NoSuchAOffException e) {
+            connector.editOff(attributes);
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void handleAddProduct() {
-        MiniProductPM selected = availableProducts.getSelectionModel().getSelectedItem();
+        MiniProductDto selected = availableProducts.getSelectionModel().getSelectedItem();
         OffChangeAttributes attributes = new OffChangeAttributes();
         attributes.setProductIdToAdd(selected.getId());
         attributes.setSourceId(offsList.getSelectionModel().getSelectedItem().getOffId());
         try {
-            sellerController.editOff(username, attributes);
+            connector.editOff(attributes);
             Notification.show("Successful", "Your Request was Sent to The Manager!!!", back.getScene().getWindow(), false);
-        } catch (ThisOffDoesNotBelongssToYouException | NoSuchAOffException e) {
+        } catch (Exception e) {
             Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             e.printStackTrace();
         }
@@ -280,8 +289,8 @@ public class OffManager {
         addAttributes(attributes);
 
         try {
-            sellerController.editOff(username, attributes);
-        } catch (ThisOffDoesNotBelongssToYouException | NoSuchAOffException e) {
+            connector.editOff(attributes);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -292,7 +301,7 @@ public class OffManager {
     }
 
     private void addAttributes(OffChangeAttributes attributes) {
-        OffPM off = offsList.getSelectionModel().getSelectedItem();
+        OffDTO off = offsList.getSelectionModel().getSelectedItem();
         attributes.setSourceId(off.getOffId());
 
         if ((int) percent.getValue() != off.getOffPercentage()) {

@@ -7,14 +7,14 @@ import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
 import com.codefathers.cfkclient.dtos.discount.DisCodeUserDTO;
 import com.codefathers.cfkclient.dtos.edit.CategoryEditAttribute;
+import com.codefathers.cfkclient.dtos.edit.OffChangeAttributes;
+import com.codefathers.cfkclient.dtos.edit.ProductEditAttribute;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
+import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
 import com.codefathers.cfkclient.dtos.off.OffDTO;
 import com.codefathers.cfkclient.dtos.off.OffListDTO;
-import com.codefathers.cfkclient.dtos.product.FilterSortDto;
-import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
-import com.codefathers.cfkclient.dtos.product.MiniProductDto;
-import com.codefathers.cfkclient.dtos.product.SaveImageDTO;
+import com.codefathers.cfkclient.dtos.product.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.Image;
@@ -251,5 +251,25 @@ public class Connector {
 
     public ArrayList<CategoryPM> getAllCategories() throws Exception {
         return get("",null,new TypeToken<ArrayList<CategoryPM>>(){}.getType());
+    }
+
+    public void addOff(CreateOffDTO dto) throws Exception {
+        post("http://127.0.0.1:8050/off/create", dto, String.class);
+    }
+
+    public void editOff(OffChangeAttributes dto) throws Exception {
+        post("http://127.0.0.1:8050/off/edit", dto, String.class);
+    }
+
+    public void removeOff(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/off/remove", id, String.class);
+    }
+
+    public void createProduct(CreateProductDTO dto) throws Exception {
+        post("http://127.0.0.1:8050/products/create", dto, String.class);
+    }
+
+    public void editProduct(ProductEditAttribute dto) throws Exception {
+        post("http://127.0.0.1:8050/off/edit", dto, String.class);
     }
 }
