@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -272,6 +274,19 @@ public class ProductService {
             }
         }
         return seller;
+    }
+
+    public byte[] getMainImageForProduct(int id) {
+        File mainImageFile = new File("src/main/resources/db/images/products/" + id + "/main.jpg");
+        return CreateByteImage(mainImageFile);
+    }
+
+    private byte[] CreateByteImage(File file) {
+        try {
+            return new FileInputStream(file).readAllBytes();
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public List<Product> getAllOffFromActiveProducts(){
