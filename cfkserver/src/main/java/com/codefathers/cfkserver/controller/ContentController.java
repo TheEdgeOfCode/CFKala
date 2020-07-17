@@ -8,7 +8,6 @@ import com.codefathers.cfkserver.model.entities.contents.MainContent;
 import com.codefathers.cfkserver.model.repositories.MainContentRepository;
 import com.codefathers.cfkserver.service.ContentService;
 import com.codefathers.cfkserver.service.ProductService;
-import org.jboss.jandex.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

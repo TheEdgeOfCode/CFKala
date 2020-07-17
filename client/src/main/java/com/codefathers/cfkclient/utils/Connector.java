@@ -1,5 +1,6 @@
 package com.codefathers.cfkclient.utils;
 
+import com.codefathers.cfkclient.dtos.content.AdPM;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.product.FilterSortDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
@@ -21,6 +22,11 @@ import static org.springframework.http.HttpMethod.*;
 public class Connector {
     private String token;
     private RestTemplate restTemplate;
+    private static Connector connector = new Connector();
+
+    public static Connector getInstance() {
+        return connector;
+    }
 
     public Connector(){
         token = "";
@@ -62,5 +68,9 @@ public class Connector {
 
     public List<MainContent> mainContents() throws Exception {
         return get("http://127.0.0.1:8050/content/get_main_contents",null,new TypeToken<ArrayList<MainContent>>(){}.getType());
+    }
+
+    public List<AdPM> getAds() throws Exception {
+        return get("http://127.0.0.1:8050/content/all_ads",null,new TypeToken<ArrayList<AdPM>>(){}.getType());
     }
 }
