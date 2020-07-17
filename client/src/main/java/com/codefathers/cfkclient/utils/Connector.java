@@ -216,10 +216,18 @@ public class Connector {
     }
 
     public ArrayList<String> getSpecialFeatureOfCategory(Integer id) throws Exception {
-        return get("http://127.0.0.1:805/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
+        return get("http://127.0.0.1:8050/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
     }
 
     public ArrayList<CategoryPM> getAllCategories() throws Exception {
         return get("",null,new TypeToken<ArrayList<CategoryPM>>(){}.getType());
+    }
+
+    public void addContent(String title, String content) throws Exception {
+        post("http://127.0.0.1:8050/content/add_content",title + "~~~" + content,String.class);
+    }
+
+    public void deleteContent(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/content/delete",id,String.class);
     }
 }
