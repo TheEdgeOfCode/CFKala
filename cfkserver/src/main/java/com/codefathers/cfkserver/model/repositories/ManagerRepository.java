@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ManagerRepository extends CrudRepository<Manager, String> {
+    boolean existsAllBy();
 }

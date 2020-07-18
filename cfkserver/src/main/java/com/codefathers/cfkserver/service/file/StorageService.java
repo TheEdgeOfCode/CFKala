@@ -47,6 +47,13 @@ public class StorageService {
         }
     }
 
+    public void deleteProfile(String username){
+        File image = new File(users + username + ".jpg");
+        try {
+            FileUtils.forceDeleteOnExit(image);
+        } catch (IOException ignore) {}
+    }
+
     private Resource loadFileAsResource(File file) {
         try {
             Path filePath = file.toPath();

@@ -12,6 +12,8 @@ import com.codefathers.cfkclient.dtos.edit.*;
 import com.codefathers.cfkclient.dtos.log.SellLogDTO;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
+import com.codefathers.cfkclient.dtos.off.OffDTO;
+import com.codefathers.cfkclient.dtos.off.OffListDTO;
 import com.codefathers.cfkclient.dtos.product.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -79,49 +81,49 @@ public class Connector {
     }
 
     public List<MiniProductDto> getAllProducts(FilterSortDto dto) throws Exception {
-        ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/product/get_all_products",
+        ResponseEntity<MiniProductArrayListDto> response = post(address + "/product/get_all_products",
                 dto, MiniProductArrayListDto.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
     public List<MainContent> mainContents() throws Exception {
-        return get("http://127.0.0.1:8050/content/get_main_contents",null,new TypeToken<ArrayList<MainContent>>(){}.getType());
+        return get(address + "/content/get_main_contents",null,new TypeToken<ArrayList<MainContent>>(){}.getType());
     }
 
     public List<AdPM> getAds() throws Exception {
-        return get("http://127.0.0.1:8050/content/all_ads",null,new TypeToken<ArrayList<AdPM>>(){}.getType());
+        return get(address + "/content/all_ads",null,new TypeToken<ArrayList<AdPM>>(){}.getType());
     }
 
     public String login(LoginDto dto) throws Exception {
-        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/login", dto, TokenRoleDto.class);
+        ResponseEntity<TokenRoleDto> role = post(address + "/users/login", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
         return role.getBody().getRole();
     }
 
     public void createCustomerAccount(CustomerDTO dto) throws Exception {
-        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_customer", dto, TokenRoleDto.class);
+        ResponseEntity<TokenRoleDto> role = post(address + "/users/create_customer", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
     }
 
     public void createManagerAccount(ManagerDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/users/create_manager", dto, TokenRoleDto.class);
+        post(address + "/users/create_manager", dto, TokenRoleDto.class);
     }
 
     public void createSellerAccount(SellerDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/users/create_seller", dto, String.class);
+        post(address + "/users/create_seller", dto, String.class);
     }
 
     public UserFullDTO viewPersonalInfo() throws Exception {
-        ResponseEntity<UserFullDTO> response = post("http://127.0.0.1:8050/users/view", null, UserFullDTO.class);
+        ResponseEntity<UserFullDTO> response = post(address + "/users/view", null, UserFullDTO.class);
         return response.getBody();
     }
 
     public void editPersonalInfo(UserEditAttributes attributes) throws Exception {
-        post("http://127.0.0.1:8050/users/edit", attributes, HttpStatus.class);
+        post(address + "/users/edit", attributes, HttpStatus.class);
     }
 
     public CartDTO showCart() throws Exception {
-        ResponseEntity<CartDTO> response = post("http://127.0.0.1:8050/customer/show_cart",
+        ResponseEntity<CartDTO> response = post(address + "/customer/show_cart",
                 null, CartDTO.class);
         return Objects.requireNonNull(response.getBody());
     }
@@ -131,89 +133,88 @@ public class Connector {
     }
 
     public void deleteProductFromCart(Integer productId) throws Exception {
-        post("http://127.0.0.1:8050/customer/delete_product_from_cart",
+        post(address + "/customer/delete_product_from_cart",
                 productId, String.class);
     }
 
     public void purchase(PurchaseDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/customer/purchase",
+        post(address + "/customer/purchase",
                 dto, String.class);
     }
 
     public Long showPurchaseTotalPrice(String disCode) throws Exception {
-        ResponseEntity<Long> response = post("http://127.0.0.1:8050/customer/purchase/show_total_price",
+        ResponseEntity<Long> response = post(address + "/customer/purchase/show_total_price",
                 disCode, Long.class);
         return Objects.requireNonNull(response).getBody();
     }
 
     public List<OrderLogDTO> showOrders() throws Exception {
-        ResponseEntity<OrderLogListDTO> response = post("http://127.0.0.1:8050/customer/show_orders",
+        ResponseEntity<OrderLogListDTO> response = post(address + "/customer/show_orders",
                 null, OrderLogListDTO.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
     public void addViewDigest(Integer productId) throws Exception {
-        post("http://127.0.0.1:8050/customer/add_view",
+        post(address + "/customer/add_view",
                 productId, String.class);
     }
 
     public List<DisCodeUserDTO> showDiscountCodes() throws Exception {
-        ResponseEntity<DisCodeUserListDTO> response = post("http://127.0.0.1:8050/customer/show_discounts",
+        ResponseEntity<DisCodeUserListDTO> response = post(address + "/customer/show_discounts",
                 null, DisCodeUserListDTO.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
     public void assignAScore(String info) throws Exception {
-        post("http://127.0.0.1:8050/customer/assign_score",
+        post(address + "/customer/assign_score",
                 info, String.class);
     }
 
     public CompanyDTO viewCompanyInfo() throws Exception {
-        ResponseEntity<CompanyDTO> response = post("http://127.0.0.1:8050/seller/view_company", null, CompanyDTO.class);
+        ResponseEntity<CompanyDTO> response = post(address + "/seller/view_company", null, CompanyDTO.class);
         return response.getBody();
     }
 
     public List<SellLogDTO> viewSalesHistory() throws Exception {
-        ResponseEntity<SellLogListDTO> response = post("http://127.0.0.1:8050/seller/sellLog",
+        ResponseEntity<SellLogListDTO> response = post(address + "/seller/sellLog",
                 null, SellLogListDTO.class);
         return Objects.requireNonNull(response.getBody()).getSellLogDTOList();
     }
 
     public void becomeSellerOfExistingProduct(AddSellerToProductDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/seller/become_seller", dto, HttpStatus.class);
+        post(address + "/seller/become_seller", dto, HttpStatus.class);
     }
 
     public Long viewBalance() throws Exception {
-        ResponseEntity<Long> response = get("http://127.0.0.1:8050/seller/balance",
+        ResponseEntity<Long> response = get(address + "/seller/balance",
                 null, Long.class);
         return response.getBody();
     }
 
-    // TODO: 7/18/2020 filters
-    public List<MiniProductDto> manageSellerProducts() throws Exception {
-        ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/seller/products",
-                null, MiniProductArrayListDto.class);
+    public List<MiniProductDto> manageSellerProducts(FilterSortDto filterSortDto) throws Exception {
+        ResponseEntity<MiniProductArrayListDto> response = post(address + "/seller/products",
+                filterSortDto, MiniProductArrayListDto.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
     public void editCategory(CategoryEditAttribute attribute) throws Exception {
-        post("http://127.0.0.1:8050/category/edit",attribute,String.class);
+        post(address + "/category/edit",attribute,String.class);
     }
 
     public void removeCategory(Integer id) throws Exception {
-        post("http://127.0.0.1:8050/category/remove",id,String.class);
+        post(address + "/category/remove",id,String.class);
     }
 
     public void addCategory(CreateDTO createDTO) throws Exception {
-        post("http://127.0.0.1:8050/category/remove",createDTO,String.class);
+        post(address + "/category/remove",createDTO,String.class);
     }
 
     public ArrayList<String> getSpecialFeatureOfCategory(Integer id) throws Exception {
-        return get("http://127.0.0.1:8050/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
+        return get(address + "/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
     }
 
     public List<String> getPublicFeaturesOfCategory() throws Exception {
-        return get("http://127.0.0.1:8050/category/get_public", null,
+        return get(address + "/category/get_public", null,
                 new TypeToken<ArrayList<String>>(){}.getType());
     }
 
@@ -222,56 +223,56 @@ public class Connector {
     }
 
     public void addContent(String title, String content) throws Exception {
-        post("http://127.0.0.1:8050/content/add_content",title + "~~~" + content,String.class);
+        post(address + "/content/add_content",title + "~~~" + content,String.class);
     }
 
     public void deleteContent(Integer id) throws Exception {
-        post("http://127.0.0.1:8050/content/delete",id,String.class);
+        post(address + "/content/delete",id,String.class);
     }
 
     public void systematicDiscount(CreateDiscountSystematic createDiscount) throws Exception {
-        post("http://127.0.0.1:8050/discount/systematic",createDiscount,String.class);
+        post(address + "/discount/systematic",createDiscount,String.class);
     }
 
     public void removeDiscountCode(String discountCode) throws Exception {
-        post("http://127.0.0.1:8050/discount/delete",discountCode,String.class);
+        post(address + "/discount/delete",discountCode,String.class);
     }
 
     public void editDiscountCode(DiscountCodeEditAttributes attributes) throws Exception {
-        post("http://127.0.0.1:8050/discount/edit",attributes,String.class);
+        post(address + "/discount/edit",attributes,String.class);
     }
 
     public void createDiscount(CreateDiscount dto) throws Exception {
-        post("http://127.0.0.1:8050/discount/create",dto,String.class);
+        post(address + "/discount/create",dto,String.class);
     }
 
     public void removeUserFromDiscountCodeUsers(String code, String username) throws Exception {
-        post("http://127.0.0.1:8050/discount/remove_user",code + "~~~" + username,String.class);
+        post(address + "/discount/remove_user",code + "~~~" + username,String.class);
     }
 
     public void addUserToDiscountCode(AddUser dto) throws Exception {
-        post("http://127.0.0.1:8050/discount/add_user",dto,String.class);
+        post(address + "/discount/add_user",dto,String.class);
     }
 
     public ArrayList<DisCodeManagerPM> getDiscountCodes() throws Exception {
-        return get("http://127.0.0.1:8050/discount/get_discounts",null,
+        return get(address + "/discount/get_discounts",null,
                 new TypeToken<ArrayList<DisCodeManagerPM>>(){}.getType());
     }
 
     public void addOff(CreateOffDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/off/create", dto, String.class);
+        post(address + "/off/create", dto, String.class);
     }
 
     public void editOff(OffChangeAttributes dto) throws Exception {
-        post("http://127.0.0.1:8050/off/edit", dto, String.class);
+        post(address + "/off/edit", dto, String.class);
     }
 
     public void removeOff(Integer id) throws Exception {
-        post("http://127.0.0.1:8050/off/remove", id, String.class);
+        post(address + "/off/remove", id, String.class);
     }
 
     public int createProduct(CreateProductDTO dto) throws Exception {
-        ResponseEntity<Integer> post = post("http://127.0.0.1:8050/products/create", dto, Integer.class);
+        ResponseEntity<Integer> post = post(address + "/products/create", dto, Integer.class);
         return post.getBody();
     }
 
@@ -285,42 +286,41 @@ public class Connector {
         }
     }
 
-    public void removeProduct(Integer id) throws Exception {
-        // TODO: 7/19/2020
-        post("http://127.0.0.1:8050/off/edit", id, String.class);
+    public void sellerRemoveProduct(Integer id) throws Exception {
+        post(address + "/seller/remove_product", id, String.class);
     }
 
     public List<UserFullDTO> showUsers() throws Exception {
-        UserFullListDTO response = get("http://127.0.0.1:8050/manager/show_users",
+        UserFullListDTO response = get(address + "/manager/show_users",
                 null, UserFullListDTO.class);
         return response.getDtos();
     }
 
     public void deleteUser(String username) throws Exception {
-        post("http://127.0.0.1:8050/manager/delete_user", username, String.class);
+        post(address + "/manager/delete_user", username, String.class);
     }
 
     public List<MiniProductDto> showProducts_Manager(FilterSortDto filterSortDto) throws Exception {
-        return get("http://127.0.0.1:8050/manager/show_products",
+        return get(address + "/manager/show_products",
                 filterSortDto, MiniProductArrayListDto.class);
     }
 
     public void removeProduct_Manager(String id) throws Exception {
-        post("http://127.0.0.1:8050/manager/remove_product", id, String.class);
+        post(address + "/manager/remove_product", id, String.class);
     }
 
     public List<RequestDTO> showRequests() throws Exception {
-        RequestsListDTO response = get("http://127.0.0.1:8050/manager/show_requests",
+        RequestsListDTO response = get(address + "/manager/show_requests",
                 null, RequestsListDTO.class);
         return response.getDtos();
     }
 
     public void acceptRequest(String id) throws Exception {
-        post("http://127.0.0.1:8050/manager/accept_request", id, String.class);
+        post(address + "/manager/accept_request", id, String.class);
     }
 
     public void declineRequest(String id) throws Exception {
-        post("http://127.0.0.1:8050/manager/decline_request", id, String.class);
+        post(address + "/manager/decline_request", id, String.class);
     }
 
     public List<MicroProductDto> sellerMicroProduct(String seller) throws Exception {
@@ -416,5 +416,22 @@ public class Connector {
     public List<OffProductPM> showAllOnOffProducts(FilterSortDto filter) throws Exception {
         return get(address + "products/on_off",filter,
                 new TypeToken<ArrayList<OffProductPM>>(){}.getType());
+    }
+
+    public void logout(){
+        try {
+            post(address + "/users/logout",null,String.class);
+        } catch (Exception ignore) {}
+    }
+
+    public List<OffDTO> viewAllOffs() throws Exception {
+        OffListDTO listDTO = get(address + "/seller/offs", null, OffListDTO.class);
+        return listDTO.getOffs();
+    }
+
+    public boolean isTheFirstManager() {
+        try {
+            return get(address + "/manager/is_first",null,Boolean.class);
+        } catch (Exception ignore) {return false;}
     }
 }

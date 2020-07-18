@@ -168,4 +168,8 @@ public class ManagerService {
         manager.ifPresent(value -> managerRepository.delete(value));
     }
 
+    public Boolean isFirstManager(){
+        return managerRepository.existsAllBy();
+    }
+
 }

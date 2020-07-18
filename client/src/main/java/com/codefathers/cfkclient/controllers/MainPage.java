@@ -76,7 +76,6 @@ public class MainPage extends BackAbleController {
             Parent slideshow = SlideShow.makeSlideShow(nodes);
             mainBox.getChildren().add(slideshow);
         } catch (Exception e) {
-            // TODO: 7/17/2020
             e.printStackTrace();
         }
     }

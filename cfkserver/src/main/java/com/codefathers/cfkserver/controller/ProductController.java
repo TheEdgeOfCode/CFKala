@@ -247,4 +247,6 @@ public class ProductController {
         Date end = sellPackage.getOff().getEndTime();
         return new OffProductPM(name, id, price * (100 - percent) / 100, percent, end);
     }
+
+
 }

@@ -37,7 +37,6 @@ public class ProductRowForSM {
         return CFK.loadFXML("ProductRow");
     }
 
-    // TODO : load image
     @FXML
     public void initialize(){
         canEditThis = cacheData.getRole().equals("Seller");
@@ -45,7 +44,9 @@ public class ProductRowForSM {
         id.setText("" + productId);
         editButt.setDisable(!canEditThis);
         idProduct = productId;
-        /*image.setImage(ProductController.getInstance().loadMainImage(idProduct));*/
+        try {
+            image.setImage(connector.productMainImage(idProduct));
+        } catch (Exception ignore) {}
         buttonInitialize();
     }
 
@@ -68,7 +69,7 @@ public class ProductRowForSM {
     private void sendDeleteRequest() {
         if (canEditThis) {
             try {
-                connector.removeProduct(idProduct);
+                connector.sellerRemoveProduct(idProduct);
             } catch (Exception e) {
                 Notification.show("Error", e.getMessage(), delete.getScene().getWindow(), true);
             }

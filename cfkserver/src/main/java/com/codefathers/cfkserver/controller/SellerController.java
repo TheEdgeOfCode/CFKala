@@ -47,6 +47,8 @@ public class SellerController {
     private Sorter sorter;
     @Autowired
     private OffService offService;
+    @Autowired
+    private FilterService filterService;
 
     @GetMapping("seller/view_company")
     public ResponseEntity<?> viewCompanyInfo(HttpServletRequest request, HttpServletResponse response){
@@ -129,15 +131,17 @@ public class SellerController {
     }
 
     @GetMapping("seller/products")
-    public ResponseEntity<?> manageProducts(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> manageProducts(@RequestBody FilterSortDto filter,HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
                 try {
                     List<Product> sellerProducts = sellerService.viewProducts(getUsernameFromToken(request));
-                    //List<Product> sortedSellerProducts = sortManager.sort(sellerProducts,sort.getSortType());
-                    //if (!sort.isAscending()) Collections.reverse(sortedSellerProducts);
+                    filterService.filterList(sellerProducts,filter.getActiveFilters(),
+                            new int[]{filter.getUpPriceLimit(),filter.getDownPriceLimit()});
+                    List<Product> sortedSellerProducts = new Sorter().sort(sellerProducts,filter.getSortType());
+                    if (!filter.isAscending()) Collections.reverse(sortedSellerProducts);
                     ArrayList<MiniProductDto> miniProductDTOs = new ArrayList<>();
-                    for (Product sellerProduct : sellerProducts) {
+                    for (Product sellerProduct : sortedSellerProducts) {
                         miniProductDTOs.add(dtoFromProduct(sellerProduct));
                     }
                     return ResponseEntity.ok(new MiniProductListDto(miniProductDTOs));
@@ -150,19 +154,6 @@ public class SellerController {
         }
         return null;
     }
-
-    /*public List<MiniProductPM> manageProducts(String sellerUserName, SortPackage sortPackage, FilterPackage filterPackage)
-            throws UserNotAvailableException {
-        List<Product> sortedSellerProducts = sortManager.sort(sellerManager.viewProducts(sellerUserName), sortPackage.getSortType());
-        int[] priceRange = new int[2];
-        priceRange[0] = filterPackage.getDownPriceLimit();
-        priceRange[1] = filterPackage.getUpPriceLimit();
-        List<Product> filteredSellerProducts = FilterManager.filterList(sortedSellerProducts, filterPackage.getActiveFilters(), priceRange);
-        ArrayList<MiniProductPM> miniProductPMs = new ArrayList<>();
-        //System.err.println(filteredSellerProducts);
-        filteredSellerProducts.forEach(product -> miniProductPMs.add(createMiniProductPM(product)));
-        return miniProductPMs;
-    }*/
 
     @GetMapping
     @RequestMapping("/seller/ad/micro/{username}")
@@ -181,8 +172,8 @@ public class SellerController {
         }
     }
 
-    @PostMapping("seller/remove_product")
-    public void removeProduct(@RequestBody int productId, HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/seller/remove_product")
+    public void removeProduct(@RequestBody Integer productId, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
                 try {
@@ -196,7 +187,7 @@ public class SellerController {
         }
     }
 
-    @GetMapping("seller/offs")
+    @GetMapping("/seller/offs")
     public OffListDTO viewAllOffs(@RequestBody FilterSortDto sortPackage, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
