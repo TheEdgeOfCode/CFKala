@@ -90,11 +90,10 @@ public class Purchase {
         initializeLabels();
     }
 
-    // TODO : load disCode
     private void loadDiscountCode() {
-        /*try {
+        try {
             discountCodes = connector.showDiscountCodes();
-        } catch (Exception ignore) {}*/
+        } catch (Exception ignore) {}
     }
 
     private void loadCart() {
