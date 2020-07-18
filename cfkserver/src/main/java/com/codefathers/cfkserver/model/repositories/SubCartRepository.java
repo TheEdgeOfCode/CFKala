@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface SubCartRepository extends CrudRepository<SubCart,Integer> {
     List<SubCart> findAllByProductAndSeller(Product product, Seller seller);
+    List<SubCart> findAllBySeller(Seller seller);
 }

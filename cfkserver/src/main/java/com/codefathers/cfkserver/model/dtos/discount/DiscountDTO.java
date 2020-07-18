@@ -1,10 +1,11 @@
 package com.codefathers.cfkserver.model.dtos.discount;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Data
+@Data @NoArgsConstructor
 public abstract class DiscountDTO {
     private String discountCode;
     private Date startTime;
