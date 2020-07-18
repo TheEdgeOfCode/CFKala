@@ -265,8 +265,36 @@ public class Connector {
     }
 
     public List<UserFullDTO> showUsers() throws Exception {
-        ResponseEntity<UserFullListDTO> response = get("http://127.0.0.1:8050/manager/show_users", null,
-                UserFullListDTO.class);
+        ResponseEntity<UserFullListDTO> response = get("http://127.0.0.1:8050/manager/show_users",
+                null, UserFullListDTO.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void deleteUser(String username) throws Exception {
+        post("http://127.0.0.1:8050/manager/delete_user", username, String.class);
+    }
+
+    public List<MiniProductDto> showProducts_Manager() throws Exception {
+        ResponseEntity<MiniProductArrayListDto> response = get("http://127.0.0.1:8050/manager/show_products",
+                null, MiniProductArrayListDto.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void removeProduct_Manager(FilterSortDto filterSortDto) throws Exception {
+        post("http://127.0.0.1:8050/manager/remove_product", filterSortDto, String.class);
+    }
+
+    public List<RequestDTO> showRequests() throws Exception {
+        ResponseEntity<RequestsListDTO> response = get("http://127.0.0.1:8050/manager/show_requests",
+                null, RequestsListDTO.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void acceptRequest(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/accept_request", id, String.class);
+    }
+
+    public void declineRequest(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/decline_request", id, String.class);
     }
 }
