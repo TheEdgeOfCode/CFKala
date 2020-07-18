@@ -5,10 +5,7 @@ import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
-import com.codefathers.cfkclient.dtos.discount.AddUser;
-import com.codefathers.cfkclient.dtos.discount.CreateDiscount;
-import com.codefathers.cfkclient.dtos.discount.CreateDiscountSystematic;
-import com.codefathers.cfkclient.dtos.discount.DisCodeManagerPM;
+import com.codefathers.cfkclient.dtos.discount.*;
 import com.codefathers.cfkclient.dtos.edit.*;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
@@ -159,12 +156,11 @@ public class Connector {
                 productId, String.class);
     }
 
-    /*
     public List<DisCodeUserDTO> showDiscountCodes() throws Exception {
         ResponseEntity<DisCodeUserListDTO> response = post("http://127.0.0.1:8050/customer/show_discounts",
                 null, DisCodeUserListDTO.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
-    }*/
+    }
 
     public void assignAScore(String info) throws Exception {
         post("http://127.0.0.1:8050/customer/assign_score",
