@@ -129,13 +129,12 @@ public class CustomerController {
     }
 
     @PostMapping("/customer/delete_product_from_cart")
-    private ResponseEntity<?> deleteProductFromCart(HttpServletRequest request, HttpServletResponse response, @RequestBody String info) {
+    private ResponseEntity<?> deleteProductFromCart(HttpServletRequest request, HttpServletResponse response, @RequestBody Integer productId) {
         try {
             if (TokenUtil.checkToken(response, request)) {
                 String username = TokenUtil.getUsernameFromToken(request);
                 Customer customer = customerService.getCustomerByUsername(username);
                 Cart cart = customer.getCart();
-                int productId = Integer.parseInt(info);
                 cartService.deleteProductFromCart(cart, productId);
                 return ResponseEntity.ok(ResponseEntity.status(200));
             }

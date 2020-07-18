@@ -121,19 +121,13 @@ public class Connector {
         return Objects.requireNonNull(response.getBody());
     }
 
-    public void changeAmount(String info) throws Exception {
-        post("http://127.0.0.1:8050/customer/change_amount", info, String.class);
+    public void changeAmount(int productId,int amount) throws Exception {
+        post(address + "/customer/change_amount", "" + productId +  "," + amount, String.class);
     }
 
-    public List<InCartDTO> showProducts() throws Exception {
-        ResponseEntity<InCartArrayListDTO> response = post("http://127.0.0.1:8050/customer/show_products",
-                null, InCartArrayListDTO.class);
-        return Objects.requireNonNull(response.getBody()).getInCartDTOS();
-    }
-
-    public void deleteProductFromCart(String info) throws Exception {
+    public void deleteProductFromCart(Integer productId) throws Exception {
         post("http://127.0.0.1:8050/customer/delete_product_from_cart",
-                info, String.class);
+                productId, String.class);
     }
 
     public void purchase(PurchaseDTO dto) throws Exception {
