@@ -172,7 +172,7 @@ public class Connector {
     public List<SellLogDTO> viewSalesHistory() throws Exception {
         ResponseEntity<SellLogListDTO> response = post("http://127.0.0.1:8050/seller/sellLog",
                 null, SellLogListDTO.class);
-        return response.getBody().getSellLogDTOList();
+        return Objects.requireNonNull(response.getBody()).getSellLogDTOList();
     }
 
     public void becomeSellerOfExistingProduct(AddSellerToProductDTO dto) throws Exception {
