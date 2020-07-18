@@ -1,5 +1,6 @@
 package com.codefathers.cfkclient.utils;
 
+import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
@@ -20,14 +21,11 @@ import org.springframework.boot.json.GsonJsonParser;
 import com.codefathers.cfkclient.dtos.user.*;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -106,8 +104,9 @@ public class Connector {
     }
 
     public void createManagerAccount(ManagerDTO dto) throws Exception {
-        ResponseEntity<TokenRoleDto> role = post("http://127.0.0.1:8050/users/create_manager", dto, TokenRoleDto.class);
+        post("http://127.0.0.1:8050/users/create_manager", dto, TokenRoleDto.class);
     }
+
     public void createSellerAccount(SellerDTO dto) throws Exception {
         post("http://127.0.0.1:8050/users/create_seller", dto, String.class);
     }
@@ -287,6 +286,7 @@ public class Connector {
     }
 
     public void removeProduct(Integer id) throws Exception {
+        // TODO: 7/19/2020
         post("http://127.0.0.1:8050/off/edit", id, String.class);
     }
 
@@ -387,8 +387,16 @@ public class Connector {
         }
     }
 
-    public ArrayList<MicroProductDto> silmilarNameProducts(String name) throws Exception {
+    public ArrayList<MicroProductDto> similarNameProducts(String name) throws Exception {
         return get(address + "/product/similar/" + name,null,
                 new TypeToken<ArrayList<MicroProductDto>>(){}.getType());
+    }
+
+    public void editProduct(ProductEditAttribute attribute) throws Exception{
+        post(address + "/products/edit",attribute,String.class);
+    }
+
+    public FullProductPM viewAttributes(int id) throws Exception {
+        return get(address + "/products/full/" + id,null,FullProductPM.class);
     }
 }

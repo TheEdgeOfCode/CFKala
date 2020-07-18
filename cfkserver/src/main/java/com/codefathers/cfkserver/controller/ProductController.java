@@ -19,9 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
 import static com.codefathers.cfkserver.utils.TokenUtil.checkToken;
@@ -113,5 +111,25 @@ public class ProductController {
     @RequestMapping("/product/similar/{name}")
     public ResponseEntity<?> similarProducts(@PathVariable String name){
         return ResponseEntity.ok(productService.findProductsByName(name));
+    }
+
+    @GetMapping
+    @RequestMapping("/products/full/{id}")
+    private ResponseEntity<?> getFullProduct(@PathVariable Integer id, HttpServletResponse response){
+        try {
+            Product product = productService.findById(id);
+            return ResponseEntity.ok(createFullProduct(product));
+        } catch (NoSuchAProductException e) {
+            sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+            return null;
+        }
+    }
+
+    private FullProductPM createFullProduct(Product product) {
+        MiniProductDto miniProductDto = dtoFromProduct(product);
+        Map<String,String> features = new HashMap<>();
+        features.putAll(product.getPublicFeatures());
+        features.putAll(product.getSpecialFeatures());
+        return new FullProductPM(miniProductDto,features);
     }
 }

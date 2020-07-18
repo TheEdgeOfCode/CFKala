@@ -8,7 +8,6 @@ import com.codefathers.cfkclient.dtos.product.AddSellerToProductDTO;
 import com.codefathers.cfkclient.dtos.product.CreateProductDTO;
 import com.codefathers.cfkclient.dtos.product.MicroProductDto;
 import com.codefathers.cfkclient.utils.Connector;
-import com.google.common.collect.Lists;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -28,7 +27,6 @@ import javafx.stage.StageStyle;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -113,7 +111,7 @@ public class NewProduct extends BackAbleController {
         }else {
             ArrayList<MicroProductDto> microProducts = null;
             try {
-                microProducts = connector.silmilarNameProducts(entry);
+                microProducts = connector.similarNameProducts(entry);
                 if (microProducts.isEmpty()){
                     sellThisBox.setDisable(true);
                 } else {
