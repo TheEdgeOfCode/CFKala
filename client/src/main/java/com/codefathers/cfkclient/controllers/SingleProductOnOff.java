@@ -3,6 +3,7 @@ package com.codefathers.cfkclient.controllers;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.product.OffProductPM;
+import com.codefathers.cfkclient.utils.Connector;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -42,6 +43,8 @@ public class SingleProductOnOff {
     private Timeline timeline;
     private int id;
 
+    private static Connector connector = Connector.getInstance();
+
     public static Parent generate(OffProductPM pm) throws IOException {
         FXMLLoader loader = CFK.getFXMLLoader("SingleProductOnOff");
         Parent parent = loader.load();
@@ -65,8 +68,9 @@ public class SingleProductOnOff {
     }
 
     private void initData(OffProductPM pm) {
-        // TODO: 7/18/2020
-//        image.setImage(pm.getImage());
+        try {
+            image.setImage(connector.productMainImage(pm.getId()));
+        } catch (Exception ignore) {}
         name.setText(pm.getName());
         percent.setText("" + pm.getPercent() + "%");
         price.setText("" + pm.getOffPrice() + "$");
@@ -84,7 +88,6 @@ public class SingleProductOnOff {
                 ex.printStackTrace();
             }
         });
-
     }
 
     private void updateTime() {

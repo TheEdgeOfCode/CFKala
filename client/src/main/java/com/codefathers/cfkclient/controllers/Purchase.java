@@ -241,7 +241,7 @@ public class Purchase {
                 Notification.show("Successful", "Your purchase has been done successfully",
                         back.getScene().getWindow(), false);
                 reset();
-                // TODO : change scene
+                handleBackButton();
             } catch (Exception e) {
                 e.printStackTrace();
             }

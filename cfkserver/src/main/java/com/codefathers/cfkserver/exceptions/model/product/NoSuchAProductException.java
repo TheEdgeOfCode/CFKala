@@ -1,6 +1,6 @@
 package com.codefathers.cfkserver.exceptions.model.product;
 
-public class NoSuchAProductException extends Throwable {
+public class NoSuchAProductException extends Exception {
     public NoSuchAProductException() {
     }
 

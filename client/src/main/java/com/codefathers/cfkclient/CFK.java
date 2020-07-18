@@ -1,5 +1,6 @@
 package com.codefathers.cfkclient;
 
+import com.codefathers.cfkclient.utils.Connector;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -34,11 +35,11 @@ public class CFK extends Application {
         window = stage;
         loadLogo();
         try {
-//            if (AccountController.getInstance().isTheFirstManager()) {
-//                scene = new Scene(loadFXML("CreateManager", "MainPage"));
-//            } else {
-//                scene = new Scene(loadFXML("MainPage"));
-//            }
+            if (Connector.getInstance().isTheFirstManager()) {
+                scene = new Scene(loadFXML("CreateManager", "MainPage"));
+            } else {
+               scene = new Scene(loadFXML("MainPage"));
+            }
             scene = new Scene(loadFXML("MainPage"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,12 +117,6 @@ public class CFK extends Application {
         moveSceneOnMouse(scene, stage);
         stage.setScene(scene);
         stage.show();
-    }
-
-    @Override
-    public void stop() throws Exception {
-        // TODO: 7/17/2020
-        super.stop();
     }
 
     public static FadeTransition makeFade(Node node, double from, double to, int duration) {

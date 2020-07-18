@@ -4,27 +4,26 @@ import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductExceptio
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.product.*;
+import com.codefathers.cfkserver.model.entities.product.Comment;
+import com.codefathers.cfkserver.model.entities.product.CommentStatus;
 import com.codefathers.cfkserver.model.entities.product.Product;
+import com.codefathers.cfkserver.model.entities.product.SellPackage;
 import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribute;
-import com.codefathers.cfkserver.service.FilterService;
-import com.codefathers.cfkserver.service.ProductService;
-import com.codefathers.cfkserver.service.Sorter;
+import com.codefathers.cfkserver.model.entities.user.User;
+import com.codefathers.cfkserver.service.*;
+import com.codefathers.cfkserver.utils.TokenUtil;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
 import static com.codefathers.cfkserver.utils.TokenUtil.checkToken;
@@ -38,6 +37,13 @@ public class ProductController {
     private FilterService filterService;
     @Autowired
     private Sorter sorter;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private CartService cartService;
+    @Autowired
+    private FeedbackService feedbackService;
+
 
     @PostMapping("/product/get_all_products")
     private ResponseEntity<?> getAllProducts(@RequestBody FilterSortDto filterSortDto) {
@@ -77,18 +83,22 @@ public class ProductController {
     }
 
     @PostMapping("/products/create")
-    public void addProduct(@RequestBody CreateProductDTO dto, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> addProduct(@RequestBody CreateProductDTO dto, HttpServletRequest request, HttpServletResponse response) {
         //TODO: Check if this works properly!!! (Two method for this...)
         try {
             if (checkToken(response,request)){
                 try {
-                    productService.createProduct(dto);
+                    int id = productService.createProduct(dto);
+                    return ResponseEntity.ok(id);
                 } catch (Exception e) {
                     sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+                    return null;
                 }
             }
+            return null;
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
+            return null;
         }
     }
 
@@ -99,7 +109,7 @@ public class ProductController {
             if (checkToken(response,request)){
                 try {
                     productService.editProduct(getUsernameFromToken(request), editAttribute);
-                } catch (Exception | NoSuchAProductException e) {
+                } catch (Exception e) {
                     sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
                 }
             }
@@ -108,87 +118,135 @@ public class ProductController {
         }
     }
 
-    @PostMapping("product/save_image")
-    public void saveImagesForProduct(@RequestBody SaveImageDTO dto, HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping
+    @RequestMapping("/product/similar/{name}")
+    public ResponseEntity<?> similarProducts(@PathVariable String name){
+        return ResponseEntity.ok(productService.findProductsByName(name));
+    }
+
+    @GetMapping
+    @RequestMapping("/products/full/{id}")
+    private ResponseEntity<?> getFullProduct(@PathVariable Integer id, HttpServletResponse response){
         try {
-            if (checkToken(response, request)) {
-                int id = dto.getProductId();
-                File directory = new File("src/main/resources/db/images/products/" + id);
-                if (!directory.exists()) directory.mkdirs();
-                saveMainImage(id, dto.getMainImage());
-                dto.getFiles().forEach(file -> saveImageForProduct(id, file));
-            }
+            Product product = productService.findById(id);
+            return ResponseEntity.ok(createFullProduct(product));
+        } catch (NoSuchAProductException e) {
+            sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+            return null;
+        }
+    }
+
+    private FullProductPM createFullProduct(Product product) {
+        MiniProductDto miniProductDto = dtoFromProduct(product);
+        Map<String,String> features = new HashMap<>();
+        features.putAll(product.getPublicFeatures());
+        features.putAll(product.getSpecialFeatures());
+        return new FullProductPM(miniProductDto,features);
+    }
+
+    @GetMapping
+    @RequestMapping("/product/comments/{id}")
+    private ResponseEntity<?> getComments(HttpServletResponse response, @PathVariable Integer id){
+        try {
+            ArrayList<Comment> comments = productService.getAllComment(id);
+            ArrayList<CommentPM> toReturn = new ArrayList<>();
+            comments.forEach(comment -> toReturn.add(
+                    new CommentPM(comment.getUserId(),
+                            comment.getTitle(),
+                            comment.getText(),
+                            comment.isBoughtThisProduct()))
+            );
+            return ResponseEntity.ok(toReturn);
+        } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+            return null;
+        }
+    }
+
+    @PostMapping("/product/add_to_cart")
+    private void addToCart(@RequestBody String[] data,HttpServletRequest request, HttpServletResponse response) {
+        try {
+            checkToken(response, request);
+            String userName = data[0];
+            User user = userService.getUserByUsername(userName);
+            int productId = Integer.parseInt(data[1]);
+            String sellerUserName = data[2];
+            int amount = Integer.parseInt(data[3]);
+            cartService.addProductToCart(user.getCart(), sellerUserName, productId, amount);
         } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
+        } catch (Exception e){
+            sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
         }
     }
 
-    private void saveMainImage(int id, InputStream data) {
-        File image = new File("src/main/resources/db/images/products/" + id + "/main.jpg");
-        if (!image.exists()) {
-            try {
-                image.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    @PostMapping("/product/comment/add")
+    private void addComment(@RequestBody String[] data,HttpServletRequest request, HttpServletResponse response) {
         try {
-            saveDataToFile(data, image);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveDataToFile(InputStream data, File file) throws IOException {
-        byte[] buffer = new byte[data.available()];
-        data.read(buffer);
-        OutputStream outStream = new FileOutputStream(file);
-        outStream.write(buffer);
-        outStream.close();
-    }
-
-    private void saveImageForProduct(int id, InputStream data) {
-        File directory = new File("src/main/resources/db/images/products/" + id + "/other");
-        directory.mkdirs();
-        File image = new File("src/main/resources/db/images/products/" + id + "/other/" + generateUniqueFileName() + ".jpg");
-        try {
-            if (image.createNewFile()) {
-                saveDataToFile(data, image);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @PutMapping("product/update_pic")
-    public void updateProductPicture(@RequestBody SaveImageDTO dto, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            if (checkToken(response, request)) {
-                File directory = new File("src/main/resources/db/images/products/" + dto.getProductId());
-                try {
-                    FileUtils.cleanDirectory(directory);
-                    saveImagesForProduct(dto, request, response);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            checkToken(response, request);
+            String userId = data[0];
+            String commentTitle = data[1];
+            String commentText = data[2];
+            int productId = Integer.parseInt(data[3]);
+            Comment comment = new Comment(userId, commentTitle, commentText,
+                    CommentStatus.NOT_VERIFIED,
+                    feedbackService.boughtThisProduct(productId, userId));
+            comment.setProduct(productService.findById(productId));
+            feedbackService.createComment(comment);
         } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
+        } catch (Exception e){
+            sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
         }
     }
 
-    public void addVideo(int id, InputStream data) {
-        File video = new File("src/main/resources/db/videos/products/" + id + ".mp4");
-        try {
-            video.createNewFile();
-            saveDataToFile(data, video);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @GetMapping("/products/on_off")
+    private List<OffProductPM> getAllOnOff(@RequestBody FilterSortDto filter){
+        List<SellPackage> allSellPackagesOnOff = productService.getOffPackages();
+        List<SellPackage> filtered = filterService.filterSellPackages(filter.getCategoryId(), allSellPackagesOnOff,
+                filter.getActiveFilters(),
+                new int[]{filter.getDownPriceLimit(), filter.getUpPriceLimit()}, filter.isAvailableOnly());
+        filtered = filterSellPackagesField(filtered, filter);
+        new Sorter().sortSellPackage(filtered, filter.getSortType());
+        if (!filter.isAscending()) Collections.reverse(filtered);
+        List<OffProductPM> toReturn = new ArrayList<>();
+        filtered.forEach(sellPackage -> {
+            OffProductPM offProductPM = createOffPM(sellPackage);
+            toReturn.add(offProductPM);
+        });
+        return toReturn;
     }
 
-    private String generateUniqueFileName() {
-        Random random = new Random();
-        return String.format("%s%s", System.currentTimeMillis(), random.nextInt(100000));
+    private List<SellPackage> filterSellPackagesField(List<SellPackage> sellPackages, FilterSortDto filterPackage) {
+        String name = filterPackage.getName();
+        String seller = filterPackage.getSeller();
+        String brand = filterPackage.getBrand();
+        List<SellPackage> list = new CopyOnWriteArrayList<>(sellPackages);
+        if (name != null)
+            for (SellPackage product : list) {
+                if (!product.getProduct().getName().toLowerCase().contains(name.toLowerCase())) list.remove(product);
+            }
+        if (seller != null)
+            for (SellPackage product : list) {
+                if (!product.getSeller().getUsername().toLowerCase().contains(seller.toLowerCase()))
+                    list.remove(product);
+            }
+        if (brand != null)
+            for (SellPackage product : list) {
+                if (!product.getProduct().getCompanyClass().getName().toLowerCase().contains(brand.toLowerCase()))
+                    list.remove(product);
+            }
+        return list;
     }
+
+    private OffProductPM createOffPM(SellPackage sellPackage) {
+        int price = sellPackage.getPrice();
+        int percent = sellPackage.getOff().getOffPercentage();
+        String name = sellPackage.getProduct().getName();
+        int id = sellPackage.getProduct().getId();
+        Date end = sellPackage.getOff().getEndTime();
+        return new OffProductPM(name, id, price * (100 - percent) / 100, percent, end);
+    }
+
+
 }

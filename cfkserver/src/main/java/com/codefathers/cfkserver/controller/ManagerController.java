@@ -12,6 +12,7 @@ import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.user.User;
 import com.codefathers.cfkserver.service.*;
+import com.codefathers.cfkserver.service.file.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,9 @@ public class ManagerController {
 
     @Autowired
     private RequestService requestService;
+
+    @Autowired
+    private StorageService storageService;
 
     @PostMapping("/manager/show_users")
     private ResponseEntity<?> showUsers(HttpServletRequest request, HttpServletResponse response) {
@@ -183,12 +187,8 @@ public class ManagerController {
         return toReturn;
     }
 
-    // TODO : Please check the path.I don't know the exact path!!
     private void deleteProfilePhoto(String username) {
-        File file = new File("src\\main\\resources\\db\\images\\users\\" + username + ".jpg");
-        if (file.exists()) {
-            file.delete();
-        }
+        storageService.deleteProfile(username);
     }
 
     private UserFullDTO createUserFullDTO(User user) {
@@ -198,4 +198,8 @@ public class ManagerController {
                 user.getClass().getName().split("\\.")[2]);
     }
 
+    @GetMapping("manager/is_first")
+    private ResponseEntity<?> isFirstManager(){
+        return ResponseEntity.ok(managerService.isFirstManager());
+    }
 }

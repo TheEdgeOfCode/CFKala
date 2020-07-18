@@ -7,6 +7,7 @@ import com.codefathers.cfkclient.dtos.edit.OffChangeAttributes;
 import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
 import com.codefathers.cfkclient.dtos.off.OffDTO;
 import com.codefathers.cfkclient.dtos.off.OffStatus;
+import com.codefathers.cfkclient.dtos.product.MicroProductDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
@@ -45,7 +46,7 @@ public class OffManager extends BackAbleController {
     @FXML private Label offStatus;
 
     @FXML private ListView<MiniProductDto> productsList;
-    @FXML private ComboBox<MiniProductDto> availableProducts;
+    @FXML private ComboBox<MicroProductDto> availableProducts;
     @FXML private Button deleteProduct;
     @FXML private Button addProduct;
 
@@ -151,66 +152,17 @@ public class OffManager extends BackAbleController {
 
     private void initOffList() {
         offsList.getItems().addAll(getOffs());
-
-        //offsList.getItems().addAll(getTestOffs());
-
         offsList.getSelectionModel().selectedItemProperty().addListener((v, oldOff, newOff) -> changeData(newOff));
     }
 
     private ObservableList<OffDTO> getOffs() {
         ObservableList<OffDTO> offs = FXCollections.observableArrayList();
-
-        /*try {
-            //TODO: CacheData Sort!!!
-            //offs.addAll(connector.viewAllOffs(cacheData.getSorts()));
-        } catch (UserNotAvailableException e) {
+        try {
+            offs.addAll(connector.viewAllOffs());
+        } catch (Exception e) {
             e.printStackTrace();
-        }*/
-
+        }
         return offs;
-    }
-
-    private ObservableList<OffDTO> getTestOffs() {
-        ObservableList<OffDTO> offs = FXCollections.observableArrayList();
-        offs.add(new OffDTO(
-                12456,
-                getTestProducts(),
-                "marmof",
-                new Date(2001, 12, 22),
-                new Date(2002, 11, 30),
-                50,
-                EDIT.toString()
-        ));
-        offs.add(new OffDTO(
-                48662,
-                getTestProducts(),
-                "sapa",
-                new Date(2012, 3, 13),
-                new Date(2022, 6, 22),
-                0,
-                CREATION.toString()
-        ));
-        offs.add(new OffDTO(
-                21556,
-                getTestProducts(),
-                "memo",
-                new Date(2021, 12, 22),
-                new Date(2044, 6, 4),
-                2,
-                ACCEPTED.toString()
-        ));
-
-        return offs;
-    }
-
-    private ArrayList<MiniProductDto> getTestProducts() {
-        ArrayList<MiniProductDto> products = new ArrayList<>();
-        products.add(new MiniProductDto("asus rog g512", 112, "Laptop", "Asus", 5.42, null, null, false));
-        products.add(new MiniProductDto("skirt for kimmi", 245, "Clothes", "Adidas", 5.42, null, null, false));
-        products.add(new MiniProductDto("asus zenbook e333", 230, "Laptop", "Asus", 5.42, null, null, true));
-        products.add(new MiniProductDto("asus vivobook d551", 7885, "Laptop", "Asus", 5.42, null, null, true));
-
-        return products;
     }
 
     private void changeData(OffDTO off) {
@@ -227,8 +179,7 @@ public class OffManager extends BackAbleController {
 
         availableProducts.getItems().clear();
         try {
-            // TODO: 7/18/2020
-//             availableProducts.getItems().addAll(connector.getAllProducts(username, cacheData.getSorts()));
+           availableProducts.getItems().addAll(connector.sellerMicroProduct(cacheData.getUsername()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -270,7 +221,7 @@ public class OffManager extends BackAbleController {
     }
 
     private void handleAddProduct() {
-        MiniProductDto selected = availableProducts.getSelectionModel().getSelectedItem();
+        MicroProductDto selected = availableProducts.getSelectionModel().getSelectedItem();
         OffChangeAttributes attributes = new OffChangeAttributes();
         attributes.setProductIdToAdd(selected.getId());
         attributes.setSourceId(offsList.getSelectionModel().getSelectedItem().getOffId());

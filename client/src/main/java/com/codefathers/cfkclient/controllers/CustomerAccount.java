@@ -235,7 +235,7 @@ public class CustomerAccount extends BackAbleController {
     }
 
     private void handleLogout() {
-        // TODO: 6/22/2020 phase 3
+        connector.logout();
         cacheData.logout();
         try {
             back.getScene().setRoot(CFK.loadFXML("MainPage"));

@@ -104,19 +104,23 @@ public class NewProduct extends BackAbleController {
         reset.disableProperty().bind(Bindings.isEmpty(pictureList.getSelectionModel().getSelectedItems()));
     }
 
-    // TODO : Do we need method findSimilarProductByName in connector??
     private void fullSellThis(String entry){
         if (entry.isEmpty()){
             sellThisBox.setDisable(true);
             similarProduct.setItems(FXCollections.observableArrayList());
         }else {
-            ArrayList<MicroProductDto> microProducts = new ArrayList<>();/*ProductController.getInstance().findSimilarProductsByName(entry);*/
-            if (microProducts.isEmpty()){
-                sellThisBox.setDisable(true);
-            } else {
-                sellThisBox.setDisable(false);
-                ObservableList<MicroProductDto> data = FXCollections.observableArrayList(microProducts);
-                similarProduct.setItems(data);
+            ArrayList<MicroProductDto> microProducts = null;
+            try {
+                microProducts = connector.similarNameProducts(entry);
+                if (microProducts.isEmpty()){
+                    sellThisBox.setDisable(true);
+                } else {
+                    sellThisBox.setDisable(false);
+                    ObservableList<MicroProductDto> data = FXCollections.observableArrayList(microProducts);
+                    similarProduct.setItems(data);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -249,20 +253,19 @@ public class NewProduct extends BackAbleController {
             CreateProductDTO createProductDTO = generateProductInfoPack(publicFeatures, specialFeatures);
             generateFeaturePacks(publicFeatures, specialFeatures);
             try {
-                //int productId = sellerController.addProduct(productInfo, publicFeatures, specialFeatures);
                 try {
-                    connector.createProduct(createProductDTO);
+                    int productId = connector.createProduct(createProductDTO);
+                    savePics(productId);
+                    Notification.show("Successful", "Your Product was Registered Successfully!!!",
+                            back.getScene().getWindow(), false);
+                    try {
+                        Scene scene = new Scene(CFK.loadFXML(back(), backForBackward()));
+                        CFK.setSceneToStage(back, scene);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 } catch (Exception e) {
                     Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
-                }
-                //savePics(productId);
-                Notification.show("Successful", "Your Product was Registered Successfully!!!",
-                        back.getScene().getWindow(), false);
-                try {
-                    Scene scene = new Scene(CFK.loadFXML(back(), backForBackward()));
-                    CFK.setSceneToStage(back, scene);
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             } catch (RuntimeException e) {
                 Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
@@ -270,23 +273,20 @@ public class NewProduct extends BackAbleController {
         }
     }
 
-    //TODO : save image for product
     private void savePics(int id) {
         ArrayList<File> files = new ArrayList<>(pictureList.getItems());
+        ArrayList<InputStream> streams = new ArrayList<>();
+        files.forEach(file -> {
+            try {
+                streams.add(new FileInputStream(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
         try {
-            InputStream main = new FileInputStream(files.get(0));
-            ArrayList<InputStream> otherPics = new ArrayList<>();
-            if (files.size() > 1)
-                files.subList(1, files.size()).forEach(file -> {
-                    try {
-                        otherPics.add(new FileInputStream(file));
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                });
-            /*sellerController.saveImagesForProduct(id, main, otherPics);*/
-        } catch (IOException e) {
-            e.printStackTrace();
+            connector.updateProductMainImage(id, (InputStream[])streams.toArray());
+        } catch (Exception e) {
+            Notification.show("Error",e.getMessage(),back.getScene().getWindow(),true);
         }
     }
 

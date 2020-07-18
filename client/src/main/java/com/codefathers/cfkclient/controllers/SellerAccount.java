@@ -277,7 +277,7 @@ public class SellerAccount extends BackAbleController {
     }
 
     private void handleLogout() {
-        // TODO : logout should be implemented!!!
+        connector.logout();
         CacheData.getInstance().logout();
         try {
             back.getScene().setRoot(CFK.loadFXML("MainPage"));

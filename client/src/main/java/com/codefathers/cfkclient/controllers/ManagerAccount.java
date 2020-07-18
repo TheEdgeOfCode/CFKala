@@ -250,7 +250,7 @@ public class ManagerAccount extends BackAbleController {
     }
 
     private void handleLogout() {
-        // TODO : logout should be implemented!!!
+        connector.logout();
         cacheData.logout();
         try {
             back.getScene().setRoot(CFK.loadFXML("MainPage"));

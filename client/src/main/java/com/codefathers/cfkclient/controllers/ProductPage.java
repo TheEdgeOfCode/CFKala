@@ -66,11 +66,10 @@ public class ProductPage extends BackAbleController {
         FilterSortDto filterSortDto = makeFilterSortDTO();
         CacheData cacheData = CacheData.getInstance();
         try {
-            // TODO: 7/18/2020 filter and sort
             switch (cacheData.getRole()) {
                 case "Seller":
                 case "seller":
-                    List<MiniProductDto> productPMS = connector.manageSellerProducts();
+                    List<MiniProductDto> productPMS = connector.manageSellerProducts(filterSortDto);
                     createListsOfProductsInVBox(productPMS);
                     break;
                 case "manager":
@@ -117,7 +116,7 @@ public class ProductPage extends BackAbleController {
 
     private void close() {
         Stage window = (Stage) back.getScene().getWindow();
-        window.close();;
+        window.close();
     }
 
     private void minimize() {
