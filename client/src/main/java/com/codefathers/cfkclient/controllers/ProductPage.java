@@ -6,6 +6,7 @@ import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.product.FilterSortDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import com.codefathers.cfkclient.dtos.product.SortType;
+import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXSlider;
@@ -30,6 +31,8 @@ public class ProductPage extends BackAbleController {
     @FXML private JFXSlider minPrice;
     @FXML private JFXSlider maxPrice;
 
+    private final Connector connector = Connector.getInstance();
+
     @FXML
     public void initialize() {
         initButtons();
@@ -51,34 +54,33 @@ public class ProductPage extends BackAbleController {
     }
 
     private void createListsOfProductsInVBox(List<MiniProductDto> products) {
-        /*for (MiniProductPM product : products) {
+        for (MiniProductDto product : products) {
             try {
                 panelVbox.getChildren().add(ProductRowForSM.generate(product.getName(), product.getId()));
             } catch (IOException ignore) {}
-        }*/
+        }
     }
 
     private void loadInformation() {
-        /*panelVbox.getChildren().clear();
+        panelVbox.getChildren().clear();
         FilterSortDto filterSortDto = makeFilterSortDTO();
         CacheData cacheData = CacheData.getInstance();
         try {
             switch (cacheData.getRole()) {
                 case "Seller":
                 case "seller":
-                    List<MiniProductDto> productPMS = SellerController.getInstance().manageProducts(cacheData.getUsername() *//*"Ali"*//*, sortPackage, filterPackage);
+                    List<MiniProductDto> productPMS = connector.manageSellerProducts();
                     createListsOfProductsInVBox(productPMS);
                     break;
                 case "manager":
                 case "Manager":
-                    List<MiniProductPM> productPMSManager = ManagerController.getInstance().manageProducts(sortPackage, filterPackage);
+                    List<MiniProductDto> productPMSManager = connector.showProducts_Manager(filterSortDto);
                     createListsOfProductsInVBox(productPMSManager);
                     break;
             }
-
-        } catch (UserNotAvailableException e) {
-            new OopsAlert().show(e.getMessage());
-        }*/
+        } catch (Exception e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+        }
     }
 
     private FilterSortDto makeFilterSortDTO() {
@@ -106,39 +108,6 @@ public class ProductPage extends BackAbleController {
         return filterSortDto;
     }
 
-    /*private FilterPackage makeFilterPackage() {
-        FilterPackage filterPackage = new FilterPackage();
-        if (color.getValue() != null) {
-            filterPackage.getActiveFilters().put("Color", color.getValue());
-        }
-        if (minPrice.getValue() >= maxPrice.getValue()) {
-            maxPrice.setValue(minPrice.getValue());
-        }
-        filterPackage.setCategoryId(0);
-        filterPackage.setUpPriceLimit((int)maxPrice.getValue());
-        filterPackage.setDownPriceLimit((int)minPrice.getValue());
-        return filterPackage;
-    }*/
-
-    /*private SortPackage makeSortPackage() {
-        SortPackage sortPackage = new SortPackage();
-        sortPackage.setAscending(ADOrder.selectedToggleProperty().toString().contains("Ascending"));
-        if (type.selectedToggleProperty().toString().contains("Price")) {
-            if (sortPackage.isAscending())
-                sortPackage.setSortType(SortType.MORE_PRICE);
-            else sortPackage.setSortType(SortType.LESS_PRICE);
-        } else if (type.selectedToggleProperty().toString().contains("Date Added")) {
-            sortPackage.setSortType(SortType.TIME);
-        } else if (type.selectedToggleProperty().toString().contains("View")) {
-            sortPackage.setSortType(SortType.VIEW);
-        } else if (type.selectedToggleProperty().toString().contains("Bought")) {
-            sortPackage.setSortType(SortType.BOUGHT_AMOUNT);
-        } else if (type.selectedToggleProperty().toString().contains("Name")) {
-            sortPackage.setSortType(SortType.NAME);
-        } else sortPackage.setSortType(SortType.SCORE);
-        return sortPackage;
-    }*/
-
     private void initButtons() {
         back.setOnAction(e -> handleBack());
         minimize.setOnAction(e -> minimize());
@@ -161,6 +130,5 @@ public class ProductPage extends BackAbleController {
             CFK.setSceneToStage(back, scene);
         } catch (IOException ignore) {}
     }
-
 
 }
