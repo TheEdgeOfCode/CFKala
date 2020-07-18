@@ -263,4 +263,10 @@ public class Connector {
         return get("http://127.0.0.1:8050/discount/get_discounts",null,
                 new TypeToken<ArrayList<DisCodeManagerPM>>(){}.getType());
     }
+
+    public List<UserFullDTO> showUsers() throws Exception {
+        ResponseEntity<UserFullListDTO> response = get("http://127.0.0.1:8050/manager/show_users", null,
+                UserFullListDTO.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
 }

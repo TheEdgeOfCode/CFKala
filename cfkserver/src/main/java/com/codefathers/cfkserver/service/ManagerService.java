@@ -59,11 +59,13 @@ public class ManagerService {
     @Autowired
     private CartRepository cartRepository;
 
-    public List<UserFullDTO> getAllUsers() {
+    @Autowired
+    private Sorter sorter;
+
+    public List<User> getAllUsers() {
         List<User> users =  userRepository.findAllBy();
-        List<UserFullDTO> userDTOS = new ArrayList<>();
-        users.forEach(user -> userDTOS.add(createUserFullDTO(user)));
-        return userDTOS;
+        sorter.sortUser(users);
+        return users;
     }
 
     public void deleteUser(String username) {
@@ -164,14 +166,6 @@ public class ManagerService {
     private void deleteManager(String username) {
         Optional<Manager> manager = managerRepository.findById(username);
         manager.ifPresent(value -> managerRepository.delete(value));
-    }
-
-
-    private UserFullDTO createUserFullDTO(User user) {
-        return new UserFullDTO(user.getUsername(),
-                user.getFirstName(),
-                user.getLastName(), user.getEmail(), user.getPhoneNumber(),
-                user.getClass().getName().split("\\.")[2]);
     }
 
 }
