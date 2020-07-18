@@ -194,14 +194,14 @@ public class Connector {
         return response.getBody();
     }
 
-    public MiniProductArrayListDto manageSellerProducts() throws Exception {
+    public List<MiniProductDto> manageSellerProducts() throws Exception {
         ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/seller/products",
                 null, MiniProductArrayListDto.class);
-        return response.getBody();
+        return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
     public Image userImage(String text) throws Exception {
-        byte[] image = get("http://127.0.0.1:8050/users/getImage",null,
+        byte[] image = get("http://127.0.0.1:8050users/getImage",null,
                 byte[].class);
         if (image != null) {
             return new Image(new ByteArrayInputStream(image));
@@ -304,4 +304,39 @@ public class Connector {
     public void removeProduct(Integer id) throws Exception {
         post("http://127.0.0.1:8050/off/edit", id, String.class);
     }
+
+    public List<UserFullDTO> showUsers() throws Exception {
+        ResponseEntity<UserFullListDTO> response = get("http://127.0.0.1:8050/manager/show_users",
+                null, UserFullListDTO.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void deleteUser(String username) throws Exception {
+        post("http://127.0.0.1:8050/manager/delete_user", username, String.class);
+    }
+
+    public List<MiniProductDto> showProducts_Manager(FilterSortDto filterSortDto) throws Exception {
+        ResponseEntity<MiniProductArrayListDto> response = get("http://127.0.0.1:8050/manager/show_products",
+                filterSortDto, MiniProductArrayListDto.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void removeProduct_Manager(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/remove_product", id, String.class);
+    }
+
+    public List<RequestDTO> showRequests() throws Exception {
+        ResponseEntity<RequestsListDTO> response = get("http://127.0.0.1:8050/manager/show_requests",
+                null, RequestsListDTO.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void acceptRequest(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/accept_request", id, String.class);
+    }
+
+    public void declineRequest(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/decline_request", id, String.class);
+    }
+
 }

@@ -10,7 +10,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class DisCodeManagerPM extends DiscountPM {
+public class DisCodeManagerPM extends DiscountDTO {
     private ArrayList<UserIntegerPM> users;
 
     public DisCodeManagerPM(String discountCode, Date startTime, Date endTime, int offPercentage, long maxOfPriceDiscounted, ArrayList<UserIntegerPM> users) {
