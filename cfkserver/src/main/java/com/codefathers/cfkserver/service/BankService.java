@@ -1,6 +1,5 @@
 package com.codefathers.cfkserver.service;
 
-import com.codefathers.cfkserver.model.dtos.user.TokenRoleDto;
 import com.codefathers.cfkserver.utils.BankUtil;
 import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
 import com.codefathers.cfkserver.exceptions.model.bank.account.PasswordsDoNotMatchException;
@@ -48,7 +47,7 @@ public class BankService {
         }
     }
 
-    public int createReceipt(CreateReceiptDTO dto, TokenRequestDTO userInfo) throws IOException, InvalidRecieptTypeException, InvalidMoneyException,
+    public int createReceipt(CreateReceiptDTO dto) throws IOException, InvalidRecieptTypeException, InvalidMoneyException,
             InvalidParameterPassedException, InvalidTokenException, ExpiredTokenException, InvalidSourceAccountException, InvalidDestAccountException, EqualSourceDestException, InvalidAccountIdException, InvalidDescriptionExcxeption, InvalidUsernameException {
         String message = "create_receipt " + dto.getToken() + " " + ReceiptType.from(dto.getType()) + " " +
                 dto.getMoney() + " " + dto.getSource() + " " + dto.getDest() + " " + dto.getDescription();
@@ -65,9 +64,9 @@ public class BankService {
             throw new InvalidTokenException(response);
         } else if (response.startsWith("token expired")){
             //throw new ExpiredTokenException(response);
-            String token = getToken(userInfo);
+            String token = getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
             dto.setToken(token);
-            return createReceipt(dto, userInfo);
+            return createReceipt(dto);
         } else if (response.startsWith("source")){
             throw new InvalidSourceAccountException(response);
         } else if (response.startsWith("dest")){
@@ -83,7 +82,7 @@ public class BankService {
         }
     }
 
-    public List<TransactionDTO> getTransactions(NeededForTransactionDTO dto, TokenRequestDTO userInfo) throws IOException, InvalidTokenException, ExpiredTokenException, InvalidReceiptIdException, InvalidUsernameException {
+    public List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws IOException, InvalidTokenException, ExpiredTokenException, InvalidReceiptIdException, InvalidUsernameException {
         String message = "get_transactions " + dto.getToken() + " " + dto.getType().getValue();
         bankUtil.sendMessage(message);
         String response = bankUtil.getMessage();
@@ -92,9 +91,9 @@ public class BankService {
             throw new InvalidTokenException(response);
         } else if (response.startsWith("token expired")){
             //throw new ExpiredTokenException(response);
-            String token = getToken(userInfo);
+            String token = getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
             dto.setToken(token);
-            return getTransactions(dto, userInfo);
+            return getTransactions(dto);
         } else if (response.startsWith("invalid")){
             throw new InvalidReceiptIdException(response);
         } else {
@@ -123,8 +122,8 @@ public class BankService {
         }
     }
 
-    public long getBalance(String token, TokenRequestDTO userInfo) throws IOException, ExpiredTokenException, InvalidTokenException, InvalidUsernameException {
-        String message = "get_balance " + token;
+    public long getBalance(BalanceDTO dto) throws IOException, ExpiredTokenException, InvalidTokenException, InvalidUsernameException {
+        String message = "get_balance " + dto.getToken();
         bankUtil.sendMessage(message);
         String response = bankUtil.getMessage();
 
@@ -132,8 +131,9 @@ public class BankService {
             throw new InvalidTokenException(response);
         } else if (response.startsWith("token expired")){
             //throw new ExpiredTokenException(response);
-            String newToken = getToken(userInfo);
-            return getBalance(newToken, userInfo);
+            String newToken = getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
+            dto.setToken(newToken);
+            return getBalance(dto);
         } else {
             return Long.parseLong(response);
         }

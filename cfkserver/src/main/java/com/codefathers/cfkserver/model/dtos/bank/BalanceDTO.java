@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data @AllArgsConstructor
-public class NeededForTransactionDTO {
+public class BalanceDTO {
     private String username;
     private String password;
     private String token;
-    private TransactType type;
 }

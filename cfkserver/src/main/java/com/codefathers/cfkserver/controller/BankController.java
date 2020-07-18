@@ -60,12 +60,11 @@ public class BankController {
 
     @PostMapping("/bank/create_receipt")
     private ResponseEntity<?> createReceipt(HttpServletRequest request, HttpServletResponse response,
-                                            @RequestBody CreateReceiptDTO dto,
-                                            @RequestBody TokenRequestDTO userInfo) {
+                                            @RequestBody CreateReceiptDTO dto) {
         try {
             if (checkToken(response, request)) {
                 try {
-                    return ResponseEntity.ok(bankService.createReceipt(dto, userInfo));
+                    return ResponseEntity.ok(bankService.createReceipt(dto));
                 } catch (IOException | InvalidDescriptionExcxeption |
                         InvalidAccountIdException | EqualSourceDestException |
                         InvalidDestAccountException | InvalidSourceAccountException |
@@ -82,12 +81,11 @@ public class BankController {
 
     @GetMapping("bank/get_transactions")
     private ResponseEntity<?> getTransactions(HttpServletRequest request, HttpServletResponse response,
-                                              @RequestBody NeededForTransactionDTO dto,
-                                              @RequestBody TokenRequestDTO userInfo) {
+                                              @RequestBody NeededForTransactionDTO dto) {
         try {
             if (checkToken(response, request)) {
                 try {
-                    List<TransactionDTO> transactionDTOS = bankService.getTransactions(dto, userInfo);
+                    List<TransactionDTO> transactionDTOS = bankService.getTransactions(dto);
                     return ResponseEntity.ok(new TransactionListDTO(new ArrayList<>(transactionDTOS)));
                 } catch (IOException | InvalidReceiptIdException | InvalidUsernameException e) {
                     sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
@@ -119,12 +117,11 @@ public class BankController {
 
     @GetMapping("/bank/get_balance")
     private ResponseEntity<?> getBalance(HttpServletRequest request, HttpServletResponse response,
-                                         @RequestBody String token,
-                                         @RequestBody TokenRequestDTO userInfo) {
+                                         @RequestBody BalanceDTO dto) {
         try {
             if (checkToken(response, request)) {
                 try {
-                    return ResponseEntity.ok(bankService.getBalance(token, userInfo));
+                    return ResponseEntity.ok(bankService.getBalance(dto));
                 } catch (IOException | InvalidUsernameException e) {
                     sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
                 }

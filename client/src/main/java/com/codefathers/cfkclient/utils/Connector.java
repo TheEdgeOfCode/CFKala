@@ -1,5 +1,7 @@
 package com.codefathers.cfkclient.utils;
 
+import com.codefathers.cfkclient.BackAbleController;
+import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
@@ -384,5 +386,37 @@ public class Connector {
         }else {
             return null;
         }
+    }
+
+    public String createBankAccount(CreateBankAccountDTO dto) throws Exception {
+        ResponseEntity<String> response = post("http://127.0.0.1:8050/bank/create_account", dto, String.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
+    public String getToken(TokenRequestDTO dto) throws Exception {
+        ResponseEntity<String> response = get("http://127.0.0.1:8050/bank/get_token", dto, String.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
+    public int createReceipt(CreateReceiptDTO dto) throws Exception {
+        ResponseEntity<Integer> response = post("http://127.0.0.1:8050/bank/create_receipt",
+                dto, Integer.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
+    private List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws Exception {
+        ResponseEntity<TransactionListDTO> response = get("http://127.0.0.1:8050/bank/get_transactions",
+                dto, TransactionListDTO.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void pay(String receiptId) throws Exception {
+        post("http://127.0.0.1:8050/bank/pay", receiptId, String.class);
+    }
+
+    public long getBalance(BalanceDTO dto) throws Exception {
+        ResponseEntity<Long> response = get("http://127.0.0.1:8050/bank/get_balance",
+                dto, Long.class);
+        return Objects.requireNonNull(response.getBody());
     }
 }
