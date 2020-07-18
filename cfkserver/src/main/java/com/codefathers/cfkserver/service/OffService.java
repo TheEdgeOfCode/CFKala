@@ -4,6 +4,7 @@ import com.codefathers.cfkserver.exceptions.model.off.InvalidTimesException;
 import com.codefathers.cfkserver.exceptions.model.off.NoSuchAOffException;
 import com.codefathers.cfkserver.exceptions.model.off.ThisOffDoesNotBelongsToYouException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
+import com.codefathers.cfkserver.model.dtos.off.CreateOffDTO;
 import com.codefathers.cfkserver.model.entities.offs.Off;
 import com.codefathers.cfkserver.model.entities.offs.OffStatus;
 import com.codefathers.cfkserver.model.entities.product.Product;
@@ -29,16 +30,16 @@ public class OffService {
     @Autowired private SellPackageRepository sellPackageRepository;
     @Autowired private RequestRepository requestRepository;
 
-    public void createOff(Seller seller, Date[] dates, int percentage) throws InvalidTimesException {
-        if (!dates[0].before(dates[1])) throw new InvalidTimesException();
+    public void createOff(Seller seller, CreateOffDTO dto) throws InvalidTimesException {
+        if (!dto.getStart().before(dto.getEnd())) throw new InvalidTimesException();
         Off off = new Off();
         off.setSeller(seller);
-        off.setOffPercentage(percentage);
+        off.setOffPercentage(dto.getPercentage());
         off.setOffStatus(OffStatus.CREATION);
-        off.setStartTime(dates[0]);
-        off.setEndTime(dates[1]);
+        off.setStartTime(dto.getStart());
+        off.setEndTime(dto.getEnd());
         offRepository.save(off);
-        String strRequest = String.format("%s requested to create an off with percentage %d",seller.getUsername(),percentage);
+        String strRequest = String.format("%s requested to create an off with percentage %d",seller.getUsername(),dto.getPercentage());
         Request request = requestService.createRequest(off, RequestType.CREATE_OFF,seller.getUsername(),strRequest);
         seller.addRequest(request);
         sellerRepository.save(seller);

@@ -1,5 +1,6 @@
 package com.codefathers.cfkclient;
 
+import com.codefathers.cfkclient.dtos.user.SellerDTO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class CacheData {
     private String role;
     private int companyID;
     private int productId;
-    private String[] signUpData;
+    private SellerDTO signUpData;
 
 
     public void logout(){

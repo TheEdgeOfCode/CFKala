@@ -57,7 +57,7 @@ public class UserController {
     @Autowired
     private CustomerService customerService;
 
-    @PostMapping("users/login")
+    @PostMapping("/users/login")
     private ResponseEntity<?> login(@RequestBody LoginDto dto, HttpServletResponse response) {
         try {
             String role = userService.login(dto.getUsername(), dto.getPassword());
@@ -69,7 +69,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("users/create_customer")
+    @PostMapping("/users/create_customer")
     private <T> ResponseEntity<?> createCustomer(@RequestBody CustomerDTO dto, HttpServletResponse response){
         try {
             userService.createCustomer(dto);
@@ -81,11 +81,11 @@ public class UserController {
         }
     }
 
-    @PostMapping("users/create_manager")
+    @PostMapping("/users/create_manager")
     private <T> ResponseEntity<?> createCustomer(@RequestBody ManagerDTO dto, HttpServletResponse response){
         try {
             userService.createManager(dto);
-            String token = jwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername());
             return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
         } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
@@ -93,7 +93,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("users/create_seller")
+    @PostMapping("/users/create_seller")
     private <T> ResponseEntity<?> createSeller(@RequestBody SellerDTO dto, HttpServletResponse response){
         try {
             userService.createSeller(dto);
@@ -104,7 +104,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("users/view")
+    @GetMapping("/users/view")
     public ResponseEntity<?> viewPersonalInfo(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
@@ -127,7 +127,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("users/edit")
+    @PutMapping("/users/edit")
     public ResponseEntity<?> editPersonalInfo(HttpServletRequest request, HttpServletResponse response,
                                               @RequestBody UserEditAttributes editAttributes) {
         try {
@@ -143,7 +143,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("users/logout")
+    @PostMapping("/users/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
@@ -160,14 +160,14 @@ public class UserController {
         }
     }
 
-    @PostMapping("users/create_company")
+    @PostMapping("/users/create_company")
     public ResponseEntity<?> createCompany(String[] info) {
         Company company = new Company(info[0], info[1], info[2]);
         int companyId = companyService.createCompany(company);
         return ResponseEntity.ok(companyId);
     }
 
-    @GetMapping("users/requests")
+    @GetMapping("/users/requests")
     public ResponseEntity<?> viewRequestSent(HttpServletRequest request, HttpServletResponse response, @RequestBody String role) {
         try {
             if (checkToken(response, request)) {
@@ -235,8 +235,23 @@ public class UserController {
                 return null;
             }
         } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, BAD_REQUEST, e.getMessage());
+            sendError(response, UNAUTHORIZED, e.getMessage());
             return null;
+        }
+    }
+
+    @PostMapping("/users/save_image")
+    private void saveImage(@RequestBody InputStream stream, HttpServletRequest request, HttpServletResponse response){
+        try {
+            if (checkToken(response, request)) {
+                try {
+                    userService.saveNewImage(stream, getUsernameFromToken(request));
+                } catch (Exception e) {
+                    sendError(response, BAD_REQUEST, e.getMessage());
+                }
+            }
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, UNAUTHORIZED, e.getMessage());
         }
     }
 }
