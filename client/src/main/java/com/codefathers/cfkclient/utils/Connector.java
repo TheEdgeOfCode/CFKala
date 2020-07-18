@@ -18,14 +18,19 @@ import javafx.scene.image.Image;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.json.GsonJsonParser;
 import com.codefathers.cfkclient.dtos.user.*;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -148,7 +153,7 @@ public class Connector {
         return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
-    public void addViewDigest(String productId) throws Exception {
+    public void addViewDigest(Integer productId) throws Exception {
         post("http://127.0.0.1:8050/customer/add_view",
                 productId, String.class);
     }
@@ -190,10 +195,6 @@ public class Connector {
         ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/seller/products",
                 null, MiniProductArrayListDto.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
-    }
-
-    public void saveUserImage(InputStream stream) throws Exception {
-        post("http://127.0.0.1:8050/uesrs/save_image", stream, String.class);
     }
 
     public void editCategory(CategoryEditAttribute attribute) throws Exception {
@@ -274,13 +275,9 @@ public class Connector {
         post("http://127.0.0.1:8050/products/create", dto, String.class);
     }
 
-    public void editProduct(ProductEditAttribute dto) throws Exception {
-        post(address + "/off/edit", dto, String.class);
-    }
-
     public Image userImage(String text) throws Exception {
-        Resource image = get(address + "/download/user/profile/" + text,null,
-                Resource.class);
+        ByteArrayResource image = get(address + "/download/user/profile/" + text,null,
+                ByteArrayResource.class);
         if (image != null) {
             return new Image(new ByteArrayInputStream(image.getInputStream().readAllBytes()));
         }else {
@@ -349,5 +346,43 @@ public class Connector {
         try {
             post(address + "/messages/open/" + id,null,String.class);
         } catch (Exception ignore) {}
+    }
+
+    public void saveUserImage(InputStream stream) throws Exception {
+        InputStreamResource resource = new InputStreamResource(stream);
+        post(address + "/upload/user/profile", resource, String.class);
+    }
+
+    public void updateProductMainImage(int id,InputStream[] streams) throws Exception {
+        post(address + "/upload/product/" + id,streams,String.class);
+    }
+
+    public Image productMainImage(int id) throws Exception {
+        ByteArrayResource resource = get(address + "/download/product/" + id + "/main", null
+                , ByteArrayResource.class);
+        return createImageFromResource(resource);
+    }
+
+    public ArrayList<Image> loadImages(int id) throws Exception {
+        ArrayList<Image> images = new ArrayList<>();
+        ArrayList<ByteArrayResource> resources = get(address + "/download/product/" + id,null,
+                new TypeToken<ArrayList<ByteArrayResource>>(){}.getType());
+        resources.forEach(byteArrayResource -> {
+            try {
+                Image image = createImageFromResource(byteArrayResource);
+                if (image != null) {
+                    images.add(image);
+                }
+            } catch (IOException ignore) {}
+        });
+        return images;
+    }
+
+    private Image createImageFromResource(ByteArrayResource resource) throws IOException {
+        if (resource != null) {
+            return new Image(new ByteArrayInputStream(resource.getInputStream().readAllBytes()));
+        }else {
+            return null;
+        }
     }
 }

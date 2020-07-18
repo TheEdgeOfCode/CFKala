@@ -45,7 +45,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 public class UserController {
-    private HashMap<String, String> tokens;
+    private HashMap<String, String> tokens = new HashMap<>();
     @Autowired
     private UserService userService;
     @Autowired
@@ -62,6 +62,7 @@ public class UserController {
         try {
             String role = userService.login(dto.getUsername(), dto.getPassword());
             String token = JwtUtil.generateToken(dto.getUsername());
+            tokens.put(token, dto.getUsername());
             return ResponseEntity.ok(new TokenRoleDto(token, role));
         } catch (UserNotFoundException | NotVerifiedSeller | WrongPasswordException e) {
             sendError(response, BAD_REQUEST, e.getMessage());

@@ -213,10 +213,10 @@ public class CustomerController {
     }
 
     @PostMapping("/customer/add_view")
-    private ResponseEntity<?> addViewDigest(HttpServletRequest request, HttpServletResponse response, @RequestBody String productId) {
+    private ResponseEntity<?> addViewDigest(HttpServletRequest request, HttpServletResponse response, @RequestBody Integer productId) {
         try {
             if (TokenUtil.checkToken(response, request)) {
-                productService.addView(Integer.parseInt(productId));
+                productService.addView(productId);
                 return ResponseEntity.ok(ResponseEntity.status(200));
             } else {
                 return null;

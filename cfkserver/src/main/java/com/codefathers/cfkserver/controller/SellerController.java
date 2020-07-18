@@ -267,7 +267,7 @@ public class SellerController {
     }
 
     @PostMapping("/off/delete")
-    public void deleteOff(@RequestBody int id, HttpServletRequest request, HttpServletResponse response) {
+    public void deleteOff(@RequestBody Integer id, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response,request)){
                 try {
