@@ -1,6 +1,7 @@
 package com.codefathers.cfkclient.utils;
 
 import com.codefathers.cfkclient.CacheData;
+import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
@@ -435,10 +436,6 @@ public class Connector {
         try {
             return get(address + "/manager/is_first",null,Boolean.class);
         } catch (Exception ignore) { return false;}
-            return get(address + "/manager/is_first", null, Boolean.class);
-        } catch (Exception ignore) {
-            return false;
-        }
     }
 
     public String createBankAccount(CreateBankAccountDTO dto) throws Exception {
