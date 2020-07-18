@@ -8,6 +8,7 @@ import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
 import com.codefathers.cfkclient.dtos.discount.*;
 import com.codefathers.cfkclient.dtos.edit.*;
+import com.codefathers.cfkclient.dtos.log.SellLogDTO;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
 import com.codefathers.cfkclient.dtos.product.*;
@@ -168,10 +169,10 @@ public class Connector {
         return response.getBody();
     }
 
-    public SellLogListDTO viewSalesHistory() throws Exception {
+    public List<SellLogDTO> viewSalesHistory() throws Exception {
         ResponseEntity<SellLogListDTO> response = post("http://127.0.0.1:8050/seller/sellLog",
                 null, SellLogListDTO.class);
-        return response.getBody();
+        return response.getBody().getSellLogDTOList();
     }
 
     public void becomeSellerOfExistingProduct(AddSellerToProductDTO dto) throws Exception {
