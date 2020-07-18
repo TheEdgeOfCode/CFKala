@@ -188,10 +188,10 @@ public class Connector {
         return response.getBody();
     }
 
-    public MiniProductArrayListDto manageSellerProducts() throws Exception {
+    public List<MiniProductDto> manageSellerProducts() throws Exception {
         ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/seller/products",
                 null, MiniProductArrayListDto.class);
-        return response.getBody();
+        return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
     public Image userImage(String text) throws Exception {
