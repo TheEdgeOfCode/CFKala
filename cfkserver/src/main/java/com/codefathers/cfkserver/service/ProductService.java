@@ -6,6 +6,7 @@ import com.codefathers.cfkserver.exceptions.model.product.EditorIsNotSellerExcep
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.model.dtos.product.CreateProductDTO;
+import com.codefathers.cfkserver.model.dtos.product.MicroProductDto;
 import com.codefathers.cfkserver.model.entities.offs.Off;
 import com.codefathers.cfkserver.model.entities.product.*;
 import com.codefathers.cfkserver.model.entities.request.Request;
@@ -68,7 +69,7 @@ public class ProductService {
         }
     }
 
-    public void createProduct(CreateProductDTO dto)
+    public int createProduct(CreateProductDTO dto)
             throws NoSuchACompanyException, NoSuchSellerException, CategoryNotFoundException {
         Product product = createProductFromDto(dto);
         productRepository.save(product);
@@ -76,6 +77,7 @@ public class ProductService {
         String request = String.format("User \"%20s\" Requested to Create Product\" %30s\"",
                 username, product.getName());
         requestService.createRequest(product, RequestType.CREATE_PRODUCT,request,username);
+        return product.getId();
     }
 
     private Product createProductFromDto(CreateProductDTO dto)
@@ -118,8 +120,11 @@ public class ProductService {
         sellPackageRepository.save(sellPackage);
     }
 
-    public List<Product> findProductsByName(String name){
-        return productRepository.findAllByNameContains(name);
+    public ArrayList<MicroProductDto> findProductsByName(String name){
+        List<Product> all = productRepository.findAllByNameContains(name);
+        ArrayList<MicroProductDto> toReturn = new ArrayList<>();
+        all.forEach(product -> toReturn.add(new MicroProductDto(product.getName(),product.getId())));
+        return toReturn;
     }
 
     public void addView(int productId) throws NoSuchAProductException {

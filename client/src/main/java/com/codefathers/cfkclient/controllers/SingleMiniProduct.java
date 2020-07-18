@@ -57,8 +57,9 @@ public class SingleMiniProduct {
                 ex.printStackTrace();
             }
         });
-        // TODO: 7/18/2020
-//        productPreViewImage.setImage(Connector.getInstance().loadMainImage(id));
+        try {
+            productPreViewImage.setImage(Connector.getInstance().productMainImage(id));
+        } catch (Exception ignore) {}
         soldOut.setVisible(!pm.isAvailable());
     }
 }

@@ -271,8 +271,9 @@ public class Connector {
         post("http://127.0.0.1:8050/off/remove", id, String.class);
     }
 
-    public void createProduct(CreateProductDTO dto) throws Exception {
-        post("http://127.0.0.1:8050/products/create", dto, String.class);
+    public int createProduct(CreateProductDTO dto) throws Exception {
+        ResponseEntity<Integer> post = post("http://127.0.0.1:8050/products/create", dto, Integer.class);
+        return post.getBody();
     }
 
     public Image userImage(String text) throws Exception {
@@ -384,5 +385,10 @@ public class Connector {
         }else {
             return null;
         }
+    }
+
+    public ArrayList<MicroProductDto> silmilarNameProducts(String name) throws Exception {
+        return get(address + "/product/similar/" + name,null,
+                new TypeToken<ArrayList<MicroProductDto>>(){}.getType());
     }
 }

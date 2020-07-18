@@ -13,10 +13,7 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,18 +74,22 @@ public class ProductController {
     }
 
     @PostMapping("/products/create")
-    public void addProduct(@RequestBody CreateProductDTO dto, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> addProduct(@RequestBody CreateProductDTO dto, HttpServletRequest request, HttpServletResponse response) {
         //TODO: Check if this works properly!!! (Two method for this...)
         try {
             if (checkToken(response,request)){
                 try {
-                    productService.createProduct(dto);
+                    int id = productService.createProduct(dto);
+                    return ResponseEntity.ok(id);
                 } catch (Exception e) {
                     sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+                    return null;
                 }
             }
+            return null;
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
+            return null;
         }
     }
 
@@ -108,87 +109,9 @@ public class ProductController {
         }
     }
 
-    @PostMapping("product/save_image")
-    public void saveImagesForProduct(@RequestBody SaveImageDTO dto, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            if (checkToken(response, request)) {
-                int id = dto.getProductId();
-                File directory = new File("src/main/resources/db/images/products/" + id);
-                if (!directory.exists()) directory.mkdirs();
-                saveMainImage(id, dto.getMainImage());
-                dto.getFiles().forEach(file -> saveImageForProduct(id, file));
-            }
-        } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
-
-    private void saveMainImage(int id, InputStream data) {
-        File image = new File("src/main/resources/db/images/products/" + id + "/main.jpg");
-        if (!image.exists()) {
-            try {
-                image.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            saveDataToFile(data, image);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveDataToFile(InputStream data, File file) throws IOException {
-        byte[] buffer = new byte[data.available()];
-        data.read(buffer);
-        OutputStream outStream = new FileOutputStream(file);
-        outStream.write(buffer);
-        outStream.close();
-    }
-
-    private void saveImageForProduct(int id, InputStream data) {
-        File directory = new File("src/main/resources/db/images/products/" + id + "/other");
-        directory.mkdirs();
-        File image = new File("src/main/resources/db/images/products/" + id + "/other/" + generateUniqueFileName() + ".jpg");
-        try {
-            if (image.createNewFile()) {
-                saveDataToFile(data, image);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @PutMapping("product/update_pic")
-    public void updateProductPicture(@RequestBody SaveImageDTO dto, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            if (checkToken(response, request)) {
-                File directory = new File("src/main/resources/db/images/products/" + dto.getProductId());
-                try {
-                    FileUtils.cleanDirectory(directory);
-                    saveImagesForProduct(dto, request, response);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
-
-    public void addVideo(int id, InputStream data) {
-        File video = new File("src/main/resources/db/videos/products/" + id + ".mp4");
-        try {
-            video.createNewFile();
-            saveDataToFile(data, video);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String generateUniqueFileName() {
-        Random random = new Random();
-        return String.format("%s%s", System.currentTimeMillis(), random.nextInt(100000));
+    @GetMapping
+    @RequestMapping("/product/similar/{name}")
+    public ResponseEntity<?> similarProducts(@PathVariable String name){
+        return ResponseEntity.ok(productService.findProductsByName(name));
     }
 }
