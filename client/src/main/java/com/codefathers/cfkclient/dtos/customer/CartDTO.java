@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data @AllArgsConstructor
 public class CartDTO {
-    private List<InCartDTO> inCartDTOS;
+    private List<InCartDTO> purchases;
     private long totalPrice;
 }

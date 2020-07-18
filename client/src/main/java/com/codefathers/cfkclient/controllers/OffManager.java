@@ -57,7 +57,6 @@ public class OffManager extends BackAbleController {
 
     private Connector connector = Connector.getInstance();
     private CacheData cacheData = CacheData.getInstance();
-    private final String username = cacheData.getUsername();
 
     @FXML
     public void initialize() {
@@ -227,12 +226,12 @@ public class OffManager extends BackAbleController {
         productsList.getItems().addAll(off.getProducts());
 
         availableProducts.getItems().clear();
-        /*try {
-            //TODO: CacheData Sort!!!
-            //availableProducts.getItems().addAll(connector.getAllProducts(username, cacheData.getSorts()));
-        } catch (UserNotAvailableException e) {
+        try {
+            // TODO: 7/18/2020
+//             availableProducts.getItems().addAll(connector.getAllProducts(username, cacheData.getSorts()));
+        } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
         initListeners();
         confirm.setDisable(true);

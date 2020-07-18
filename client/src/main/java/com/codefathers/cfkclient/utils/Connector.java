@@ -3,36 +3,44 @@ package com.codefathers.cfkclient.utils;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
+import com.codefathers.cfkclient.dtos.content.CreateAd;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
 import com.codefathers.cfkclient.dtos.discount.*;
 import com.codefathers.cfkclient.dtos.edit.*;
+import com.codefathers.cfkclient.dtos.log.SellLogDTO;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
-import com.codefathers.cfkclient.dtos.product.CreateProductDTO;
-import com.codefathers.cfkclient.dtos.product.FilterSortDto;
-import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
-import com.codefathers.cfkclient.dtos.product.MiniProductDto;
+import com.codefathers.cfkclient.dtos.product.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.Image;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.json.GsonJsonParser;
 import com.codefathers.cfkclient.dtos.user.*;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.*;
 
 import static org.springframework.http.HttpMethod.*;
 
+@ConfigurationProperties(prefix = "uri")
 public class Connector {
     private String token;
+    private String address;
     private RestTemplate restTemplate;
     private static Connector connector = new Connector();
 
@@ -119,19 +127,13 @@ public class Connector {
         return Objects.requireNonNull(response.getBody());
     }
 
-    public void changeAmount(String info) throws Exception {
-        post("http://127.0.0.1:8050/customer/change_amount", info, String.class);
+    public void changeAmount(int productId,int amount) throws Exception {
+        post(address + "/customer/change_amount", "" + productId +  "," + amount, String.class);
     }
 
-    public List<InCartDTO> showProducts() throws Exception {
-        ResponseEntity<InCartArrayListDTO> response = post("http://127.0.0.1:8050/customer/show_products",
-                null, InCartArrayListDTO.class);
-        return Objects.requireNonNull(response.getBody()).getInCartDTOS();
-    }
-
-    public void deleteProductFromCart(String info) throws Exception {
+    public void deleteProductFromCart(Integer productId) throws Exception {
         post("http://127.0.0.1:8050/customer/delete_product_from_cart",
-                info, String.class);
+                productId, String.class);
     }
 
     public void purchase(PurchaseDTO dto) throws Exception {
@@ -151,7 +153,7 @@ public class Connector {
         return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
-    public void addViewDigest(String productId) throws Exception {
+    public void addViewDigest(Integer productId) throws Exception {
         post("http://127.0.0.1:8050/customer/add_view",
                 productId, String.class);
     }
@@ -172,14 +174,14 @@ public class Connector {
         return response.getBody();
     }
 
-    public SellLogListDTO viewSalesHistory() throws Exception {
+    public List<SellLogDTO> viewSalesHistory() throws Exception {
         ResponseEntity<SellLogListDTO> response = post("http://127.0.0.1:8050/seller/sellLog",
                 null, SellLogListDTO.class);
-        return response.getBody();
+        return Objects.requireNonNull(response.getBody()).getSellLogDTOList();
     }
 
-    public void becomeSellerOfExistingProduct() throws Exception {
-        post("http://127.0.0.1:8050/seller/become_seller", null, HttpStatus.class);
+    public void becomeSellerOfExistingProduct(AddSellerToProductDTO dto) throws Exception {
+        post("http://127.0.0.1:8050/seller/become_seller", dto, HttpStatus.class);
     }
 
     public Long viewBalance() throws Exception {
@@ -188,24 +190,11 @@ public class Connector {
         return response.getBody();
     }
 
-    public MiniProductArrayListDto manageSellerProducts() throws Exception {
+    // TODO: 7/18/2020 filters
+    public List<MiniProductDto> manageSellerProducts() throws Exception {
         ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/seller/products",
                 null, MiniProductArrayListDto.class);
-        return response.getBody();
-    }
-
-    public Image userImage(String text) throws Exception {
-        byte[] image = get("http://127.0.0.1:8050/users/getImage",null,
-                byte[].class);
-        if (image != null) {
-            return new Image(new ByteArrayInputStream(image));
-        }else {
-            return null;
-        }
-    }
-
-    public void saveUserImage(InputStream stream) throws Exception {
-        post("http://127.0.0.1:8050/uesrs/save_image", stream, String.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
     public void editCategory(CategoryEditAttribute attribute) throws Exception {
@@ -222,6 +211,11 @@ public class Connector {
 
     public ArrayList<String> getSpecialFeatureOfCategory(Integer id) throws Exception {
         return get("http://127.0.0.1:8050/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
+    }
+
+    public List<String> getPublicFeaturesOfCategory() throws Exception {
+        return get("http://127.0.0.1:8050/category/get_public", null,
+                new TypeToken<ArrayList<String>>(){}.getType());
     }
 
     public ArrayList<CategoryPM> getAllCategories() throws Exception {
@@ -281,11 +275,114 @@ public class Connector {
         post("http://127.0.0.1:8050/products/create", dto, String.class);
     }
 
-    public void editProduct(ProductEditAttribute dto) throws Exception {
-        post("http://127.0.0.1:8050/off/edit", dto, String.class);
+    public Image userImage(String text) throws Exception {
+        ByteArrayResource image = get(address + "/download/user/profile/" + text,null,
+                ByteArrayResource.class);
+        if (image != null) {
+            return new Image(new ByteArrayInputStream(image.getInputStream().readAllBytes()));
+        }else {
+            return null;
+        }
     }
 
     public void removeProduct(Integer id) throws Exception {
         post("http://127.0.0.1:8050/off/edit", id, String.class);
+    }
+
+    public List<UserFullDTO> showUsers() throws Exception {
+        UserFullListDTO response = get("http://127.0.0.1:8050/manager/show_users",
+                null, UserFullListDTO.class);
+        return response.getDtos();
+    }
+
+    public void deleteUser(String username) throws Exception {
+        post("http://127.0.0.1:8050/manager/delete_user", username, String.class);
+    }
+
+    public List<MiniProductDto> showProducts_Manager(FilterSortDto filterSortDto) throws Exception {
+        return get("http://127.0.0.1:8050/manager/show_products",
+                filterSortDto, MiniProductArrayListDto.class);
+    }
+
+    public void removeProduct_Manager(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/remove_product", id, String.class);
+    }
+
+    public List<RequestDTO> showRequests() throws Exception {
+        RequestsListDTO response = get("http://127.0.0.1:8050/manager/show_requests",
+                null, RequestsListDTO.class);
+        return response.getDtos();
+    }
+
+    public void acceptRequest(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/accept_request", id, String.class);
+    }
+
+    public void declineRequest(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/decline_request", id, String.class);
+    }
+
+    public List<MicroProductDto> sellerMicroProduct(String seller) throws Exception {
+        return get(address + "/seller/ad/micro/" + seller,null,
+                new TypeToken<ArrayList<MicroProductDto>>(){}.getType());
+    }
+
+
+    public void addAd(CreateAd ad) throws Exception {
+        post(address + "/content/add_ad",ad,String.class);
+    }
+
+    public int createCompany(String[] info) throws Exception {
+        ResponseEntity<Integer> response = post(address + "",info,Integer.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
+    public ArrayList<MessagePM> getMessagesForUser() throws Exception {
+        return get(address + "/messages/get_all",null,
+                new TypeToken<ArrayList<MessagePM>>(){}.getType());
+    }
+
+    public void openMessage(int id) {
+        try {
+            post(address + "/messages/open/" + id,null,String.class);
+        } catch (Exception ignore) {}
+    }
+
+    public void saveUserImage(InputStream stream) throws Exception {
+        InputStreamResource resource = new InputStreamResource(stream);
+        post(address + "/upload/user/profile", resource, String.class);
+    }
+
+    public void updateProductMainImage(int id,InputStream[] streams) throws Exception {
+        post(address + "/upload/product/" + id,streams,String.class);
+    }
+
+    public Image productMainImage(int id) throws Exception {
+        ByteArrayResource resource = get(address + "/download/product/" + id + "/main", null
+                , ByteArrayResource.class);
+        return createImageFromResource(resource);
+    }
+
+    public ArrayList<Image> loadImages(int id) throws Exception {
+        ArrayList<Image> images = new ArrayList<>();
+        ArrayList<ByteArrayResource> resources = get(address + "/download/product/" + id,null,
+                new TypeToken<ArrayList<ByteArrayResource>>(){}.getType());
+        resources.forEach(byteArrayResource -> {
+            try {
+                Image image = createImageFromResource(byteArrayResource);
+                if (image != null) {
+                    images.add(image);
+                }
+            } catch (IOException ignore) {}
+        });
+        return images;
+    }
+
+    private Image createImageFromResource(ByteArrayResource resource) throws IOException {
+        if (resource != null) {
+            return new Image(new ByteArrayInputStream(resource.getInputStream().readAllBytes()));
+        }else {
+            return null;
+        }
     }
 }

@@ -129,13 +129,12 @@ public class CustomerController {
     }
 
     @PostMapping("/customer/delete_product_from_cart")
-    private ResponseEntity<?> deleteProductFromCart(HttpServletRequest request, HttpServletResponse response, @RequestBody String info) {
+    private ResponseEntity<?> deleteProductFromCart(HttpServletRequest request, HttpServletResponse response, @RequestBody Integer productId) {
         try {
             if (TokenUtil.checkToken(response, request)) {
                 String username = TokenUtil.getUsernameFromToken(request);
                 Customer customer = customerService.getCustomerByUsername(username);
                 Cart cart = customer.getCart();
-                int productId = Integer.parseInt(info);
                 cartService.deleteProductFromCart(cart, productId);
                 return ResponseEntity.ok(ResponseEntity.status(200));
             }
@@ -214,10 +213,10 @@ public class CustomerController {
     }
 
     @PostMapping("/customer/add_view")
-    private ResponseEntity<?> addViewDigest(HttpServletRequest request, HttpServletResponse response, @RequestBody String productId) {
+    private ResponseEntity<?> addViewDigest(HttpServletRequest request, HttpServletResponse response, @RequestBody Integer productId) {
         try {
             if (TokenUtil.checkToken(response, request)) {
-                productService.addView(Integer.parseInt(productId));
+                productService.addView(productId);
                 return ResponseEntity.ok(ResponseEntity.status(200));
             } else {
                 return null;

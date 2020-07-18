@@ -80,8 +80,6 @@ public class Purchase {
         this.connector = connector;
     }
 
-    // TODO : send notification
-
     @FXML
     public void initialize() {
         initButtons();

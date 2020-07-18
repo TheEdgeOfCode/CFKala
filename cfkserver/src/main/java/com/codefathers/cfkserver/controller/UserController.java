@@ -45,7 +45,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 public class UserController {
-    private HashMap<String, String> tokens;
+    private HashMap<String, String> tokens = new HashMap<>();
     @Autowired
     private UserService userService;
     @Autowired
@@ -61,7 +61,8 @@ public class UserController {
     private ResponseEntity<?> login(@RequestBody LoginDto dto, HttpServletResponse response) {
         try {
             String role = userService.login(dto.getUsername(), dto.getPassword());
-            String token = jwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername());
+            tokens.put(token, dto.getUsername());
             return ResponseEntity.ok(new TokenRoleDto(token, role));
         } catch (UserNotFoundException | NotVerifiedSeller | WrongPasswordException e) {
             sendError(response, BAD_REQUEST, e.getMessage());
@@ -73,7 +74,7 @@ public class UserController {
     private <T> ResponseEntity<?> createCustomer(@RequestBody CustomerDTO dto, HttpServletResponse response){
         try {
             userService.createCustomer(dto);
-            String token = jwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername());
             return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
         } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
@@ -161,7 +162,7 @@ public class UserController {
     }
 
     @PostMapping("/users/create_company")
-    public ResponseEntity<?> createCompany(String[] info) {
+    public ResponseEntity<?> createCompany(@RequestBody String[] info) {
         Company company = new Company(info[0], info[1], info[2]);
         int companyId = companyService.createCompany(company);
         return ResponseEntity.ok(companyId);
@@ -217,41 +218,5 @@ public class UserController {
             }
         }
         return new RequestDTO(req.getRequestId(), status, req.getRequest());
-    }
-
-    @GetMapping("/users/getImage")
-    private @ResponseBody byte[] getImage(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            if (checkToken(response, request)) {
-                try {
-                    String username = getUsernameFromToken(request);
-                    File file = new File("src\\main\\resources\\db\\images\\users\\" + username + ".jpg");
-                    return new FileInputStream(file).readAllBytes();
-                } catch (Exception e) {
-                    sendError(response, BAD_REQUEST, e.getMessage());
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, UNAUTHORIZED, e.getMessage());
-            return null;
-        }
-    }
-
-    @PostMapping("/users/save_image")
-    private void saveImage(@RequestBody InputStream stream, HttpServletRequest request, HttpServletResponse response){
-        try {
-            if (checkToken(response, request)) {
-                try {
-                    userService.saveNewImage(stream, getUsernameFromToken(request));
-                } catch (Exception e) {
-                    sendError(response, BAD_REQUEST, e.getMessage());
-                }
-            }
-        } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, UNAUTHORIZED, e.getMessage());
-        }
     }
 }
