@@ -295,4 +295,8 @@ public class ProductService {
     public List<Product> getAllOffFromActiveProducts(){
         return productRepository.findAllByOnOffTrue();
     }
+
+    public List<SellPackage> getOffPackages(){
+        return sellPackageRepository.findAllByOnOffTrue();
+    }
 }

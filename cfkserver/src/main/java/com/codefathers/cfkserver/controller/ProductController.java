@@ -7,6 +7,7 @@ import com.codefathers.cfkserver.model.dtos.product.*;
 import com.codefathers.cfkserver.model.entities.product.Comment;
 import com.codefathers.cfkserver.model.entities.product.CommentStatus;
 import com.codefathers.cfkserver.model.entities.product.Product;
+import com.codefathers.cfkserver.model.entities.product.SellPackage;
 import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribute;
 import com.codefathers.cfkserver.model.entities.user.User;
 import com.codefathers.cfkserver.service.*;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
 import static com.codefathers.cfkserver.utils.TokenUtil.checkToken;
@@ -41,6 +43,7 @@ public class ProductController {
     private CartService cartService;
     @Autowired
     private FeedbackService feedbackService;
+
 
     @PostMapping("/product/get_all_products")
     private ResponseEntity<?> getAllProducts(@RequestBody FilterSortDto filterSortDto) {
@@ -195,5 +198,53 @@ public class ProductController {
         } catch (Exception e){
             sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
         }
+    }
+
+    @GetMapping("/products/on_off")
+    private List<OffProductPM> getAllOnOff(@RequestBody FilterSortDto filter){
+        List<SellPackage> allSellPackagesOnOff = productService.getOffPackages();
+        List<SellPackage> filtered = filterService.filterSellPackages(filter.getCategoryId(), allSellPackagesOnOff,
+                filter.getActiveFilters(),
+                new int[]{filter.getDownPriceLimit(), filter.getUpPriceLimit()}, filter.isAvailableOnly());
+        filtered = filterSellPackagesField(filtered, filter);
+        new Sorter().sortSellPackage(filtered, filter.getSortType());
+        if (!filter.isAscending()) Collections.reverse(filtered);
+        List<OffProductPM> toReturn = new ArrayList<>();
+        filtered.forEach(sellPackage -> {
+            OffProductPM offProductPM = createOffPM(sellPackage);
+            toReturn.add(offProductPM);
+        });
+        return toReturn;
+    }
+
+    private List<SellPackage> filterSellPackagesField(List<SellPackage> sellPackages, FilterSortDto filterPackage) {
+        String name = filterPackage.getName();
+        String seller = filterPackage.getSeller();
+        String brand = filterPackage.getBrand();
+        List<SellPackage> list = new CopyOnWriteArrayList<>(sellPackages);
+        if (name != null)
+            for (SellPackage product : list) {
+                if (!product.getProduct().getName().toLowerCase().contains(name.toLowerCase())) list.remove(product);
+            }
+        if (seller != null)
+            for (SellPackage product : list) {
+                if (!product.getSeller().getUsername().toLowerCase().contains(seller.toLowerCase()))
+                    list.remove(product);
+            }
+        if (brand != null)
+            for (SellPackage product : list) {
+                if (!product.getProduct().getCompanyClass().getName().toLowerCase().contains(brand.toLowerCase()))
+                    list.remove(product);
+            }
+        return list;
+    }
+
+    private OffProductPM createOffPM(SellPackage sellPackage) {
+        int price = sellPackage.getPrice();
+        int percent = sellPackage.getOff().getOffPercentage();
+        String name = sellPackage.getProduct().getName();
+        int id = sellPackage.getProduct().getId();
+        Date end = sellPackage.getOff().getEndTime();
+        return new OffProductPM(name, id, price * (100 - percent) / 100, percent, end);
     }
 }

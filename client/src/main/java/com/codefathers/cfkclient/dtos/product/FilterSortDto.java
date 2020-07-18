@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class FilterSortDto {
     private int upPriceLimit;
     private int downPriceLimit;
@@ -16,7 +15,16 @@ public class FilterSortDto {
     private HashMap<String, String> activeFilters;
     private boolean offMode;
     private boolean availableOnly;
+    private String name;
+    private String seller;
+    private String brand;
 
+    public FilterSortDto(){
+        activeFilters = new HashMap<>();
+        offMode = false;
+        upPriceLimit = 0;
+        downPriceLimit = 0;
+    }
     private boolean isAscending;
     private SortType sortType;
 }

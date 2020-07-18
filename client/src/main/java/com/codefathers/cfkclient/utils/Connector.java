@@ -412,4 +412,9 @@ public class Connector {
     public void assignComment(String[] info) throws Exception {
         post(address + "/product/comment/add",info,String.class);
     }
+
+    public List<OffProductPM> showAllOnOffProducts(FilterSortDto filter) throws Exception {
+        return get(address + "products/on_off",filter,
+                new TypeToken<ArrayList<OffProductPM>>(){}.getType());
+    }
 }
