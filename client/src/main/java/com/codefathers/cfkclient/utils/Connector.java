@@ -298,14 +298,14 @@ public class Connector {
         post("http://127.0.0.1:8050/manager/delete_user", username, String.class);
     }
 
-    public List<MiniProductDto> showProducts_Manager() throws Exception {
+    public List<MiniProductDto> showProducts_Manager(FilterSortDto filterSortDto) throws Exception {
         ResponseEntity<MiniProductArrayListDto> response = get("http://127.0.0.1:8050/manager/show_products",
-                null, MiniProductArrayListDto.class);
+                filterSortDto, MiniProductArrayListDto.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
-    public void removeProduct_Manager(FilterSortDto filterSortDto) throws Exception {
-        post("http://127.0.0.1:8050/manager/remove_product", filterSortDto, String.class);
+    public void removeProduct_Manager(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/remove_product", id, String.class);
     }
 
     public List<RequestDTO> showRequests() throws Exception {
