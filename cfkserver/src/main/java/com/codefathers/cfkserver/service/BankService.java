@@ -1,6 +1,6 @@
 package com.codefathers.cfkserver.service;
 
-import com.codefathers.cfkserver.bank.BankAPI;
+import com.codefathers.cfkserver.utils.BankUtil;
 import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
 import com.codefathers.cfkserver.exceptions.model.bank.account.PasswordsDoNotMatchException;
 import com.codefathers.cfkserver.exceptions.model.bank.receipt.*;
@@ -17,14 +17,14 @@ import java.util.List;
 
 @Service
 public class BankService {
-    private BankAPI bankAPI = BankAPI.getInstance();
+    private BankUtil bankUtil = BankUtil.getInstance();
 
     //TODO: Check Invalid Input and DataBase Error
     public String createAccount(CreateBankAccountDTO dto) throws IOException, PasswordsDoNotMatchException, InvalidUsernameException {
         String message = "create_account " + dto.getFirstName() + " " + dto.getLastName() + " " +
                 dto.getUsername() + " " + dto.getPassword() + " " + dto.getRePassword();
-        bankAPI.sendMessage(message);
-        String response = bankAPI.getMessage();
+        bankUtil.sendMessage(message);
+        String response = bankUtil.getMessage();
 
         if (response.startsWith("passwords")){
             throw new PasswordsDoNotMatchException(response);
@@ -37,8 +37,8 @@ public class BankService {
 
     public String getToken(TokenRequestDTO dto) throws IOException, InvalidUsernameException {
         String message = "get_token " + dto.getUsername() + " " + dto.getPassword();
-        bankAPI.sendMessage(message);
-        String response = bankAPI.getMessage();
+        bankUtil.sendMessage(message);
+        String response = bankUtil.getMessage();
 
         if (response.startsWith("invalid")){
             throw new InvalidUsernameException(response);
@@ -51,8 +51,8 @@ public class BankService {
             InvalidParameterPassedException, InvalidTokenException, ExpiredTokenException, InvalidSourceAccountException, InvalidDestAccountException, EqualSourceDestException, InvalidAccountIdException, InvalidDescriptionExcxeption {
         String message = "create_receipt " + dto.getToken() + " " + ReceiptType.from(dto.getType()) + " " +
                 dto.getMoney() + " " + dto.getSource() + " " + dto.getDest() + " " + dto.getDescription();
-        bankAPI.sendMessage(message);
-        String response = bankAPI.getMessage();
+        bankUtil.sendMessage(message);
+        String response = bankUtil.getMessage();
 
         if (response.startsWith("invalid receipt")){
             throw new InvalidRecieptTypeException(response);
@@ -81,8 +81,8 @@ public class BankService {
 
     public List<TransactionDTO> getTransactions(String token, TransactType type) throws IOException, InvalidTokenException, ExpiredTokenException, InvalidReceiptIdException {
         String message = "get_transactions " + token + " " + type.getValue();
-        bankAPI.sendMessage(message);
-        String response = bankAPI.getMessage();
+        bankUtil.sendMessage(message);
+        String response = bankUtil.getMessage();
 
         if (response.startsWith("token is")){
             throw new InvalidTokenException(response);
@@ -102,8 +102,8 @@ public class BankService {
 
     public void pay(int receiptId) throws IOException, InvalidReceiptIdException, PaidReceiptException, NotEnoughMoneyAtSourceException, InvalidAccountIdException {
         String message = "pay " + receiptId;
-        bankAPI.sendMessage(message);
-        String response = bankAPI.getMessage();
+        bankUtil.sendMessage(message);
+        String response = bankUtil.getMessage();
 
         if (response.startsWith("invalid receipt")){
             throw new InvalidReceiptIdException(response);
@@ -118,8 +118,8 @@ public class BankService {
 
     public long getBalance(String token) throws IOException, ExpiredTokenException, InvalidTokenException {
         String message = "get_balance " + token;
-        bankAPI.sendMessage(message);
-        String response = bankAPI.getMessage();
+        bankUtil.sendMessage(message);
+        String response = bankUtil.getMessage();
 
         if (response.startsWith("token is")){
             throw new InvalidTokenException(response);
