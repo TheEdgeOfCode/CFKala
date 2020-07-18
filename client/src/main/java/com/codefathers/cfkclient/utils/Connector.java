@@ -283,4 +283,8 @@ public class Connector {
     public void editProduct(ProductEditAttribute dto) throws Exception {
         post("http://127.0.0.1:8050/off/edit", dto, String.class);
     }
+
+    public void removeProduct(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/off/edit", id, String.class);
+    }
 }

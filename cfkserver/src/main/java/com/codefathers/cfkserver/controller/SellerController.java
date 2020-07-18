@@ -11,19 +11,18 @@ import com.codefathers.cfkserver.model.dtos.log.SellLogListDTO;
 import com.codefathers.cfkserver.model.dtos.off.CreateOffDTO;
 import com.codefathers.cfkserver.model.dtos.off.OffDTO;
 import com.codefathers.cfkserver.model.dtos.off.OffListDTO;
-import com.codefathers.cfkserver.model.dtos.product.*;
+import com.codefathers.cfkserver.model.dtos.product.AddSellerToProductDTO;
+import com.codefathers.cfkserver.model.dtos.product.FilterSortDto;
+import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
+import com.codefathers.cfkserver.model.dtos.product.MiniProductListDto;
 import com.codefathers.cfkserver.model.dtos.user.CompanyDto;
 import com.codefathers.cfkserver.model.entities.logs.SellLog;
 import com.codefathers.cfkserver.model.entities.offs.Off;
-import com.codefathers.cfkserver.model.entities.product.Category;
 import com.codefathers.cfkserver.model.entities.product.Company;
 import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.model.entities.request.edit.OffChangeAttributes;
-import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribute;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.service.*;
-import com.codefathers.cfkserver.utils.TokenUtil;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +30,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static com.codefathers.cfkserver.controller.ProductController.dtoFromProduct;
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
@@ -50,8 +49,6 @@ public class SellerController {
     private Sorter sorter;
     @Autowired
     private OffService offService;
-    @Autowired
-    private CategoryService categoryService;
 
     @GetMapping("seller/view_company")
     public ResponseEntity<?> viewCompanyInfo(HttpServletRequest request, HttpServletResponse response){
