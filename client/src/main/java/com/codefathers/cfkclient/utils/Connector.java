@@ -9,10 +9,10 @@ import com.codefathers.cfkclient.dtos.discount.AddUser;
 import com.codefathers.cfkclient.dtos.discount.CreateDiscount;
 import com.codefathers.cfkclient.dtos.discount.CreateDiscountSystematic;
 import com.codefathers.cfkclient.dtos.discount.DisCodeManagerPM;
-import com.codefathers.cfkclient.dtos.edit.CategoryEditAttribute;
-import com.codefathers.cfkclient.dtos.edit.DiscountCodeEditAttributes;
-import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
+import com.codefathers.cfkclient.dtos.edit.*;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
+import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
+import com.codefathers.cfkclient.dtos.product.CreateProductDTO;
 import com.codefathers.cfkclient.dtos.product.FilterSortDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
@@ -262,6 +262,64 @@ public class Connector {
     public ArrayList<DisCodeManagerPM> getDiscountCodes() throws Exception {
         return get("http://127.0.0.1:8050/discount/get_discounts",null,
                 new TypeToken<ArrayList<DisCodeManagerPM>>(){}.getType());
+    }
+
+    public void addOff(CreateOffDTO dto) throws Exception {
+        post("http://127.0.0.1:8050/off/create", dto, String.class);
+    }
+
+    public void editOff(OffChangeAttributes dto) throws Exception {
+        post("http://127.0.0.1:8050/off/edit", dto, String.class);
+    }
+
+    public void removeOff(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/off/remove", id, String.class);
+    }
+
+    public void createProduct(CreateProductDTO dto) throws Exception {
+        post("http://127.0.0.1:8050/products/create", dto, String.class);
+    }
+
+    public void editProduct(ProductEditAttribute dto) throws Exception {
+        post("http://127.0.0.1:8050/off/edit", dto, String.class);
+    }
+
+    public void removeProduct(Integer id) throws Exception {
+        post("http://127.0.0.1:8050/off/edit", id, String.class);
+    }
+
+    public List<UserFullDTO> showUsers() throws Exception {
+        ResponseEntity<UserFullListDTO> response = get("http://127.0.0.1:8050/manager/show_users",
+                null, UserFullListDTO.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void deleteUser(String username) throws Exception {
+        post("http://127.0.0.1:8050/manager/delete_user", username, String.class);
+    }
+
+    public List<MiniProductDto> showProducts_Manager() throws Exception {
+        ResponseEntity<MiniProductArrayListDto> response = get("http://127.0.0.1:8050/manager/show_products",
+                null, MiniProductArrayListDto.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void removeProduct_Manager(FilterSortDto filterSortDto) throws Exception {
+        post("http://127.0.0.1:8050/manager/remove_product", filterSortDto, String.class);
+    }
+
+    public List<RequestDTO> showRequests() throws Exception {
+        ResponseEntity<RequestsListDTO> response = get("http://127.0.0.1:8050/manager/show_requests",
+                null, RequestsListDTO.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void acceptRequest(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/accept_request", id, String.class);
+    }
+
+    public void declineRequest(String id) throws Exception {
+        post("http://127.0.0.1:8050/manager/decline_request", id, String.class);
     }
 
 }
