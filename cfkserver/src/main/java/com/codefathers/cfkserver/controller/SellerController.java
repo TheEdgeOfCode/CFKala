@@ -11,10 +11,7 @@ import com.codefathers.cfkserver.model.dtos.log.SellLogListDTO;
 import com.codefathers.cfkserver.model.dtos.off.CreateOffDTO;
 import com.codefathers.cfkserver.model.dtos.off.OffDTO;
 import com.codefathers.cfkserver.model.dtos.off.OffListDTO;
-import com.codefathers.cfkserver.model.dtos.product.AddSellerToProductDTO;
-import com.codefathers.cfkserver.model.dtos.product.FilterSortDto;
-import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
-import com.codefathers.cfkserver.model.dtos.product.MiniProductListDto;
+import com.codefathers.cfkserver.model.dtos.product.*;
 import com.codefathers.cfkserver.model.dtos.user.CompanyDto;
 import com.codefathers.cfkserver.model.entities.logs.SellLog;
 import com.codefathers.cfkserver.model.entities.offs.Off;
@@ -23,6 +20,7 @@ import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.model.entities.request.edit.OffChangeAttributes;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.service.*;
+import com.codefathers.cfkserver.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -166,24 +164,24 @@ public class SellerController {
         return miniProductPMs;
     }*/
 
-    /*public List<MicroProductDto> getProductsForSeller(HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping
+    @RequestMapping("/seller/ad/micro/{username}")
+    public ResponseEntity<?> getProductsForSeller(HttpServletRequest request, HttpServletResponse response,
+                                                  @PathVariable String username) {
         try {
-            if (checkToken(response, request)) {
-                List<Product> sellerProducts = sellerService.viewProducts(TokenUtil.getUsernameFromToken(request));
-                List<MicroProductDto> list = new ArrayList<>();
-                if (sellerProducts != null)
-                    sellerProducts.forEach(product -> list.add(new MicroProductDto(product.getName(), product.getId())));
-                return list;
-            }
-            else
-                return null;
+            checkToken(response, request);
+            List<Product> sellerProducts = sellerService.viewProducts(username);
+            List<MicroProductDto> list = new ArrayList<>();
+            if (sellerProducts != null)
+                sellerProducts.forEach(product -> list.add(new MicroProductDto(product.getName(), product.getId())));
+            return ResponseEntity.ok().body(list);
         } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
-    }*/
+    }
 
-    @DeleteMapping("seller/remove_product")
+    @PostMapping("seller/remove_product")
     public void removeProduct(@RequestBody int productId, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
