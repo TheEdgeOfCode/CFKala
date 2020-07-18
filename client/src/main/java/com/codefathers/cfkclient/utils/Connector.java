@@ -3,6 +3,7 @@ package com.codefathers.cfkclient.utils;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.category.CreateDTO;
 import com.codefathers.cfkclient.dtos.content.AdPM;
+import com.codefathers.cfkclient.dtos.content.CreateAd;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
 import com.codefathers.cfkclient.dtos.discount.*;
@@ -14,7 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.Image;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.json.GsonJsonParser;
 import com.codefathers.cfkclient.dtos.user.*;
 import org.springframework.core.io.Resource;
@@ -23,7 +23,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -191,20 +190,11 @@ public class Connector {
         return response.getBody();
     }
 
+    // TODO: 7/18/2020 filters
     public List<MiniProductDto> manageSellerProducts() throws Exception {
         ResponseEntity<MiniProductArrayListDto> response = post("http://127.0.0.1:8050/seller/products",
                 null, MiniProductArrayListDto.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
-    }
-
-    public Image userImage(String text) throws Exception {
-        byte[] image = get("http://127.0.0.1:8050users/getImage",null,
-                byte[].class);
-        if (image != null) {
-            return new Image(new ByteArrayInputStream(image));
-        }else {
-            return null;
-        }
     }
 
     public void saveUserImage(InputStream stream) throws Exception {
@@ -308,9 +298,9 @@ public class Connector {
     }
 
     public List<UserFullDTO> showUsers() throws Exception {
-        ResponseEntity<UserFullListDTO> response = get("http://127.0.0.1:8050/manager/show_users",
+        UserFullListDTO response = get("http://127.0.0.1:8050/manager/show_users",
                 null, UserFullListDTO.class);
-        return Objects.requireNonNull(response.getBody()).getDtos();
+        return response.getDtos();
     }
 
     public void deleteUser(String username) throws Exception {
@@ -318,9 +308,8 @@ public class Connector {
     }
 
     public List<MiniProductDto> showProducts_Manager(FilterSortDto filterSortDto) throws Exception {
-        ResponseEntity<MiniProductArrayListDto> response = get("http://127.0.0.1:8050/manager/show_products",
+        return get("http://127.0.0.1:8050/manager/show_products",
                 filterSortDto, MiniProductArrayListDto.class);
-        return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
     public void removeProduct_Manager(String id) throws Exception {
@@ -328,9 +317,9 @@ public class Connector {
     }
 
     public List<RequestDTO> showRequests() throws Exception {
-        ResponseEntity<RequestsListDTO> response = get("http://127.0.0.1:8050/manager/show_requests",
+        RequestsListDTO response = get("http://127.0.0.1:8050/manager/show_requests",
                 null, RequestsListDTO.class);
-        return Objects.requireNonNull(response.getBody()).getDtos();
+        return response.getDtos();
     }
 
     public void acceptRequest(String id) throws Exception {
@@ -341,4 +330,13 @@ public class Connector {
         post("http://127.0.0.1:8050/manager/decline_request", id, String.class);
     }
 
+    public List<MicroProductDto> sellerMicroProduct(String seller) throws Exception {
+        return get(address + "/seller/ad/micro/" + seller,null,
+                new TypeToken<ArrayList<MicroProductDto>>(){}.getType());
+    }
+
+
+    public void addAd(CreateAd ad) throws Exception {
+        post(address + "/content/add_ad",ad,String.class);
+    }
 }
