@@ -40,7 +40,7 @@ import static org.springframework.http.HttpMethod.*;
 @ConfigurationProperties(prefix = "uri")
 public class Connector {
     private String token;
-    private String address = "http://127.0.0.1:8050";
+    private String address;
     private RestTemplate restTemplate;
     private static Connector connector = new Connector();
 
@@ -127,8 +127,8 @@ public class Connector {
         return Objects.requireNonNull(response.getBody());
     }
 
-    public void changeAmount(int productId,int amount) throws Exception {
-        post(address + "/customer/change_amount", "" + productId +  "," + amount, String.class);
+    public void changeAmount(int productId, int amount) throws Exception {
+        post(address + "/customer/change_amount", "" + productId + "," + amount, String.class);
     }
 
     public void deleteProductFromCart(Integer productId) throws Exception {
@@ -197,52 +197,55 @@ public class Connector {
     }
 
     public void editCategory(CategoryEditAttribute attribute) throws Exception {
-        post(address + "/category/edit",attribute,String.class);
+        post(address + "/category/edit", attribute, String.class);
     }
 
     public void removeCategory(Integer id) throws Exception {
-        post(address + "/category/remove",id,String.class);
+        post(address + "/category/remove", id, String.class);
     }
 
     public void addCategory(CreateDTO createDTO) throws Exception {
-        post(address + "/category/remove",createDTO,String.class);
+        post(address + "/category/remove", createDTO, String.class);
     }
 
     public ArrayList<String> getSpecialFeatureOfCategory(Integer id) throws Exception {
-        return get(address + "/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
+        return get(address + "/category/get_special", id, new TypeToken<ArrayList<String>>() {
+        }.getType());
     }
 
     public List<String> getPublicFeaturesOfCategory() throws Exception {
         return get(address + "/category/get_public", null,
-                new TypeToken<ArrayList<String>>(){}.getType());
+                new TypeToken<ArrayList<String>>() {
+                }.getType());
     }
 
     public ArrayList<CategoryPM> getAllCategories() throws Exception {
-        return get("",null,new TypeToken<ArrayList<CategoryPM>>(){}.getType());
+        return get("", null, new TypeToken<ArrayList<CategoryPM>>() {
+        }.getType());
     }
 
     public void addContent(String title, String content) throws Exception {
-        post(address + "/content/add_content",title + "~~~" + content,String.class);
+        post(address + "/content/add_content", title + "~~~" + content, String.class);
     }
 
     public void deleteContent(Integer id) throws Exception {
-        post(address + "/content/delete",id,String.class);
+        post(address + "/content/delete", id, String.class);
     }
 
     public void systematicDiscount(CreateDiscountSystematic createDiscount) throws Exception {
-        post(address + "/discount/systematic",createDiscount,String.class);
+        post(address + "/discount/systematic", createDiscount, String.class);
     }
 
     public void removeDiscountCode(String discountCode) throws Exception {
-        post(address + "/discount/delete",discountCode,String.class);
+        post(address + "/discount/delete", discountCode, String.class);
     }
 
     public void editDiscountCode(DiscountCodeEditAttributes attributes) throws Exception {
-        post(address + "/discount/edit",attributes,String.class);
+        post(address + "/discount/edit", attributes, String.class);
     }
 
     public void createDiscount(CreateDiscount dto) throws Exception {
-        post(address + "/discount/create",dto,String.class);
+        post(address + "/discount/create", dto, String.class);
     }
 
     public void removeUserFromDiscountCodeUsers(String code, String username) throws Exception {
@@ -432,5 +435,41 @@ public class Connector {
         try {
             return get(address + "/manager/is_first",null,Boolean.class);
         } catch (Exception ignore) { return false;}
+            return get(address + "/manager/is_first", null, Boolean.class);
+        } catch (Exception ignore) {
+            return false;
+        }
+    }
+
+    public String createBankAccount(CreateBankAccountDTO dto) throws Exception {
+        ResponseEntity<String> response = post("http://127.0.0.1:8050/bank/create_account", dto, String.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
+    public String getToken(TokenRequestDTO dto) throws Exception {
+        ResponseEntity<String> response = get("http://127.0.0.1:8050/bank/get_token", dto, String.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
+    public int createReceipt(CreateReceiptDTO dto) throws Exception {
+        ResponseEntity<Integer> response = post("http://127.0.0.1:8050/bank/create_receipt",
+                dto, Integer.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
+    private List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws Exception {
+        ResponseEntity<TransactionListDTO> response = get("http://127.0.0.1:8050/bank/get_transactions",
+                dto, TransactionListDTO.class);
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
+
+    public void pay(String receiptId) throws Exception {
+        post("http://127.0.0.1:8050/bank/pay", receiptId, String.class);
+    }
+
+    public long getBalance(BalanceDTO dto) throws Exception {
+        ResponseEntity<Long> response = get("http://127.0.0.1:8050/bank/get_balance",
+                dto, Long.class);
+        return Objects.requireNonNull(response.getBody());
     }
 }

@@ -48,7 +48,7 @@ public class BankService {
     }
 
     public int createReceipt(CreateReceiptDTO dto) throws IOException, InvalidRecieptTypeException, InvalidMoneyException,
-            InvalidParameterPassedException, InvalidTokenException, ExpiredTokenException, InvalidSourceAccountException, InvalidDestAccountException, EqualSourceDestException, InvalidAccountIdException, InvalidDescriptionExcxeption {
+            InvalidParameterPassedException, InvalidTokenException, ExpiredTokenException, InvalidSourceAccountException, InvalidDestAccountException, EqualSourceDestException, InvalidAccountIdException, InvalidDescriptionExcxeption, InvalidUsernameException {
         String message = "create_receipt " + dto.getToken() + " " + ReceiptType.from(dto.getType()) + " " +
                 dto.getMoney() + " " + dto.getSource() + " " + dto.getDest() + " " + dto.getDescription();
         bankUtil.sendMessage(message);
@@ -63,7 +63,10 @@ public class BankService {
         } else if (response.startsWith("token is")){
             throw new InvalidTokenException(response);
         } else if (response.startsWith("token expired")){
-            throw new ExpiredTokenException(response);
+            //throw new ExpiredTokenException(response);
+            String token = getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
+            dto.setToken(token);
+            return createReceipt(dto);
         } else if (response.startsWith("source")){
             throw new InvalidSourceAccountException(response);
         } else if (response.startsWith("dest")){
@@ -79,15 +82,18 @@ public class BankService {
         }
     }
 
-    public List<TransactionDTO> getTransactions(String token, TransactType type) throws IOException, InvalidTokenException, ExpiredTokenException, InvalidReceiptIdException {
-        String message = "get_transactions " + token + " " + type.getValue();
+    public List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws IOException, InvalidTokenException, ExpiredTokenException, InvalidReceiptIdException, InvalidUsernameException {
+        String message = "get_transactions " + dto.getToken() + " " + dto.getType().getValue();
         bankUtil.sendMessage(message);
         String response = bankUtil.getMessage();
 
         if (response.startsWith("token is")){
             throw new InvalidTokenException(response);
         } else if (response.startsWith("token expired")){
-            throw new ExpiredTokenException(response);
+            //throw new ExpiredTokenException(response);
+            String token = getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
+            dto.setToken(token);
+            return getTransactions(dto);
         } else if (response.startsWith("invalid")){
             throw new InvalidReceiptIdException(response);
         } else {
@@ -116,15 +122,18 @@ public class BankService {
         }
     }
 
-    public long getBalance(String token) throws IOException, ExpiredTokenException, InvalidTokenException {
-        String message = "get_balance " + token;
+    public long getBalance(BalanceDTO dto) throws IOException, ExpiredTokenException, InvalidTokenException, InvalidUsernameException {
+        String message = "get_balance " + dto.getToken();
         bankUtil.sendMessage(message);
         String response = bankUtil.getMessage();
 
         if (response.startsWith("token is")){
             throw new InvalidTokenException(response);
         } else if (response.startsWith("token expired")){
-            throw new ExpiredTokenException(response);
+            //throw new ExpiredTokenException(response);
+            String newToken = getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
+            dto.setToken(newToken);
+            return getBalance(dto);
         } else {
             return Long.parseLong(response);
         }

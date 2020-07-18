@@ -1,4 +1,4 @@
-package com.codefathers.cfkserver.model.dtos.bank;
+package com.codefathers.cfkclient.dtos.bank;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
