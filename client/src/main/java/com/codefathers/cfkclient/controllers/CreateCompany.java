@@ -57,9 +57,8 @@ public class CreateCompany {
         info[0] = name.getText();
         info[1] = phone.getText();
         info[2] = category.getText();
-        int id = 0;
         try {
-            id = connector.createCompany(info);
+            int id = connector.createCompany(info);
             CacheData.getInstance().setCompanyID(id);
         } catch (Exception e) {
             Notification.show("Error",e.getMessage(),back.getScene().getWindow(),true);

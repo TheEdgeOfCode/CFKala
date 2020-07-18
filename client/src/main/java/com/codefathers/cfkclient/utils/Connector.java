@@ -338,4 +338,15 @@ public class Connector {
         ResponseEntity<Integer> response = post(address + "",info,Integer.class);
         return Objects.requireNonNull(response.getBody());
     }
+
+    public ArrayList<MessagePM> getMessagesForUser() throws Exception {
+        return get(address + "/messages/get_all",null,
+                new TypeToken<ArrayList<MessagePM>>(){}.getType());
+    }
+
+    public void openMessage(int id) {
+        try {
+            post(address + "/messages/open/" + id,null,String.class);
+        } catch (Exception ignore) {}
+    }
 }

@@ -37,7 +37,6 @@ public class DiscountCodeCustomer extends BackAbleController {
     @FXML private Label date;
 
     private Connector connector = Connector.getInstance();
-    private CacheData cacheData = CacheData.getInstance();
 
     @FXML
     public void initialize() {

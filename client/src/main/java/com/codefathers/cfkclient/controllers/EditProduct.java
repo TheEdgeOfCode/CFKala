@@ -30,4 +30,6 @@ public class EditProduct {
     @FXML private TextField price;
     @FXML private TextField stock;
     @FXML private JFXButton submitMain;
+
+
 }
