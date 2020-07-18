@@ -4,11 +4,13 @@ import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductExceptio
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.product.*;
+import com.codefathers.cfkserver.model.entities.product.Comment;
+import com.codefathers.cfkserver.model.entities.product.CommentStatus;
 import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribute;
-import com.codefathers.cfkserver.service.FilterService;
-import com.codefathers.cfkserver.service.ProductService;
-import com.codefathers.cfkserver.service.Sorter;
+import com.codefathers.cfkserver.model.entities.user.User;
+import com.codefathers.cfkserver.service.*;
+import com.codefathers.cfkserver.utils.TokenUtil;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,12 @@ public class ProductController {
     private FilterService filterService;
     @Autowired
     private Sorter sorter;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private CartService cartService;
+    @Autowired
+    private FeedbackService feedbackService;
 
     @PostMapping("/product/get_all_products")
     private ResponseEntity<?> getAllProducts(@RequestBody FilterSortDto filterSortDto) {
@@ -98,7 +106,7 @@ public class ProductController {
             if (checkToken(response,request)){
                 try {
                     productService.editProduct(getUsernameFromToken(request), editAttribute);
-                } catch (Exception | NoSuchAProductException e) {
+                } catch (Exception e) {
                     sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
                 }
             }
@@ -131,5 +139,61 @@ public class ProductController {
         features.putAll(product.getPublicFeatures());
         features.putAll(product.getSpecialFeatures());
         return new FullProductPM(miniProductDto,features);
+    }
+
+    @GetMapping
+    @RequestMapping("/product/comments/{id}")
+    private ResponseEntity<?> getComments(HttpServletResponse response, @PathVariable Integer id){
+        try {
+            ArrayList<Comment> comments = productService.getAllComment(id);
+            ArrayList<CommentPM> toReturn = new ArrayList<>();
+            comments.forEach(comment -> toReturn.add(
+                    new CommentPM(comment.getUserId(),
+                            comment.getTitle(),
+                            comment.getText(),
+                            comment.isBoughtThisProduct()))
+            );
+            return ResponseEntity.ok(toReturn);
+        } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+            return null;
+        }
+    }
+
+    @PostMapping("/product/add_to_cart")
+    private void addToCart(@RequestBody String[] data,HttpServletRequest request, HttpServletResponse response) {
+        try {
+            checkToken(response, request);
+            String userName = data[0];
+            User user = userService.getUserByUsername(userName);
+            int productId = Integer.parseInt(data[1]);
+            String sellerUserName = data[2];
+            int amount = Integer.parseInt(data[3]);
+            cartService.addProductToCart(user.getCart(), sellerUserName, productId, amount);
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
+        } catch (Exception e){
+            sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+        }
+    }
+
+    @PostMapping("/product/comment/add")
+    private void addComment(@RequestBody String[] data,HttpServletRequest request, HttpServletResponse response) {
+        try {
+            checkToken(response, request);
+            String userId = data[0];
+            String commentTitle = data[1];
+            String commentText = data[2];
+            int productId = Integer.parseInt(data[3]);
+            Comment comment = new Comment(userId, commentTitle, commentText,
+                    CommentStatus.NOT_VERIFIED,
+                    feedbackService.boughtThisProduct(productId, userId));
+            comment.setProduct(productService.findById(productId));
+            feedbackService.createComment(comment);
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
+        } catch (Exception e){
+            sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+        }
     }
 }

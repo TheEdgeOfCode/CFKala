@@ -399,4 +399,17 @@ public class Connector {
     public FullProductPM viewAttributes(int id) throws Exception {
         return get(address + "/products/full/" + id,null,FullProductPM.class);
     }
+
+    public List<CommentPM> viewProductComments(int id) throws Exception {
+        return get(address + "/product/comments/" + id,null,
+                new TypeToken<ArrayList<CommentPM>>(){}.getType());
+    }
+
+    public void addToCart(String[] info) throws Exception {
+        post(address + "/product/add_to_cart",info,String.class);
+    }
+
+    public void assignComment(String[] info) throws Exception {
+        post(address + "/product/comment/add",info,String.class);
+    }
 }

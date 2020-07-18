@@ -158,15 +158,13 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public Comment[] getAllComment(int productId) throws NoSuchAProductException {
+    public ArrayList<Comment> getAllComment(int productId) throws NoSuchAProductException {
         Product product = findById(productId);
         List<Comment> comments = new CopyOnWriteArrayList<>(product.getAllComments());
         for (Comment comment : comments) {
             if (!comment.getStatus().equals(CommentStatus.VERIFIED)) comments.remove(comment);
         }
-        Comment[] toReturn = new Comment[comments.size()];
-        comments.toArray(toReturn);
-        return toReturn;
+        return new ArrayList<>(comments);
     }
 
     public void deleteProduct(int productId) throws NoSuchAProductException {
