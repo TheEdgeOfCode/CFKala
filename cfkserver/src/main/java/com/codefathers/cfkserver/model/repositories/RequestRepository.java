@@ -3,6 +3,7 @@ package com.codefathers.cfkserver.model.repositories;
 import com.codefathers.cfkserver.model.entities.offs.Off;
 import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.model.entities.request.Request;
+import com.codefathers.cfkserver.model.entities.user.Seller;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,5 @@ public interface RequestRepository extends CrudRepository<Request,Integer> {
     List<Request> findAllByProduct(Product product);
     List<Request> findAllByOff(Off off);
     List<Request> findAllByDoneIsFalse();
+    List<Request> findAllBySeller(Seller seller);
 }
