@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -198,13 +199,17 @@ public class Connector {
     }
 
     public Image userImage(String text) throws Exception {
-        byte[] image = get("http://127.0.0.1:8050users/getImage",null,
+        byte[] image = get("http://127.0.0.1:8050/users/getImage",null,
                 byte[].class);
         if (image != null) {
             return new Image(new ByteArrayInputStream(image));
         }else {
             return null;
         }
+    }
+
+    public void saveUserImage(InputStream stream) throws Exception {
+        post("http://127.0.0.1:8050/uesrs/save_image", stream, String.class);
     }
 
     public void editCategory(CategoryEditAttribute attribute) throws Exception {
