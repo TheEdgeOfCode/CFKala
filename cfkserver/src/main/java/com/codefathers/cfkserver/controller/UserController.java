@@ -61,7 +61,7 @@ public class UserController {
     private ResponseEntity<?> login(@RequestBody LoginDto dto, HttpServletResponse response) {
         try {
             String role = userService.login(dto.getUsername(), dto.getPassword());
-            String token = jwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername());
             return ResponseEntity.ok(new TokenRoleDto(token, role));
         } catch (UserNotFoundException | NotVerifiedSeller | WrongPasswordException e) {
             sendError(response, BAD_REQUEST, e.getMessage());
@@ -73,7 +73,7 @@ public class UserController {
     private <T> ResponseEntity<?> createCustomer(@RequestBody CustomerDTO dto, HttpServletResponse response){
         try {
             userService.createCustomer(dto);
-            String token = jwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername());
             return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
         } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
@@ -161,7 +161,7 @@ public class UserController {
     }
 
     @PostMapping("/users/create_company")
-    public ResponseEntity<?> createCompany(String[] info) {
+    public ResponseEntity<?> createCompany(@RequestBody String[] info) {
         Company company = new Company(info[0], info[1], info[2]);
         int companyId = companyService.createCompany(company);
         return ResponseEntity.ok(companyId);

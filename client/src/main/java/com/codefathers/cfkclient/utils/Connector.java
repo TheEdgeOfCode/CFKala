@@ -333,4 +333,9 @@ public class Connector {
     public void addAd(CreateAd ad) throws Exception {
         post(address + "/content/add_ad",ad,String.class);
     }
+
+    public int createCompany(String[] info) throws Exception {
+        ResponseEntity<Integer> response = post(address + "",info,Integer.class);
+        return Objects.requireNonNull(response.getBody());
+    }
 }
