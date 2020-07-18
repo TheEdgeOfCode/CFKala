@@ -4,7 +4,9 @@ import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.service.file.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +21,7 @@ public class FileController {
     @Autowired
     private StorageService storageService;
 
-    @RequestMapping("/upload/profile_photo/{username}")
+    @RequestMapping("/upload/user/profile/{username}")
     @PostMapping
     private void saveProfileUser(@PathVariable String username, @RequestBody MultipartFile file,
                                  HttpServletRequest request, HttpServletResponse response) {
@@ -31,6 +33,20 @@ public class FileController {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {
             sendError(response, HttpStatus.CONFLICT, e.getMessage());
+        }
+    }
+
+    @RequestMapping("/download/user/profile/{username}")
+    @GetMapping
+    private ResponseEntity<?> getProfileImage(@PathVariable String username,
+                                              HttpServletRequest request, HttpServletResponse response) {
+        try {
+            checkToken(response, request);
+            Resource resource = storageService.getProfile(username);
+            return ResponseEntity.ok().body(resource);
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            return null;
         }
     }
 }

@@ -19,13 +19,17 @@ import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.Image;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.json.GsonJsonParser;
 import com.codefathers.cfkclient.dtos.user.*;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Type;
@@ -33,8 +37,10 @@ import java.util.*;
 
 import static org.springframework.http.HttpMethod.*;
 
+@ConfigurationProperties(prefix = "uri")
 public class Connector {
     private String token;
+    private String address;
     private RestTemplate restTemplate;
     private static Connector connector = new Connector();
 
@@ -197,16 +203,6 @@ public class Connector {
         return response.getBody();
     }
 
-    public Image userImage(String text) throws Exception {
-        byte[] image = get("http://127.0.0.1:8050users/getImage",null,
-                byte[].class);
-        if (image != null) {
-            return new Image(new ByteArrayInputStream(image));
-        }else {
-            return null;
-        }
-    }
-
     public void editCategory(CategoryEditAttribute attribute) throws Exception {
         post("http://127.0.0.1:8050/category/edit",attribute,String.class);
     }
@@ -281,6 +277,16 @@ public class Connector {
     }
 
     public void editProduct(ProductEditAttribute dto) throws Exception {
-        post("http://127.0.0.1:8050/off/edit", dto, String.class);
+        post(address + "/off/edit", dto, String.class);
+    }
+
+    public Image userImage(String text) throws Exception {
+        Resource image = get(address + "/download/user/profile/" + text,null,
+                Resource.class);
+        if (image != null) {
+            return new Image(new ByteArrayInputStream(image.getInputStream().readAllBytes()));
+        }else {
+            return null;
+        }
     }
 }

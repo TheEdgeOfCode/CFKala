@@ -218,40 +218,4 @@ public class UserController {
         }
         return new RequestDTO(req.getRequestId(), status, req.getRequest());
     }
-
-    @GetMapping("/users/getImage")
-    private @ResponseBody byte[] getImage(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            if (checkToken(response, request)) {
-                try {
-                    String username = getUsernameFromToken(request);
-                    File file = new File("src\\main\\resources\\db\\images\\users\\" + username + ".jpg");
-                    return new FileInputStream(file).readAllBytes();
-                } catch (Exception e) {
-                    sendError(response, BAD_REQUEST, e.getMessage());
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, UNAUTHORIZED, e.getMessage());
-            return null;
-        }
-    }
-
-    @PostMapping("/users/save_image")
-    private void saveImage(@RequestBody InputStream stream, HttpServletRequest request, HttpServletResponse response){
-        try {
-            if (checkToken(response, request)) {
-                try {
-                    userService.saveNewImage(stream, getUsernameFromToken(request));
-                } catch (Exception e) {
-                    sendError(response, BAD_REQUEST, e.getMessage());
-                }
-            }
-        } catch (ExpiredTokenException | InvalidTokenException e) {
-            sendError(response, UNAUTHORIZED, e.getMessage());
-        }
-    }
 }
