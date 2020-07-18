@@ -100,7 +100,7 @@ public class CustomerController {
             } else {
                 return null;
             }
-        } catch (Exception | NoSuchAProductException e) {
+        } catch (Exception e) {
             ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
@@ -167,7 +167,7 @@ public class CustomerController {
             }
             else
                 return null;
-        } catch (Exception | NoSuchAProductException e) {
+        } catch (Exception e) {
             ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
@@ -206,7 +206,7 @@ public class CustomerController {
             }
             else
                 return null;
-        } catch (Exception | NoSuchAProductException e) {
+        } catch (Exception e) {
                 ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
                 return null;
         }

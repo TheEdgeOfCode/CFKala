@@ -40,7 +40,7 @@ import static org.springframework.http.HttpMethod.*;
 @ConfigurationProperties(prefix = "uri")
 public class Connector {
     private String token;
-    private String address;
+    private String address = "http://127.0.0.1:8050";
     private RestTemplate restTemplate;
     private static Connector connector = new Connector();
 
@@ -114,8 +114,7 @@ public class Connector {
     }
 
     public UserFullDTO viewPersonalInfo() throws Exception {
-        ResponseEntity<UserFullDTO> response = post(address + "/users/view", null, UserFullDTO.class);
-        return response.getBody();
+        return get(address + "/users/view", null, UserFullDTO.class);
     }
 
     public void editPersonalInfo(UserEditAttributes attributes) throws Exception {
@@ -432,6 +431,6 @@ public class Connector {
     public boolean isTheFirstManager() {
         try {
             return get(address + "/manager/is_first",null,Boolean.class);
-        } catch (Exception ignore) {return false;}
+        } catch (Exception ignore) { return false;}
     }
 }

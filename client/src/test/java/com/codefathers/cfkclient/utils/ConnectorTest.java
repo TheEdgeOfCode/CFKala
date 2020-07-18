@@ -15,8 +15,8 @@ class ConnectorTest {
 
     @Test
     void getAllProduct() throws Exception {
-        FilterSortDto dto = new FilterSortDto(0,0,0,new HashMap<String,String>(),
-                false,false,false, SortType.NAME);
+        FilterSortDto dto = new FilterSortDto(0,0,0,new HashMap<>(),
+                false,false,null,null,null,false, SortType.NAME);
         List<MiniProductDto> allProducts = connector.getAllProducts(dto);
         System.out.println(allProducts);
     }

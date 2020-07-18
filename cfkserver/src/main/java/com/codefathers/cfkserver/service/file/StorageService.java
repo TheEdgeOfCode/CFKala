@@ -18,8 +18,8 @@ import java.util.*;
 @Service
 @ConfigurationProperties(prefix = "storage")
 public class StorageService {
-    private String users;
-    private String products;
+    private String users = "src/main/resources/db/users/";
+    private String products = "src/main/resources/db/products/image/";
 
     @PostConstruct
     private void init() {

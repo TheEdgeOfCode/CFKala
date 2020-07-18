@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface SellPackageRepository extends CrudRepository<SellPackage,Integer> {
-    List<SellPackage> findAllByOnOffTrue();
+    List<SellPackage> findAllByIsOnOffTrue();
 }

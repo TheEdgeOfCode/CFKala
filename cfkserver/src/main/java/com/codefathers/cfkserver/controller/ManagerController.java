@@ -200,6 +200,7 @@ public class ManagerController {
 
     @GetMapping("manager/is_first")
     private ResponseEntity<?> isFirstManager(){
-        return ResponseEntity.ok(managerService.isFirstManager());
+        Boolean answer = managerService.isFirstManager();
+        return ResponseEntity.ok(answer);
     }
 }

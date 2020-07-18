@@ -87,27 +87,15 @@ public class ManagerAccount extends BackAbleController {
         try {
             UserFullDTO userFullPM = connector.viewPersonalInfo();
 
-            //UserFullPM userFullPM = getTestUser();
-
             username.setText(userFullPM.getUsername());
             fName.setText(userFullPM.getFirstName());
             lName.setText(userFullPM.getLastName());
             email.setText(userFullPM.getEmail());
             phone.setText(userFullPM.getPhoneNumber());
         } catch (Exception e) {
+            new OopsAlert().show(e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    private UserFullDTO getTestUser() {
-        return new UserFullDTO(
-                "marmof",
-                "Mohamad",
-                "Mofayezi",
-                "marmof@gmail.com",
-                "989132255442",
-                "Manager"
-        );
     }
 
     private void handleButtons() {

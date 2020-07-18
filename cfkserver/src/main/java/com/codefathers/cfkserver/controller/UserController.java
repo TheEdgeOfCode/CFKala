@@ -119,9 +119,12 @@ public class UserController {
                         user.getClass().getName().split("\\.")[2]
                 );
                 return ResponseEntity.ok(dto);
-            }
-            else
+            } else {
                 return null;
+            }
+        } catch (InvalidTokenException | ExpiredTokenException e) {
+            sendError(response, UNAUTHORIZED, e.getMessage());
+            return null;
         } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;

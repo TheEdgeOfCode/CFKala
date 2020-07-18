@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -297,6 +296,6 @@ public class ProductService {
     }
 
     public List<SellPackage> getOffPackages(){
-        return sellPackageRepository.findAllByOnOffTrue();
+        return sellPackageRepository.findAllByIsOnOffTrue();
     }
 }

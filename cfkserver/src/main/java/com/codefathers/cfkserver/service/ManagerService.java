@@ -169,7 +169,7 @@ public class ManagerService {
     }
 
     public Boolean isFirstManager(){
-        return managerRepository.existsAllBy();
+        return !managerRepository.existsAllBy();
     }
 
 }

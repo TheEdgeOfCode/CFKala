@@ -40,7 +40,6 @@ public class CFK extends Application {
             } else {
                scene = new Scene(loadFXML("MainPage"));
             }
-            scene = new Scene(loadFXML("MainPage"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,7 +90,6 @@ public class CFK extends Application {
         Parent parent = loader.load();
         BackAbleController controller = loader.getController();
         controller.setBackFxmlS(Arrays.asList(backFxml));
-        System.out.println(controller.getBackFxmlS());
         return parent;
     }
 
