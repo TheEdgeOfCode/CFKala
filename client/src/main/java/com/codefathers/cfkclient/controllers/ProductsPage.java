@@ -35,7 +35,7 @@ public class ProductsPage {
     @FXML private Button filterByFiled;
 
 
-    public class TableFeatureRow {
+    public static class TableFeatureRow {
         private String feature;
         private TextField value;
 

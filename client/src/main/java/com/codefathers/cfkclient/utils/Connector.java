@@ -9,10 +9,7 @@ import com.codefathers.cfkclient.dtos.discount.*;
 import com.codefathers.cfkclient.dtos.edit.*;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
-import com.codefathers.cfkclient.dtos.product.CreateProductDTO;
-import com.codefathers.cfkclient.dtos.product.FilterSortDto;
-import com.codefathers.cfkclient.dtos.product.MiniProductArrayListDto;
-import com.codefathers.cfkclient.dtos.product.MiniProductDto;
+import com.codefathers.cfkclient.dtos.product.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.Image;
@@ -178,8 +175,8 @@ public class Connector {
         return response.getBody();
     }
 
-    public void becomeSellerOfExistingProduct() throws Exception {
-        post("http://127.0.0.1:8050/seller/become_seller", null, HttpStatus.class);
+    public void becomeSellerOfExistingProduct(AddSellerToProductDTO dto) throws Exception {
+        post("http://127.0.0.1:8050/seller/become_seller", dto, HttpStatus.class);
     }
 
     public Long viewBalance() throws Exception {
@@ -222,6 +219,11 @@ public class Connector {
 
     public ArrayList<String> getSpecialFeatureOfCategory(Integer id) throws Exception {
         return get("http://127.0.0.1:8050/category/get_special",id,new TypeToken<ArrayList<String>>(){}.getType());
+    }
+
+    public List<String> getPublicFeaturesOfCategory() throws Exception {
+        return get("http://127.0.0.1:8050/category/get_public", null,
+                new TypeToken<ArrayList<String>>(){}.getType());
     }
 
     public ArrayList<CategoryPM> getAllCategories() throws Exception {

@@ -1,10 +1,11 @@
 package com.codefathers.cfkclient.dtos.product;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.HashMap;
 
-@Data
+@Data @AllArgsConstructor
 public class CreateProductDTO {
     private String sellerName;
     private String productName;
