@@ -14,11 +14,13 @@ public class CustomerInformation {
     private String zipCode;
     private String cardNumber;
     private String cardPassword;
+    private String token;
 
-    public CustomerInformation(String address, String zipCode, String cardNumber, String cardPassword) {
+    public CustomerInformation(String address, String zipCode, String cardNumber, String cardPassword, String token) {
         this.address = address;
         this.zipCode = zipCode;
         this.cardNumber = cardNumber;
         this.cardPassword = cardPassword;
+        this.token = token;
     }
 }

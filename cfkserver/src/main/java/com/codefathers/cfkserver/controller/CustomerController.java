@@ -154,7 +154,8 @@ public class CustomerController {
                     purchaseDTO.getAddress(),
                     purchaseDTO.getZipCode(),
                     purchaseDTO.getCardNumber(),
-                    purchaseDTO.getCardPassword()
+                    purchaseDTO.getCardPassword(),
+                    purchaseDTO.getToken()
             );
                  DiscountCode discountCode = (purchaseDTO.getDisCodeId().isBlank() ? null
                          : discountService.findByCode(purchaseDTO.getDisCodeId()));

@@ -10,4 +10,5 @@ public class PurchaseDTO {
     private String cardNumber;
     private String cardPassword;
     private String disCodeId;
+    private String token;
 }
