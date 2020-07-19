@@ -1,8 +1,11 @@
 package com.codefathers.cfkclient.dtos.product;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+
 public class CommentPM {
     private String userName;
     private String title;

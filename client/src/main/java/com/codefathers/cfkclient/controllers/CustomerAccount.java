@@ -80,7 +80,7 @@ public class CustomerAccount extends BackAbleController {
     private void loadImage() {
         Image image = null;
         try {
-            image = connector.userImage(username.getText());
+            image = connector.userImage();
             if (image == null) {
                 image = new Image(userPhoto);
             }
@@ -117,6 +117,7 @@ public class CustomerAccount extends BackAbleController {
     private UserFullDTO getTestUser() {
         return new UserFullDTO(
                 "marmof",
+                "12345",
                 "Mohamad",
                 "Mofayezi",
                 "marmof@gmail.com",

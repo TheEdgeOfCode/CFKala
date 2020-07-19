@@ -59,9 +59,9 @@ public class AccountManagerPopUp {
     private void loadImage() {
         Image image = null;
         try {
-            image = Connector.getInstance().userImage(username.getText());
-        } catch (Exception e) {
-            e.printStackTrace();
+            image = Connector.getInstance().userImage();
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
         }
         if (image == null) {
             image = new Image(userPhoto);

@@ -11,10 +11,7 @@ import com.codefathers.cfkserver.model.entities.request.edit.CategoryEditAttribu
 import com.codefathers.cfkserver.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,8 +75,9 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/category/get_special")
-    private ArrayList<String> getSpecialFeatures(@RequestBody Integer id, HttpServletResponse response){
+    @GetMapping()
+    @RequestMapping("/category/get_special/{id}")
+    private ArrayList<String> getSpecialFeatures(HttpServletResponse response, @PathVariable Integer id){
         try {
             return categoryService.getAllSpecialFeaturesFromCategory(id);
         } catch (CategoryNotFoundException e) {

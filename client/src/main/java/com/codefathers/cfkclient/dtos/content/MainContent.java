@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 public class MainContent {
     int id;
     String title;
-    String Content;
+    String content;
 
     public MainContent(String title, String content) {
         this.title = title;
-        Content = content;
+        this.content = content;
     }
 
     @Override

@@ -11,8 +11,11 @@ public class SoundCenter {
 
     public static void play(Sound sound) {
         URL resource = getSoundSource(sound);
-        AudioClip audioClip = new AudioClip(resource.toString());
-        audioClip.play();
+        AudioClip audioClip = null;
+        try {
+            audioClip = new AudioClip(resource.toString());
+            audioClip.play();
+        } catch (Exception ignore) {}
     }
 
     private static URL getSoundSource(Sound sound) {

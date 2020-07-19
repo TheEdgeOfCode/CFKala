@@ -105,6 +105,7 @@ public class ProductsPage extends BackAbleController {
         if (featureTable.isDisable()) featureTable.setDisable(false);
         try {
             ArrayList<String> features = connector.getSpecialFeatureOfCategory(id);
+            features.addAll(connector.getPublicFeaturesOfCategory());
             List<TableFeatureRow> list = new ArrayList<>();
             features.forEach(f -> list.add(new TableFeatureRow(f)));
             ObservableList<TableFeatureRow> data = FXCollections.observableList(list);

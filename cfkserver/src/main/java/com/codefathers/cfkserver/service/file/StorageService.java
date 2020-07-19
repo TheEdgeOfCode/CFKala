@@ -4,14 +4,11 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -38,7 +35,7 @@ public class StorageService {
         outStream.close();
     }
 
-    public Resource getProfile(String username) {
+    public ByteArrayResource getProfile(String username) {
         File image = new File(users + username + ".jpg");
         if (image.exists()) {
             return loadFileAsResource(image);
@@ -54,10 +51,10 @@ public class StorageService {
         } catch (IOException ignore) {}
     }
 
-    private Resource loadFileAsResource(File file) {
+    private ByteArrayResource loadFileAsResource(File file) {
         try {
             Path filePath = file.toPath();
-            Resource resource = new ByteArrayResource(new FileInputStream(file).readAllBytes());
+            ByteArrayResource resource = new ByteArrayResource(new FileInputStream(file).readAllBytes());
             if (resource.exists()) {
                 return resource;
             } else {
@@ -109,15 +106,15 @@ public class StorageService {
         outStream.close();
     }
 
-    public ArrayList<Resource> getProductImages(int id) {
-        ArrayList<Resource> resources = new ArrayList<>();
+    public ByteArrayResource[] getProductImages(int id) {
+        ArrayList<ByteArrayResource> resources = new ArrayList<>();
         resources.add(getProductMainImage(id));
         resources.addAll(getAllOtherProductImages(id));
-        return resources;
+        return resources.toArray(new ByteArrayResource[0]);
     }
 
-    private ArrayList<Resource> getAllOtherProductImages(int id) {
-        ArrayList<Resource> resources = new ArrayList<>();
+    private ArrayList<ByteArrayResource> getAllOtherProductImages(int id) {
+        ArrayList<ByteArrayResource> resources = new ArrayList<>();
         File otherImagesDirectory = new File(products + id + "/other");
         File[] otherImages = otherImagesDirectory.listFiles();
         if (otherImages != null) {
@@ -130,7 +127,7 @@ public class StorageService {
         return resources;
     }
 
-    public Resource getProductMainImage(int id) {
+    public ByteArrayResource getProductMainImage(int id) {
         File image = new File(products + id + "/main.jpg");
         return loadFileAsResource(image);
     }

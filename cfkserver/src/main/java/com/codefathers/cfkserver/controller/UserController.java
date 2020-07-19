@@ -61,7 +61,7 @@ public class UserController {
     private ResponseEntity<?> login(@RequestBody LoginDto dto, HttpServletResponse response) {
         try {
             String role = userService.login(dto.getUsername(), dto.getPassword());
-            String token = JwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername(),role);
             tokens.put(token, dto.getUsername());
             return ResponseEntity.ok(new TokenRoleDto(token, role));
         } catch (UserNotFoundException | NotVerifiedSeller | WrongPasswordException e) {
@@ -71,10 +71,10 @@ public class UserController {
     }
 
     @PostMapping("/users/create_customer")
-    private <T> ResponseEntity<?> createCustomer(@RequestBody CustomerDTO dto, HttpServletResponse response){
+    private ResponseEntity<?> createCustomer(@RequestBody CustomerDTO dto, HttpServletResponse response){
         try {
             userService.createCustomer(dto);
-            String token = JwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername(),"customer");
             return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
         } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
@@ -83,10 +83,10 @@ public class UserController {
     }
 
     @PostMapping("/users/create_manager")
-    private <T> ResponseEntity<?> createCustomer(@RequestBody ManagerDTO dto, HttpServletResponse response){
+    private ResponseEntity<?> createCustomer(@RequestBody ManagerDTO dto, HttpServletResponse response){
         try {
             userService.createManager(dto);
-            String token = JwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername(),"manager");
             return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
         } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
@@ -95,13 +95,11 @@ public class UserController {
     }
 
     @PostMapping("/users/create_seller")
-    private <T> ResponseEntity<?> createSeller(@RequestBody SellerDTO dto, HttpServletResponse response){
+    private void createSeller(@RequestBody SellerDTO dto, HttpServletResponse response){
         try {
             userService.createSeller(dto);
-            return ResponseEntity.ok(ResponseEntity.status(200));
         } catch (UserAlreadyExistsException | NoSuchACompanyException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
-            return null;
         }
     }
 
@@ -112,6 +110,7 @@ public class UserController {
                 User user = userService.viewPersonalInfo(TokenUtil.getUsernameFromToken(request));
                 UserFullDTO dto = new UserFullDTO(
                         user.getUsername(),
+                        user.getPassword(),
                         user.getFirstName(),
                         user.getLastName(),
                         user.getEmail(),
@@ -131,36 +130,28 @@ public class UserController {
         }
     }
 
-    @PutMapping("/users/edit")
-    public ResponseEntity<?> editPersonalInfo(HttpServletRequest request, HttpServletResponse response,
+    @PostMapping("/users/edit")
+    public void editPersonalInfo(HttpServletRequest request, HttpServletResponse response,
                                               @RequestBody UserEditAttributes editAttributes) {
         try {
             if (checkToken(response, request)) {
                 userService.changeInfo(TokenUtil.getUsernameFromToken(request), editAttributes);
-                return ResponseEntity.ok(HttpStatus.valueOf(200));
             }
-            else
-                return null;
         } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
-            return null;
         }
     }
 
     @PostMapping("/users/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
                 String username = TokenUtil.getUsernameFromToken(request);
                 userService.logout(username);
                 tokens.remove(username);
-                return ResponseEntity.ok(HttpStatus.valueOf(200));
             }
-            else
-                return null;
         } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
-            return null;
         }
     }
 

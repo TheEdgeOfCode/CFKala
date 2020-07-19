@@ -79,7 +79,7 @@ public class ManageUsers extends BackAbleController {
         email.setText(newUser.getEmail());
         phone.setText(newUser.getPhoneNumber());
         try {
-            userImage.setImage(connector.userImage(newUser.getUsername()));
+            userImage.setImage(connector.userImage());
         } catch (Exception e) {
             Notification.show("Error", "Unable to set image!", back.getScene().getWindow(), true);
         }

@@ -12,6 +12,7 @@ import com.codefathers.cfkserver.model.dtos.user.ChargeWalletDTO;
 import com.codefathers.cfkserver.model.dtos.user.CustomerDTO;
 import com.codefathers.cfkserver.model.dtos.user.ManagerDTO;
 import com.codefathers.cfkserver.model.dtos.user.SellerDTO;
+import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.RequestType;
 import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
 import com.codefathers.cfkserver.model.entities.user.*;
@@ -69,15 +70,14 @@ public class UserService {
                 sellerDTO.getEmail(),
                 sellerDTO.getPhoneNumber(),
                 new Cart(),
-                companyService.getCompanyById(sellerDTO.getCompany().getId()),
+                companyService.getCompanyById(sellerDTO.getCompanyID()),
                 sellerDTO.getBalance()
         );
-        String requestStr = String.format("%s has requested to create a seller with email %s", sellerDTO.getUsername(), sellerDTO.getEmail());
-        requestService.createRequest(seller, RequestType.REGISTER_SELLER, sellerDTO.getUsername(), requestStr);
         sellerRepository.save(seller);
-        //TODO: Handle Request on Seller
-        /*Request request = new Request(sellerDTO.getUsername(), RequestType.REGISTER_SELLER, requestStr, seller);
-        seller.addRequest(request);*/
+        String requestStr = String.format("%s has requested to create a seller with email %s", sellerDTO.getUsername(), sellerDTO.getEmail());
+        Request request = requestService.createRequest(seller, RequestType.REGISTER_SELLER, sellerDTO.getUsername(), requestStr);
+        seller.addRequest(request);
+        sellerRepository.save(seller);
     }
 
     public void createCustomer(CustomerDTO customerDTO) throws UserAlreadyExistsException {

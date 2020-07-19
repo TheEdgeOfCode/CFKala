@@ -5,6 +5,7 @@ import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.service.file.StorageService;
 import com.codefathers.cfkserver.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class FileController {
     private ResponseEntity<?> getProfileImage(HttpServletRequest request, HttpServletResponse response) {
         try {
             checkToken(response, request);
-            Resource resource = storageService.getProfile(TokenUtil.getUsernameFromToken(request));
+            ByteArrayResource resource = storageService.getProfile(TokenUtil.getUsernameFromToken(request));
             return ResponseEntity.ok().body(resource);
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());

@@ -1,10 +1,13 @@
 package com.codefathers.cfkclient.dtos.discount;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+
 public class DisCodeUserDTO extends DiscountDTO{
     private int count;
 

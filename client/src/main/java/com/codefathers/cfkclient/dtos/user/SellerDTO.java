@@ -2,9 +2,12 @@ package com.codefathers.cfkclient.dtos.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
+
 public class SellerDTO extends UserDTO {
     private int companyID;
     private long balance;
