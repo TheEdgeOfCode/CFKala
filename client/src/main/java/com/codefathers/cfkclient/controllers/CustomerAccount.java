@@ -3,7 +3,10 @@ package com.codefathers.cfkclient.controllers;
 import com.codefathers.cfkclient.BackAbleController;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
+import com.codefathers.cfkclient.dtos.bank.BalanceDTO;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
+import com.codefathers.cfkclient.dtos.user.ChargeWalletDTO;
+import com.codefathers.cfkclient.dtos.user.Role;
 import com.codefathers.cfkclient.dtos.user.UserFullDTO;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
@@ -22,6 +25,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static com.codefathers.cfkclient.dtos.user.Role.CUSTOMER;
 
 public class CustomerAccount extends BackAbleController {
     @FXML private JFXButton back;
@@ -48,6 +53,9 @@ public class CustomerAccount extends BackAbleController {
     @FXML private JFXButton editEMailButt;
     @FXML private JFXTextField phoneText;
     @FXML private Label phone;
+    @FXML private Label wallet;
+    @FXML private JFXButton chargeWallet;
+    @FXML private Label balance;
     @FXML private JFXButton editPhoneButt;
     @FXML private JFXButton cancelButt;
     @FXML private JFXButton confirmButt;
@@ -96,6 +104,14 @@ public class CustomerAccount extends BackAbleController {
         lName.setText(userFullDTO.getLastName());
         email.setText(userFullDTO.getEmail());
         phone.setText(userFullDTO.getPhoneNumber());
+        wallet.setText(String.valueOf(userFullDTO.getBalance()));
+        try {
+            balance.setText(String.valueOf(connector.getBalance(
+                    new BalanceDTO(userFullDTO.getUsername(), userFullDTO.getPassword()))));
+        } catch (Exception e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
     }
 
     private UserFullDTO getTestUser() {
@@ -105,6 +121,7 @@ public class CustomerAccount extends BackAbleController {
                 "Mofayezi",
                 "marmof@gmail.com",
                 "989132255442",
+                10000,
                 "Customer"
         );
     }
@@ -133,6 +150,7 @@ public class CustomerAccount extends BackAbleController {
         cancelButt.setOnAction(event -> handleCancel());
         chooseProf.setOnAction(event -> handleChooseProf());
         requestsButt.setOnAction(event -> handleRequestView());
+        chargeWallet.setOnAction(event -> handleChargeWallet());
     }
 
     private void handleRequestView() {
@@ -352,5 +370,15 @@ public class CustomerAccount extends BackAbleController {
             field.setFocusColor(blueColor);
             field.setPromptText(prompt);
         });
+    }
+
+    private void handleChargeWallet() {
+        long money = new ChargeWalletDialog().show();
+        try {
+            connector.chargeWallet(new ChargeWalletDTO(money, CUSTOMER));
+        } catch (Exception e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
     }
 }

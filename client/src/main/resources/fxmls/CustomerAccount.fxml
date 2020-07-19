@@ -288,20 +288,11 @@
                            <Font name="System Bold" size="19.0" />
                         </font>
                      </Label>
-                     <StackPane prefHeight="150.0" prefWidth="200.0">
-                        <children>
-                           <JFXTextField fx:id="phoneText1" labelFloat="true" visible="false">
-                              <font>
-                                 <Font size="15.0" />
-                              </font>
-                           </JFXTextField>
-                           <Label fx:id="wallet" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
-                              <font>
-                                 <Font name="Microsoft JhengHei" size="16.0" />
-                              </font>
-                           </Label>
-                        </children>
-                     </StackPane>
+                     <Label fx:id="wallet" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                        <font>
+                           <Font name="Microsoft JhengHei" size="16.0" />
+                        </font>
+                     </Label>
                      <JFXButton fx:id="chargeWallet" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="34.0" prefWidth="51.0" text=" ">
                         <graphic>
                            <FontIcon iconLiteral="fa-credit-card-alt" iconSize="25" />
@@ -329,20 +320,11 @@
                            <Font name="System Bold" size="19.0" />
                         </font>
                      </Label>
-                     <StackPane prefHeight="150.0" prefWidth="200.0">
-                        <children>
-                           <JFXTextField fx:id="phoneText11" labelFloat="true" visible="false">
-                              <font>
-                                 <Font size="15.0" />
-                              </font>
-                           </JFXTextField>
-                           <Label fx:id="balance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
-                              <font>
-                                 <Font name="Microsoft JhengHei" size="16.0" />
-                              </font>
-                           </Label>
-                        </children>
-                     </StackPane>
+                     <Label fx:id="balance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                        <font>
+                           <Font name="Microsoft JhengHei" size="16.0" />
+                        </font>
+                     </Label>
                   </children>
                </HBox>
                <HBox alignment="TOP_RIGHT" prefHeight="38.0" prefWidth="301.0">

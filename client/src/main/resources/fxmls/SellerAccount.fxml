@@ -105,7 +105,7 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ecf0f1;" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane fx:id="main" prefHeight="562.0" prefWidth="682.0">
+                  <AnchorPane fx:id="main" prefHeight="562.0" prefWidth="682.0" visible="false">
                      <children>
                         <VBox prefHeight="478.0" prefWidth="454.0" spacing="10.0">
                            <children>
@@ -387,7 +387,7 @@
                         </JFXButton>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="budget" prefHeight="562.0" prefWidth="685.0" visible="false">
+                  <AnchorPane fx:id="budget" prefHeight="562.0" prefWidth="685.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" layoutX="37.0" layoutY="37.0" prefHeight="54.0" prefWidth="388.0" spacing="10.0">
                            <padding>
@@ -399,20 +399,11 @@
                                     <Font name="System Bold" size="19.0" />
                                  </font>
                               </Label>
-                              <StackPane prefHeight="150.0" prefWidth="200.0">
-                                 <children>
-                                    <JFXTextField fx:id="phoneText1" labelFloat="true" visible="false">
-                                       <font>
-                                          <Font size="15.0" />
-                                       </font>
-                                    </JFXTextField>
-                                    <Label fx:id="wallet" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
-                                       <font>
-                                          <Font name="Microsoft JhengHei" size="16.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </StackPane>
+                              <Label fx:id="wallet" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                                 <font>
+                                    <Font name="Microsoft JhengHei" size="16.0" />
+                                 </font>
+                              </Label>
                               <JFXButton fx:id="chargeWallet" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="34.0" prefWidth="51.0" text=" ">
                                  <graphic>
                                     <FontIcon iconLiteral="fa-credit-card-alt" iconSize="25" />
@@ -473,20 +464,11 @@
                                     <Font name="System Bold" size="19.0" />
                                  </font>
                               </Label>
-                              <StackPane prefHeight="150.0" prefWidth="200.0">
-                                 <children>
-                                    <JFXTextField fx:id="phoneText11" labelFloat="true" visible="false">
-                                       <font>
-                                          <Font size="15.0" />
-                                       </font>
-                                    </JFXTextField>
-                                    <Label fx:id="balance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
-                                       <font>
-                                          <Font name="Microsoft JhengHei" size="16.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </StackPane>
+                              <Label fx:id="balance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                                 <font>
+                                    <Font name="Microsoft JhengHei" size="16.0" />
+                                 </font>
+                              </Label>
                               <JFXButton fx:id="chargeWallet1" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="34.0" prefWidth="51.0" text=" ">
                                  <ripplerFill>
                                     <RadialGradient centerX="0.5133333418104384" centerY="0.5" cycleMethod="REFLECT" radius="0.14485981754053417">

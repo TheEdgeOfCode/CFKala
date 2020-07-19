@@ -10,10 +10,13 @@ import com.codefathers.cfkserver.model.dtos.bank.*;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 @Service
 public class BankService {
@@ -142,5 +145,17 @@ public class BankService {
         } else {
             return Long.parseLong(response);
         }
+    }
+
+    public String getShopBankAccountId(){
+        File file = new File("src/main/resources/shop_bank_account_info");
+        Scanner scanner;
+        try {
+            scanner = new Scanner(file);
+            return scanner.nextLine();
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found!!!");
+        }
+        return null;
     }
 }
