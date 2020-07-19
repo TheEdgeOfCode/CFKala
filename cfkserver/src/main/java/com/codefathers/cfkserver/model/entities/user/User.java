@@ -29,6 +29,8 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages;
 
+    private String accountId;
+
     public User(String username, String password, String firstName, String lastName, String email, String phoneNumber, Cart cart) {
         this.username = username;
         this.password = password;

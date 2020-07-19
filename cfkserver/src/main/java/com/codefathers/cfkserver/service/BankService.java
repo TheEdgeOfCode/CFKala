@@ -48,7 +48,9 @@ public class BankService {
     }
 
     public int createReceipt(CreateReceiptDTO dto) throws IOException, InvalidRecieptTypeException, InvalidMoneyException,
-            InvalidParameterPassedException, InvalidTokenException, ExpiredTokenException, InvalidSourceAccountException, InvalidDestAccountException, EqualSourceDestException, InvalidAccountIdException, InvalidDescriptionExcxeption, InvalidUsernameException {
+            InvalidParameterPassedException, InvalidTokenException, ExpiredTokenException, InvalidSourceAccountException,
+            InvalidDestAccountException, EqualSourceDestException, InvalidAccountIdException, InvalidDescriptionExcxeption,
+            InvalidUsernameException {
         String message = "create_receipt " + dto.getToken() + " " + ReceiptType.from(dto.getType()) + " " +
                 dto.getMoney() + " " + dto.getSource() + " " + dto.getDest() + " " + dto.getDescription();
         bankUtil.sendMessage(message);
@@ -82,7 +84,8 @@ public class BankService {
         }
     }
 
-    public List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws IOException, InvalidTokenException, ExpiredTokenException, InvalidReceiptIdException, InvalidUsernameException {
+    public List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws IOException, InvalidTokenException,
+            ExpiredTokenException, InvalidReceiptIdException, InvalidUsernameException {
         String message = "get_transactions " + dto.getToken() + " " + dto.getType().getValue();
         bankUtil.sendMessage(message);
         String response = bankUtil.getMessage();
@@ -106,7 +109,8 @@ public class BankService {
         }
     }
 
-    public void pay(int receiptId) throws IOException, InvalidReceiptIdException, PaidReceiptException, NotEnoughMoneyAtSourceException, InvalidAccountIdException {
+    public void pay(int receiptId) throws IOException, InvalidReceiptIdException, PaidReceiptException,
+            NotEnoughMoneyAtSourceException, InvalidAccountIdException {
         String message = "pay " + receiptId;
         bankUtil.sendMessage(message);
         String response = bankUtil.getMessage();
@@ -122,7 +126,8 @@ public class BankService {
         }
     }
 
-    public long getBalance(BalanceDTO dto) throws IOException, ExpiredTokenException, InvalidTokenException, InvalidUsernameException {
+    public long getBalance(BalanceDTO dto) throws IOException, ExpiredTokenException, InvalidTokenException,
+            InvalidUsernameException {
         String message = "get_balance " + dto.getToken();
         bankUtil.sendMessage(message);
         String response = bankUtil.getMessage();

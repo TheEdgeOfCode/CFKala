@@ -25,7 +25,7 @@ public class BankUtil {
 
     private String message;
 
-    private void ConnectToBankServer() throws IOException {
+    private void connectToBankServer() throws IOException {
         try {
             Socket socket = new Socket(IP, PORT);
             outputStream = new DataOutputStream(socket.getOutputStream());
@@ -62,13 +62,12 @@ public class BankUtil {
 
     private void run() {
         try {
-            ConnectToBankServer();
+            connectToBankServer();
             startListeningOnInput();
         } catch (IOException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
-
 
 }
