@@ -1,5 +1,6 @@
 package com.codefathers.cfkserver.model.entities.user;
 
+import com.codefathers.cfkserver.model.dtos.bank.PaymentType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,12 +16,14 @@ public class CustomerInformation {
     private String cardNumber;
     private String cardPassword;
     private String token;
+    private PaymentType paymentType;
 
-    public CustomerInformation(String address, String zipCode, String cardNumber, String cardPassword, String token) {
+    public CustomerInformation(String address, String zipCode, String cardNumber, String cardPassword, String token, PaymentType paymentType) {
         this.address = address;
         this.zipCode = zipCode;
         this.cardNumber = cardNumber;
         this.cardPassword = cardPassword;
         this.token = token;
+        this.paymentType = paymentType;
     }
 }

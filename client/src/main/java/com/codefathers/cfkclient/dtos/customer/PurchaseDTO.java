@@ -1,5 +1,6 @@
 package com.codefathers.cfkclient.dtos.customer;
 
+import com.codefathers.cfkclient.dtos.bank.PaymentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,4 +12,5 @@ public class PurchaseDTO {
     private String cardPassword;
     private String disCodeId;
     private String token;
+    private PaymentType paymentType;
 }

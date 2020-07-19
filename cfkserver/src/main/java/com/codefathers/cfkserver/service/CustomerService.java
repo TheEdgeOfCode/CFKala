@@ -15,7 +15,6 @@ import com.codefathers.cfkserver.exceptions.model.user.UserNotFoundException;
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.bank.CreateReceiptDTO;
-import com.codefathers.cfkserver.model.dtos.user.ChargeWalletDTO;
 import com.codefathers.cfkserver.model.entities.logs.PurchaseLog;
 import com.codefathers.cfkserver.model.entities.maps.DiscountcodeIntegerMap;
 import com.codefathers.cfkserver.model.entities.offs.DiscountCode;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.codefathers.cfkserver.model.dtos.bank.PaymentType.WALLET;
 import static com.codefathers.cfkserver.model.dtos.bank.ReceiptType.MOVE;
 
 @Service
@@ -45,6 +45,8 @@ public class CustomerService {
     private LogService logService;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private BankService bankService;
 
     public Customer getCustomerByUsername(String username) throws NoSuchACustomerException {
         Optional<Customer> customer = customerRepository.findById(username);
@@ -65,7 +67,12 @@ public class CustomerService {
 
     public void purchase(String username, CustomerInformation customerInformation, DiscountCode discountCode)
             throws NotEnoughAmountOfProductException, NoSuchAProductException, NoSuchSellerException,
-            NoSuchAPackageException, NoSuchACustomerException, NotEnoughMoneyException {
+            NoSuchAPackageException, NoSuchACustomerException, NotEnoughMoneyException,
+            InvalidAccountIdException, InvalidReceiptIdException, InvalidParameterPassedException,
+            InvalidUsernameException, InvalidMoneyException, InvalidTokenException, EqualSourceDestException,
+            InvalidSourceAccountException, InvalidDestAccountException, NotEnoughMoneyAtSourceException,
+            PaidReceiptException, ExpiredTokenException, InvalidDescriptionExcxeption, IOException,
+            InvalidRecieptTypeException {
         Customer customer = getCustomerByUsername(username);
 
         Cart cart = customer.getCart();
@@ -111,15 +118,35 @@ public class CustomerService {
     }
 
     public void purchaseForCustomer(Customer customer, CustomerInformation customerInformation, DiscountCode discountCode)
-            throws NoSuchAPackageException, NotEnoughMoneyException {
+            throws NoSuchAPackageException, NotEnoughMoneyException, IOException,
+            InvalidDestAccountException, InvalidTokenException, InvalidSourceAccountException,
+            InvalidAccountIdException, InvalidMoneyException, InvalidDescriptionExcxeption,
+            InvalidParameterPassedException, InvalidRecieptTypeException, InvalidUsernameException,
+            ExpiredTokenException, EqualSourceDestException, NotEnoughMoneyAtSourceException,
+            PaidReceiptException, InvalidReceiptIdException {
         long totalPrice = getTotalPrice(discountCode, customer);
-
-        long difference = totalPrice - customer.getBalance();
-
-        checkIfCustomerHasEnoughMoney(difference);
-
-        customer.setBalance(customer.getBalance() - totalPrice);
+        if (customerInformation.getPaymentType().equals(WALLET)) {
+            long difference = totalPrice - customer.getBalance();
+            checkIfCustomerHasEnoughMoneyInWallet(difference);
+            customer.setBalance(customer.getBalance() - totalPrice);
+        } else {
+            int receiptId = createPurchaseReceiptIdForCustomer(customer, customerInformation, totalPrice);
+            bankService.pay(receiptId);
+        }
         customer.getCustomerInformation().add(customerInformation);
+    }
+
+    private int createPurchaseReceiptIdForCustomer(Customer customer, CustomerInformation customerInformation, long totalPrice) throws IOException, InvalidRecieptTypeException, InvalidMoneyException, InvalidParameterPassedException, InvalidTokenException, ExpiredTokenException, InvalidSourceAccountException, InvalidDestAccountException, EqualSourceDestException, InvalidAccountIdException, InvalidDescriptionExcxeption, InvalidUsernameException {
+        return bankService.createReceipt(new CreateReceiptDTO(
+                customer.getUsername(),
+                customer.getPassword(),
+                customerInformation.getToken(),
+                MOVE,
+                totalPrice,
+                customer.getAccountId(),
+                bankService.getShopBankAccountId(),
+                "Purchase"
+        ));
     }
 
     public void productChangeInPurchase(Customer customer) throws NoSuchSellerException, NoSuchAProductException {
@@ -158,7 +185,7 @@ public class CustomerService {
         return sellPackage.isOnOff() ? sellPackage.getPrice() * (100 - sellPackage.getOff().getOffPercentage()) / 100 : sellPackage.getPrice();
     }
 
-    public void checkIfCustomerHasEnoughMoney(long difference) throws NotEnoughMoneyException {
+    public void checkIfCustomerHasEnoughMoneyInWallet(long difference) throws NotEnoughMoneyException {
         if (difference > 0) {
             throw new NotEnoughMoneyException(difference);
         }
