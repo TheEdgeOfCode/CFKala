@@ -451,7 +451,7 @@ public class Connector {
 
     public void chargeWallet(ChargeWalletDTO dto) throws Exception {
         dto.setToken(bankToken);
-        post("http://127.0.0.1:8050/uesrs/charge_wallet", dto, String.class);
+        post( address + "/users/charge_wallet", dto, String.class);
     }
 
     //TODO: We Do not need these!!!

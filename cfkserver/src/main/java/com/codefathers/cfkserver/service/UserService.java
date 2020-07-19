@@ -1,10 +1,15 @@
 package com.codefathers.cfkserver.service;
 
+import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
+import com.codefathers.cfkserver.exceptions.model.bank.receipt.*;
 import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
-import com.codefathers.cfkserver.exceptions.model.user.NotVerifiedSeller;
-import com.codefathers.cfkserver.exceptions.model.user.UserAlreadyExistsException;
-import com.codefathers.cfkserver.exceptions.model.user.UserNotFoundException;
-import com.codefathers.cfkserver.exceptions.model.user.WrongPasswordException;
+import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
+import com.codefathers.cfkserver.exceptions.model.user.*;
+import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
+import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
+import com.codefathers.cfkserver.model.dtos.bank.CreateReceiptDTO;
+import com.codefathers.cfkserver.model.dtos.bank.ReceiptType;
+import com.codefathers.cfkserver.model.dtos.user.ChargeWalletDTO;
 import com.codefathers.cfkserver.model.dtos.user.CustomerDTO;
 import com.codefathers.cfkserver.model.dtos.user.ManagerDTO;
 import com.codefathers.cfkserver.model.dtos.user.SellerDTO;
@@ -20,6 +25,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Optional;
+import java.util.Scanner;
+
+import static com.codefathers.cfkserver.model.dtos.bank.ReceiptType.MOVE;
+import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
 
 @Service
 public class UserService {
@@ -36,6 +45,12 @@ public class UserService {
     private RequestService requestService;
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private BankService bankService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private SellerService sellerService;
 
     public User getUserByUsername(String username) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.findById(username);
@@ -160,5 +175,38 @@ public class UserService {
 
     private boolean isCorrectPassword(User user, String password) {
         return user.getPassword().equals(password);
+    }
+
+    String getPassByUsername(String username) throws UserNotFoundException {
+        User user = getUserByUsername(username);
+        return user.getPassword();
+    }
+
+    public void chargeWallet(ChargeWalletDTO dto, String username) throws UserNotFoundException,
+            IOException, InvalidDestAccountException, InvalidTokenException,
+            InvalidSourceAccountException, InvalidAccountIdException, InvalidMoneyException, InvalidDescriptionExcxeption,
+            InvalidParameterPassedException, InvalidRecieptTypeException, InvalidUsernameException, ExpiredTokenException,
+            EqualSourceDestException, NotEnoughMoneyAtSourceException, PaidReceiptException, InvalidReceiptIdException,
+            NoSuchACustomerException, NoSuchSellerException {
+        User user = getUserByUsername(username);
+        int receiptId = bankService.createReceipt(
+                new CreateReceiptDTO(
+                        username,
+                        getPassByUsername(username),
+                        dto.getToken(),
+                        MOVE,
+                        dto.getMoney(),
+                        user.getAccountId(),
+                        bankService.getShopBankAccountId(),
+                        "Charge"
+                ));
+        bankService.pay(receiptId);
+        if (dto.getRole().equals(CUSTOMER)) {
+            Customer customer = customerService.getCustomerByUsername(username);
+            customer.setBalance(customer.getBalance() + dto.getMoney());
+        } else {
+            Seller seller = sellerService.findSellerByUsername(username);
+            seller.setBalance(seller.getBalance() + dto.getMoney());
+        }
     }
 }

@@ -11,7 +11,7 @@ public class CreateReceiptDTO {
     private String token;
     private ReceiptType type;
     private long money;
-    private int source;
-    private int dest;
+    private String source;
+    private String dest;
     private String description;
 }

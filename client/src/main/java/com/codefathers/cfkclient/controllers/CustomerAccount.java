@@ -6,6 +6,7 @@ import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.bank.BalanceDTO;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.user.ChargeWalletDTO;
+import com.codefathers.cfkclient.dtos.user.Role;
 import com.codefathers.cfkclient.dtos.user.UserFullDTO;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
@@ -24,6 +25,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static com.codefathers.cfkclient.dtos.user.Role.CUSTOMER;
 
 public class CustomerAccount extends BackAbleController {
     @FXML private JFXButton back;
@@ -371,6 +374,11 @@ public class CustomerAccount extends BackAbleController {
 
     private void handleChargeWallet() {
         long money = new ChargeWalletDialog().show();
-        connector.chargeWallet(new ChargeWalletDTO(money));
+        try {
+            connector.chargeWallet(new ChargeWalletDTO(money, CUSTOMER));
+        } catch (Exception e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
     }
 }

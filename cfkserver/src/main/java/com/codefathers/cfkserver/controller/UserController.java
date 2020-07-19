@@ -222,4 +222,15 @@ public class UserController {
         }
         return new RequestDTO(req.getRequestId(), status, req.getRequest());
     }
+
+    @PostMapping("/users/charge_wallet")
+    public void chargeWallet(HttpServletRequest request, HttpServletResponse response, @RequestBody ChargeWalletDTO dto){
+        try {
+            if (checkToken(response, request)) {
+                userService.chargeWallet(dto, getUsernameFromToken(request));
+            }
+        } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 }
