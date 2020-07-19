@@ -329,7 +329,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </VBox>
-                        <JFXButton fx:id="changePassButt" focusTraversable="false" layoutX="22.0" layoutY="509.0" prefHeight="38.0" prefWidth="174.0" text="Change Password">
+                        <JFXButton fx:id="changePassButt" focusTraversable="false" layoutX="14.0" layoutY="509.0" prefHeight="38.0" prefWidth="170.0" text="Change Password">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
@@ -337,7 +337,7 @@
                               <FontIcon iconLiteral="fa-unlock-alt" iconSize="15" />
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="newProduct" focusTraversable="false" layoutX="276.0" layoutY="509.0" prefHeight="38.0" prefWidth="150.0" text="New Product">
+                        <JFXButton fx:id="newProduct" focusTraversable="false" layoutX="335.0" layoutY="509.0" prefHeight="38.0" prefWidth="139.0" text="New Product">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
@@ -369,7 +369,7 @@
                               <FontIcon iconLiteral="fa-check" iconSize="15" />
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="ad" focusTraversable="false" layoutX="428.0" layoutY="509.0" prefHeight="38.0" prefWidth="146.0" text="Advertise">
+                        <JFXButton fx:id="ad" focusTraversable="false" layoutX="462.0" layoutY="509.0" prefHeight="38.0" prefWidth="115.0" text="Advertise">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
@@ -377,11 +377,19 @@
                               <FontIcon iconLiteral="fa-bullhorn" iconSize="15" />
                            </graphic>
                         </JFXButton>
+                        <JFXButton fx:id="auction" focusTraversable="false" layoutX="193.0" layoutY="509.0" prefHeight="38.0" prefWidth="158.0" text="Create Auction">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                           <graphic>
+                              <FontIcon iconLiteral="fa-gavel" iconSize="15" />
+                           </graphic>
+                        </JFXButton>
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="budget" prefHeight="562.0" prefWidth="685.0" visible="false">
                      <children>
-                        <HBox alignment="CENTER_LEFT" layoutX="31.0" layoutY="71.0" prefHeight="54.0" prefWidth="388.0" spacing="10.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="37.0" layoutY="37.0" prefHeight="54.0" prefWidth="388.0" spacing="10.0">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
@@ -398,7 +406,7 @@
                                           <Font size="15.0" />
                                        </font>
                                     </JFXTextField>
-                                    <Label fx:id="balance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                                    <Label fx:id="wallet" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
                                        <font>
                                           <Font name="Microsoft JhengHei" size="16.0" />
                                        </font>
@@ -422,7 +430,7 @@
                               </JFXButton>
                            </children>
                         </HBox>
-                        <JFXButton fx:id="takeMoney" focusTraversable="false" layoutX="491.0" layoutY="79.0" prefHeight="38.0" prefWidth="141.0" text="Take Money">
+                        <JFXButton fx:id="takeMoney" focusTraversable="false" layoutX="497.0" layoutY="45.0" prefHeight="38.0" prefWidth="141.0" text="Take Money">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
@@ -455,6 +463,44 @@
                               <FontIcon iconLiteral="fa-search" iconSize="20" />
                            </graphic>
                         </JFXButton>
+                        <HBox alignment="CENTER_LEFT" layoutX="37.0" layoutY="91.0" prefHeight="54.0" prefWidth="388.0" spacing="10.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <children>
+                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="154.0" text="Bank Balance">
+                                 <font>
+                                    <Font name="System Bold" size="19.0" />
+                                 </font>
+                              </Label>
+                              <StackPane prefHeight="150.0" prefWidth="200.0">
+                                 <children>
+                                    <JFXTextField fx:id="phoneText11" labelFloat="true" visible="false">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </JFXTextField>
+                                    <Label fx:id="balance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                                       <font>
+                                          <Font name="Microsoft JhengHei" size="16.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <JFXButton fx:id="chargeWallet1" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="34.0" prefWidth="51.0" text=" ">
+                                 <ripplerFill>
+                                    <RadialGradient centerX="0.5133333418104384" centerY="0.5" cycleMethod="REFLECT" radius="0.14485981754053417">
+                                       <stops>
+                                          <Stop color="#59b5b0" />
+                                          <Stop color="#59b5b0" offset="0.007633587786259542" />
+                                          <Stop color="#d6d629" offset="0.6250182996967478" />
+                                          <Stop color="#c26666" offset="1.0" />
+                                       </stops>
+                                    </RadialGradient>
+                                 </ripplerFill>
+                              </JFXButton>
+                           </children>
+                        </HBox>
                      </children>
                   </AnchorPane>
                </children>

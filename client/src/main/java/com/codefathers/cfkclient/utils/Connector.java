@@ -41,6 +41,7 @@ import static org.springframework.http.HttpMethod.*;
 @ConfigurationProperties(prefix = "uri")
 public class Connector {
     private String token;
+    private String bankToken;
     private String address;
     private RestTemplate restTemplate;
     private static Connector connector = new Connector();
@@ -51,6 +52,7 @@ public class Connector {
 
     public Connector(){
         token = "";
+        bankToken = "";
         restTemplate = new RestTemplate();
     }
 
@@ -98,16 +100,19 @@ public class Connector {
     public String login(LoginDto dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post(address + "/users/login", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
+        getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
         return role.getBody().getRole();
     }
 
     public void createCustomerAccount(CustomerDTO dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post(address + "/users/create_customer", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
+        getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
     }
 
     public void createManagerAccount(ManagerDTO dto) throws Exception {
         post(address + "/users/create_manager", dto, TokenRoleDto.class);
+        getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
     }
 
     public void createSellerAccount(SellerDTO dto) throws Exception {
@@ -443,9 +448,9 @@ public class Connector {
         return Objects.requireNonNull(response.getBody());
     }
 
-    public String getToken(TokenRequestDTO dto) throws Exception {
+    public void getToken(TokenRequestDTO dto) throws Exception {
         ResponseEntity<String> response = get("http://127.0.0.1:8050/bank/get_token", dto, String.class);
-        return Objects.requireNonNull(response.getBody());
+        bankToken = response.getBody();
     }
 
     public int createReceipt(CreateReceiptDTO dto) throws Exception {

@@ -295,7 +295,7 @@
                                  <Font size="15.0" />
                               </font>
                            </JFXTextField>
-                           <Label fx:id="balance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                           <Label fx:id="wallet" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
                               <font>
                                  <Font name="Microsoft JhengHei" size="16.0" />
                               </font>
@@ -317,6 +317,32 @@
                            </RadialGradient>
                         </ripplerFill>
                      </JFXButton>
+                  </children>
+               </HBox>
+               <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="375.0" prefHeight="53.0" prefWidth="242.0" spacing="10.0">
+                  <padding>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </padding>
+                  <children>
+                     <Label alignment="CENTER" prefHeight="31.0" prefWidth="154.0" text="Bank Balance">
+                        <font>
+                           <Font name="System Bold" size="19.0" />
+                        </font>
+                     </Label>
+                     <StackPane prefHeight="150.0" prefWidth="200.0">
+                        <children>
+                           <JFXTextField fx:id="phoneText11" labelFloat="true" visible="false">
+                              <font>
+                                 <Font size="15.0" />
+                              </font>
+                           </JFXTextField>
+                           <Label fx:id="balance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                              <font>
+                                 <Font name="Microsoft JhengHei" size="16.0" />
+                              </font>
+                           </Label>
+                        </children>
+                     </StackPane>
                   </children>
                </HBox>
                <HBox alignment="TOP_RIGHT" prefHeight="38.0" prefWidth="301.0">

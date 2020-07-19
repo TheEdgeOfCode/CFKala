@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.SellerAccount">
+   <children>
+      <ImageView fitHeight="595.0" fitWidth="677.0" layoutX="76.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <image>
+            <Image url="@../Images/auction.jpg" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutX="677.0" prefHeight="595.0" prefWidth="284.0">
+         <children>
+            <Label layoutX="32.0" layoutY="38.0" text="Create Auction">
+               <font>
+                  <Font name="System Bold" size="32.0" />
+               </font>
+            </Label>
+            <Label layoutX="16.0" layoutY="220.0" prefHeight="20.0" prefWidth="254.0" text="Start Date">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="startDate" layoutX="13.0" layoutY="251.0" prefHeight="26.0" prefWidth="254.0" />
+            <Label layoutX="16.0" layoutY="307.0" prefHeight="20.0" prefWidth="254.0" text="End Date">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="endDate" layoutX="16.0" layoutY="334.0" prefHeight="26.0" prefWidth="254.0" />
+            <JFXButton fx:id="create" layoutX="17.0" layoutY="529.0" prefHeight="44.0" prefWidth="254.0" text="Create Auction">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </JFXButton>
+            <ComboBox fx:id="products" layoutX="15.0" layoutY="153.0" prefHeight="26.0" prefWidth="254.0" />
+            <Label layoutX="15.0" layoutY="120.0" prefHeight="20.0" prefWidth="254.0" text="Choose a Product">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
