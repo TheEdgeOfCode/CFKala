@@ -2,7 +2,6 @@ package com.codefathers.cfkclient.controllers;
 
 import com.codefathers.cfkclient.BackAbleController;
 import com.codefathers.cfkclient.CFK;
-import com.codefathers.cfkclient.dtos.user.ManagerDTO;
 import com.codefathers.cfkclient.dtos.user.UserDTO;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;

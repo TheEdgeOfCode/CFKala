@@ -54,6 +54,19 @@ public class FileController {
         }
     }
 
+    @RequestMapping("/download/user/profile/{username}")
+    @GetMapping
+    private ResponseEntity<?> getProfileImage(HttpServletRequest request, HttpServletResponse response, @PathVariable String username) {
+        try {
+            checkToken(response, request);
+            ByteArrayResource resource = storageService.getProfile(username);
+            return ResponseEntity.ok().body(resource);
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            return null;
+        }
+    }
+
     @PostMapping
     @RequestMapping("/upload/product/{id}")
     private void UpdateProductPhoto(@RequestBody InputStreamResource[] images,

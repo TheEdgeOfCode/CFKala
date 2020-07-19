@@ -38,7 +38,7 @@ public class CFK extends Application {
             if (Connector.getInstance().isTheFirstManager()) {
                 scene = new Scene(loadFXML("CreateManager", "MainPage"));
             } else {
-               scene = new Scene(loadFXML("MainPage"));
+               scene = new Scene(loadFXML("SupportAccount"));
             }
         } catch (Exception e) {
             e.printStackTrace();

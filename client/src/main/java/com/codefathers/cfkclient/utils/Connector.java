@@ -466,6 +466,11 @@ public class Connector {
         return createImageFromResource(image);
     }
 
+    public Image userImage(String username) throws Exception {
+        ByteArrayResource image = getResources(address + "/download/user/profile",null);
+        return createImageFromResource(image);
+    }
+
     public Image productMainImage(int id) throws Exception {
         ByteArrayResource resource = getResources(address + "/download/product/" + id + "/main", null);
         return createImageFromResource(resource);
