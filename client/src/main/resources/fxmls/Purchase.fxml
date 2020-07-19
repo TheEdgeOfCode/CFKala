@@ -116,7 +116,7 @@
                         </VBox>
                      </content>
                   </Tab>
-                  <Tab fx:id="discount" closable="false" text="Payment">
+                  <Tab fx:id="payment" closable="false" text="Payment">
                     <content>
                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: white;" stylesheets="@../CSSs/gradient.css">
                            <children>
@@ -149,7 +149,7 @@
                                     <Font name="System Bold" size="30.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="balance" layoutX="639.0" layoutY="398.0" text="\$balance">
+                              <Label fx:id="balance" layoutX="639.0" layoutY="398.0" text="0 $balance">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
@@ -159,17 +159,17 @@
                                     <Font name="System Bold" size="30.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="price" layoutX="135.0" layoutY="238.0" text="\$price">
+                              <Label fx:id="price" layoutX="135.0" layoutY="238.0" text="0 $price">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="discount" layoutX="465.0" layoutY="238.0" text="\$discount">
+                              <Label fx:id="discount" layoutX="465.0" layoutY="238.0" text="0 $discount">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="pay" layoutX="778.0" layoutY="238.0" text="\$pay">
+                              <Label fx:id="pay" layoutX="778.0" layoutY="238.0" text="0 $pay">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
@@ -202,7 +202,7 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab fx:id="payment" closable="false" text="Last Steps">
+                  <Tab fx:id="lastStep" closable="false" text="Last Steps">
                      <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
                            <left>
@@ -250,7 +250,7 @@
                                           <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                                        </padding>
                                        <children>
-                                          <Label text="Card Numbe : ">
+                                          <Label text="Card Number : ">
                                              <font>
                                                 <Font name="System Bold" size="15.0" />
                                              </font>

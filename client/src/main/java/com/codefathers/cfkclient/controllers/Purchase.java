@@ -7,10 +7,7 @@ import com.codefathers.cfkclient.dtos.customer.CartDTO;
 import com.codefathers.cfkclient.dtos.customer.PurchaseDTO;
 import com.codefathers.cfkclient.dtos.discount.DisCodeUserDTO;
 import com.codefathers.cfkclient.utils.Connector;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTabPane;
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,7 +22,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.codefathers.cfkclient.dtos.bank.PaymentType.BANK;
+import static com.codefathers.cfkclient.dtos.bank.PaymentType.WALLET;
+
 public class Purchase {
+    @FXML private Label pay;
+    @FXML private Label discount;
+    @FXML private Label price;
+    @FXML private Label balance;
+    @FXML private JFXComboBox<String> method;
     @FXML private JFXButton back;
     @FXML private JFXButton minimize;
     @FXML private JFXButton close;
@@ -71,14 +76,10 @@ public class Purchase {
     private static final Paint redColor = Paint.valueOf("#c0392b");
 
     private CartDTO cartDTO;
-    private final Connector connector;
+    private final Connector connector  = Connector.getInstance();
     private List<DisCodeUserDTO> discountCodes;
     private String selectedDisCode = "";
     private boolean usedDisCodeThisTime = false;
-
-    public Purchase(Connector connector) {
-        this.connector = connector;
-    }
 
     @FXML
     public void initialize() {
@@ -105,12 +106,27 @@ public class Purchase {
     }
 
     private void initializeLabels() {
-        totalPrice.setText(cartDTO.getTotalPrice() + "$");
+        totalPrice.setText(cartDTO.getTotalPrice() + " $");
+        price.setText(cartDTO.getTotalPrice() + " $" + "price");
+        pay.setText(cartDTO.getTotalPrice() + " $" + "pay");
+        try {
+            balance.setText(connector.showBalance_Customer() + " $" + "balance");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadComboBoxes() {
         loadCountryComboBox();
         loadCityComboBox();
+        loadPaymentMethodComboBox();
+    }
+
+    private void loadPaymentMethodComboBox() {
+        List<String> paymentMethods = new ArrayList<>();
+        paymentMethods.add("Wallet");
+        paymentMethods.add("Bank");
+        method.getItems().setAll(paymentMethods);
     }
 
     private void loadCityComboBox() {
@@ -178,6 +194,9 @@ public class Purchase {
                         .or(Bindings.isEmpty(address.textProperty()))
                         .or(Bindings.isEmpty(zipCode.textProperty()))
         );
+        nextPageDiscount.disableProperty().bind(
+                Bindings.isNull(method.getSelectionModel().selectedItemProperty())
+        );
     }
 
     private void initButtons() {
@@ -205,7 +224,10 @@ public class Purchase {
 
     private void updateTotalPrice() {
         try {
-            totalPrice.setText(String.valueOf(connector.showPurchaseTotalPrice(selectedDisCode)));
+            long newTotalPrice = connector.showPurchaseTotalPrice(selectedDisCode);
+            totalPrice.setText(String.valueOf(newTotalPrice));
+            pay.setText(String.valueOf(newTotalPrice));
+            discount.setText(String.valueOf(cartDTO.getTotalPrice() - newTotalPrice));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -254,13 +276,15 @@ public class Purchase {
         String cardNumber_DTO = card1.getText() + "-" + card2.getText() +
                 "-" + card3.getText() + "-" + card4.getText();
         String cardPass_DTO = pass.getText();
-        return new PurchaseDTO(
-            address_DTO,
-            zipCode_DTO,
-            cardNumber_DTO,
-            cardPass_DTO,
-            selectedDisCode
-        );
+        PurchaseDTO purchaseDTO = new PurchaseDTO();
+        purchaseDTO.setAddress(address_DTO);
+        purchaseDTO.setZipCode(zipCode_DTO);
+        purchaseDTO.setCardNumber(cardNumber_DTO);
+        purchaseDTO.setCardPassword(cardPass_DTO);
+        purchaseDTO.setDisCodeId(selectedDisCode);
+        purchaseDTO.setPaymentType(method.getSelectionModel().getSelectedItem().
+                contains("Wallet") ? WALLET : BANK);
+        return purchaseDTO;
     }
 
     private boolean checkIfCountryAndCityAreSelected() {

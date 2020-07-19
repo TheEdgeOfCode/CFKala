@@ -25,6 +25,7 @@ import com.codefathers.cfkserver.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.codefathers.cfkserver.controller.ProductController.dtoFromProduct;
+import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
+import static com.codefathers.cfkserver.utils.TokenUtil.checkToken;
+import static com.codefathers.cfkserver.utils.TokenUtil.getUsernameFromToken;
 
 
 @RestController
@@ -59,11 +63,28 @@ public class CustomerController {
     @Autowired
     private FeedbackService feedbackService;
 
+    @GetMapping("/customer/show_balance")
+    private ResponseEntity<?> showBalance(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (checkToken(response, request)) {
+                try {
+                    Customer customer = customerService.getCustomerByUsername(getUsernameFromToken(request));
+                    return ResponseEntity.ok(customer.getBalance());
+                } catch (NoSuchACustomerException e) {
+                    sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+                }
+            }
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+        return null;
+    }
+
     @PostMapping("/customer/show_cart")
     private ResponseEntity<?> showCart(HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
-                String username = TokenUtil.getUsernameFromToken(request);
+            if (checkToken(response, request)) {
+                String username = getUsernameFromToken(request);
                 Customer customer = customerService.getCustomerByUsername(username);
                 Cart cart = customer.getCart();
                 List<InCartDTO> inCartDTOS = new ArrayList<>();
@@ -80,7 +101,7 @@ public class CustomerController {
                 return null;
             }
         } catch (Exception e) {
-            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
     }
@@ -88,8 +109,8 @@ public class CustomerController {
     @PostMapping("/customer/change_amount")
     private ResponseEntity<?> changeAmount(HttpServletRequest request, HttpServletResponse response, @RequestBody String info) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
-                String username = TokenUtil.getUsernameFromToken(request);
+            if (checkToken(response, request)) {
+                String username = getUsernameFromToken(request);
                 Customer customer = customerService.getCustomerByUsername(username);
                 int productId = Integer.parseInt(info.split(",")[0]);
                 int change = Integer.parseInt(info.split(",")[1]);
@@ -101,7 +122,7 @@ public class CustomerController {
                 return null;
             }
         } catch (Exception e) {
-            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
     }
@@ -109,8 +130,8 @@ public class CustomerController {
     @PostMapping("/customer/show_products")
     private ResponseEntity<?> showProducts(HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
-                String username = TokenUtil.getUsernameFromToken(request);
+            if (checkToken(response, request)) {
+                String username = getUsernameFromToken(request);
                 List<InCartDTO> inCartDTOS = new ArrayList<>();
                 Customer customer = customerService.getCustomerByUsername(username);
                 Cart cart = customer.getCart();
@@ -123,7 +144,7 @@ public class CustomerController {
                 return null;
             }
         } catch (Exception e) {
-            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
     }
@@ -131,8 +152,8 @@ public class CustomerController {
     @PostMapping("/customer/delete_product_from_cart")
     private ResponseEntity<?> deleteProductFromCart(HttpServletRequest request, HttpServletResponse response, @RequestBody Integer productId) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
-                String username = TokenUtil.getUsernameFromToken(request);
+            if (checkToken(response, request)) {
+                String username = getUsernameFromToken(request);
                 Customer customer = customerService.getCustomerByUsername(username);
                 Cart cart = customer.getCart();
                 cartService.deleteProductFromCart(cart, productId);
@@ -141,7 +162,7 @@ public class CustomerController {
             else
                 return null;
         } catch (Exception e) {
-                ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+                sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
                 return null;
         }
     }
@@ -149,7 +170,7 @@ public class CustomerController {
     @PostMapping("/customer/purchase")
     private ResponseEntity<?> purchase(HttpServletRequest request, HttpServletResponse response, @RequestBody PurchaseDTO purchaseDTO) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
+            if (checkToken(response, request)) {
                  CustomerInformation customerInformation = new CustomerInformation(
                     purchaseDTO.getAddress(),
                     purchaseDTO.getZipCode(),
@@ -160,7 +181,7 @@ public class CustomerController {
             );
                  DiscountCode discountCode = (purchaseDTO.getDisCodeId().isBlank() ? null
                          : discountService.findByCode(purchaseDTO.getDisCodeId()));
-                 String username = TokenUtil.getUsernameFromToken(request);
+                 String username = getUsernameFromToken(request);
                  customerService.purchase(
                          username,
                          customerInformation,
@@ -170,7 +191,7 @@ public class CustomerController {
             else
                 return null;
         } catch (Exception e) {
-            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
     }
@@ -178,8 +199,8 @@ public class CustomerController {
     @PostMapping("/customer/purchase/show_total_price")
     private ResponseEntity<?> showPurchaseTotalPrice(HttpServletRequest request, HttpServletResponse response, @RequestBody String disCode) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
-                String username = TokenUtil.getUsernameFromToken(request);
+            if (checkToken(response, request)) {
+                String username = getUsernameFromToken(request);
                 Customer customer = customerService.getCustomerByUsername(username);
                 DiscountCode discountCode = discountService.findByCode(disCode);
                 Long totalPrice = customerService.getTotalPrice(discountCode, customer);
@@ -188,7 +209,7 @@ public class CustomerController {
             else
                 return null;
         } catch (Exception e) {
-            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
     }
@@ -196,8 +217,8 @@ public class CustomerController {
     @PostMapping("/customer/show_orders")
     private ResponseEntity<?> showOrders(HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
-                String username = TokenUtil.getUsernameFromToken(request);
+            if (checkToken(response, request)) {
+                String username = getUsernameFromToken(request);
                 Customer customer = customerService.getCustomerByUsername(username);
                 List<PurchaseLog> purchaseLogs = customer.getPurchaseLogs();
                 List<OrderLogDTO> orderLogDTOS = new ArrayList<>();
@@ -209,7 +230,7 @@ public class CustomerController {
             else
                 return null;
         } catch (Exception e) {
-                ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+                sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
                 return null;
         }
     }
@@ -217,17 +238,17 @@ public class CustomerController {
     @PostMapping("/customer/add_view")
     private ResponseEntity<?> addViewDigest(HttpServletRequest request, HttpServletResponse response, @RequestBody Integer productId) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
+            if (checkToken(response, request)) {
                 productService.addView(productId);
                 return ResponseEntity.ok(ResponseEntity.status(200));
             } else {
                 return null;
             }
         } catch (NoSuchAProductException e) {
-            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         } catch (ExpiredTokenException | InvalidTokenException e) {
-            ErrorUtil.sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
             return null;
         }
     }
@@ -235,8 +256,8 @@ public class CustomerController {
     @PostMapping("/customer/show_discounts")
     private ResponseEntity<?> showDisCodes(HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
-                String username = TokenUtil.getUsernameFromToken(request);
+            if (checkToken(response, request)) {
+                String username = getUsernameFromToken(request);
                 Customer customer = customerService.getCustomerByUsername(username);
                 List<DiscountcodeIntegerMap> disCodes = customer.getDiscountCodes();
                 List<DisCodeUserDTO> disCodeUserDTOS = new ArrayList<>();
@@ -248,7 +269,7 @@ public class CustomerController {
                 return null;
             }
         } catch (Exception e) {
-            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
     }
@@ -256,8 +277,8 @@ public class CustomerController {
     @PostMapping("/customer/assign_score")
     private ResponseEntity<?> assignAScore(HttpServletRequest request, HttpServletResponse response, @RequestBody String info) {
         try {
-            if (TokenUtil.checkToken(response, request)) {
-                String username = TokenUtil.getUsernameFromToken(request);
+            if (checkToken(response, request)) {
+                String username = getUsernameFromToken(request);
                 int productId = Integer.parseInt(info.split(",")[0]);
                 int score = Integer.parseInt(info.split(",")[1]);
                 feedbackService.createScore(username, productId, score);
@@ -266,10 +287,10 @@ public class CustomerController {
                 return null;
             }
         } catch (NoSuchACustomerException | NoSuchAProductException | NotABuyer e) {
-            ErrorUtil.sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         } catch (ExpiredTokenException | InvalidTokenException e) {
-            ErrorUtil.sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
             return null;
         }
     }

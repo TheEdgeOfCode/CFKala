@@ -154,6 +154,12 @@ public class Connector {
         post(address + "/users/edit", attributes, HttpStatus.class);
     }
 
+    public Long showBalance_Customer() throws Exception {
+        ResponseEntity<Long> response = get(address + "/customer/show_balance",
+                null, Long.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
     public CartDTO showCart() throws Exception {
         ResponseEntity<CartDTO> response = post(address + "/customer/show_cart",
                 null, CartDTO.class);
@@ -170,6 +176,7 @@ public class Connector {
     }
 
     public void purchase(PurchaseDTO dto) throws Exception {
+        dto.setToken(bankToken);
         post(address + "/customer/purchase",
                 dto, String.class);
     }
