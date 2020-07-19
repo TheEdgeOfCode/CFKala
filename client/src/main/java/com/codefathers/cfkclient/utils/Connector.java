@@ -455,6 +455,9 @@ public class Connector {
         return Objects.requireNonNull(response.getBody());
     }
 
+    public void createSupport(UserDTO userDTO) throws Exception {
+        post(address + "/users/create/support",userDTO,String.class);
+    }
 
     /**Resources======================================================================================================*/
 

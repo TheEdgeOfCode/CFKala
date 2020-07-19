@@ -8,14 +8,12 @@ import com.codefathers.cfkserver.exceptions.model.user.WrongPasswordException;
 import com.codefathers.cfkserver.model.dtos.user.CustomerDTO;
 import com.codefathers.cfkserver.model.dtos.user.ManagerDTO;
 import com.codefathers.cfkserver.model.dtos.user.SellerDTO;
+import com.codefathers.cfkserver.model.dtos.user.UserDTO;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.RequestType;
 import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
 import com.codefathers.cfkserver.model.entities.user.*;
-import com.codefathers.cfkserver.model.repositories.CustomerRepository;
-import com.codefathers.cfkserver.model.repositories.ManagerRepository;
-import com.codefathers.cfkserver.model.repositories.SellerRepository;
-import com.codefathers.cfkserver.model.repositories.UserRepository;
+import com.codefathers.cfkserver.model.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +35,8 @@ public class UserService {
     private RequestService requestService;
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private SupportRepository supportRepository;
 
     public User getUserByUsername(String username) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.findById(username);
@@ -94,6 +94,13 @@ public class UserService {
                 new Cart()
         );
         managerRepository.save(manager);
+    }
+
+    public void createSupport(UserDTO userDTO) throws UserAlreadyExistsException {
+        checkUsername(userDTO.getUsername());
+        Support support = new Support(userDTO.getUsername(),userDTO.getPassword(),userDTO.getFirstName(),
+                userDTO.getLastName(),userDTO.getEmail(),userDTO.getPhoneNumber(),null);
+        supportRepository.save(support);
     }
 
     private void checkUsername(String username) throws UserAlreadyExistsException {
