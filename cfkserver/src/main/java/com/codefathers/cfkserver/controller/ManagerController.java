@@ -193,6 +193,7 @@ public class ManagerController {
 
     private UserFullDTO createUserFullDTO(User user) {
         return new UserFullDTO(user.getUsername(),
+                user.getPassword(),
                 user.getFirstName(),
                 user.getLastName(), user.getEmail(), user.getPhoneNumber(),
                 user.getClass().getName().split("\\.")[2]);

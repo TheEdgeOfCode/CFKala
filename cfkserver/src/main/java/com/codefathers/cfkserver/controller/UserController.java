@@ -61,7 +61,7 @@ public class UserController {
     private ResponseEntity<?> login(@RequestBody LoginDto dto, HttpServletResponse response) {
         try {
             String role = userService.login(dto.getUsername(), dto.getPassword());
-            String token = JwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername(),role);
             tokens.put(token, dto.getUsername());
             return ResponseEntity.ok(new TokenRoleDto(token, role));
         } catch (UserNotFoundException | NotVerifiedSeller | WrongPasswordException e) {
@@ -74,7 +74,7 @@ public class UserController {
     private <T> ResponseEntity<?> createCustomer(@RequestBody CustomerDTO dto, HttpServletResponse response){
         try {
             userService.createCustomer(dto);
-            String token = JwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername(),"customer");
             return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
         } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
@@ -86,7 +86,7 @@ public class UserController {
     private <T> ResponseEntity<?> createCustomer(@RequestBody ManagerDTO dto, HttpServletResponse response){
         try {
             userService.createManager(dto);
-            String token = JwtUtil.generateToken(dto.getUsername());
+            String token = JwtUtil.generateToken(dto.getUsername(),"manager");
             return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
         } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
@@ -112,6 +112,7 @@ public class UserController {
                 User user = userService.viewPersonalInfo(TokenUtil.getUsernameFromToken(request));
                 UserFullDTO dto = new UserFullDTO(
                         user.getUsername(),
+                        user.getPassword(),
                         user.getFirstName(),
                         user.getLastName(),
                         user.getEmail(),

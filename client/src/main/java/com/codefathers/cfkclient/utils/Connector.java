@@ -41,7 +41,7 @@ import static org.springframework.http.HttpMethod.*;
 @ConfigurationProperties(prefix = "uri")
 public class Connector {
     private String token;
-    private String address;
+    private String address = "http://127.0.0.1:8050";
     private RestTemplate restTemplate;
     private static Connector connector = new Connector();
 

@@ -8,16 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class TokenUtil {
-    // TODO: 7/18/2020 :|||||||||| midoonam ridam :)
     public static boolean checkToken(HttpServletResponse response, HttpServletRequest request)
             throws ExpiredTokenException, InvalidTokenException {
         final String authorizationHeader = request.getHeader("Authentication");
         if (authorizationHeader != null && authorizationHeader.startsWith("cfk! ")) {
             String jwt = authorizationHeader.substring(5);
-            System.out.println(jwt);
             try {
-                JwtUtil.extractUsername(jwt);
-                return true;
+                return JwtUtil.validateToken(jwt);
             } catch (Exception e) {
                 if (e instanceof ExpiredJwtException) {
                     throw new ExpiredTokenException("Expired Token");
@@ -26,16 +23,15 @@ public class TokenUtil {
                 }
             }
         } else {
-            System.out.println("empty header");
             return false;
         }
     }
 
     public static String getUsernameFromToken(HttpServletRequest request)
             throws ExpiredTokenException, InvalidTokenException {
-        final String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null && authorizationHeader.startsWith("anonymous ")) {
-            String jwt = authorizationHeader.substring(10);
+        final String authorizationHeader = request.getHeader("Authentication");
+        if (authorizationHeader != null && authorizationHeader.startsWith("cfk! ")) {
+            String jwt = authorizationHeader.substring(5);
             try {
                 return JwtUtil.extractUsername(jwt);
             } catch (Exception e) {

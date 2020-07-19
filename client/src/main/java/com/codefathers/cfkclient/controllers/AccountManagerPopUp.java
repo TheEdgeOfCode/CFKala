@@ -60,9 +60,7 @@ public class AccountManagerPopUp {
         Image image = null;
         try {
             image = Connector.getInstance().userImage(username.getText());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignore) {}
         if (image == null) {
             image = new Image(userPhoto);
         }

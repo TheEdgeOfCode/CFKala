@@ -98,17 +98,6 @@ public class CustomerAccount extends BackAbleController {
         phone.setText(userFullDTO.getPhoneNumber());
     }
 
-    private UserFullDTO getTestUser() {
-        return new UserFullDTO(
-                "marmof",
-                "Mohamad",
-                "Mofayezi",
-                "marmof@gmail.com",
-                "989132255442",
-                "Customer"
-        );
-    }
-
     private void handleButtons() {
         minimize.setOnAction(e -> {
             Stage stage = (Stage) minimize.getScene().getWindow();

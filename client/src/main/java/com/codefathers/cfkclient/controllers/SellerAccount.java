@@ -115,17 +115,6 @@ public class SellerAccount extends BackAbleController {
         );
     }
 
-    private UserFullDTO getTestUser() {
-        return new UserFullDTO(
-                "marmof",
-                "Mohamad",
-                "Mofayezi",
-                "marmof@gmail.com",
-                "989132255442",
-                "Customer"
-        );
-    }
-
     private void handleButtons() {
         minimize.setOnAction(e -> {
             Stage stage = (Stage) minimize.getScene().getWindow();
