@@ -443,21 +443,30 @@ public class Connector {
         } catch (Exception ignore) { return false;}
     }
 
-    public String createBankAccount(CreateBankAccountDTO dto) throws Exception {
-        ResponseEntity<String> response = post("http://127.0.0.1:8050/bank/create_account", dto, String.class);
-        return Objects.requireNonNull(response.getBody());
-    }
 
     public void getToken(TokenRequestDTO dto) throws Exception {
         ResponseEntity<String> response = get("http://127.0.0.1:8050/bank/get_token", dto, String.class);
         bankToken = response.getBody();
     }
 
-    public int createReceipt(CreateReceiptDTO dto) throws Exception {
+    public void chargeWallet(ChargeWalletDTO dto) throws Exception {
+        dto.setToken(bankToken);
+        post("http://127.0.0.1:8050/uesrs/charge_wallet", dto, String.class);
+    }
+
+    //TODO: We Do not need these!!!
+    /*public String createBankAccount(CreateBankAccountDTO dto) throws Exception {
+        ResponseEntity<String> response = post("http://127.0.0.1:8050/bank/create_account", dto, String.class);
+        return Objects.requireNonNull(response.getBody());
+    }*/
+    /*public int createReceipt(CreateReceiptDTO dto) throws Exception {
         ResponseEntity<Integer> response = post("http://127.0.0.1:8050/bank/create_receipt",
                 dto, Integer.class);
         return Objects.requireNonNull(response.getBody());
-    }
+    }*/
+    /*public void pay(String receiptId) throws Exception {
+        post("http://127.0.0.1:8050/bank/pay", receiptId, String.class);
+    }*/
 
     private List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws Exception {
         ResponseEntity<TransactionListDTO> response = get("http://127.0.0.1:8050/bank/get_transactions",
@@ -465,11 +474,9 @@ public class Connector {
         return Objects.requireNonNull(response.getBody()).getDtos();
     }
 
-    public void pay(String receiptId) throws Exception {
-        post("http://127.0.0.1:8050/bank/pay", receiptId, String.class);
-    }
 
     public long getBalance(BalanceDTO dto) throws Exception {
+        dto.setToken(bankToken);
         ResponseEntity<Long> response = get("http://127.0.0.1:8050/bank/get_balance",
                 dto, Long.class);
         return Objects.requireNonNull(response.getBody());

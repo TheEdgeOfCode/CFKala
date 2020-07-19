@@ -11,6 +11,7 @@ public class UserFullDTO extends UserDTO {
     private String lastName;
     private String email;
     private String phoneNumber;
+    private long balance;
     private String role;
 
     @Override
