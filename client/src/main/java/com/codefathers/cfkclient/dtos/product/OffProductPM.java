@@ -1,10 +1,13 @@
 package com.codefathers.cfkclient.dtos.product;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+
 public class OffProductPM {
     private String name;
     private int id;

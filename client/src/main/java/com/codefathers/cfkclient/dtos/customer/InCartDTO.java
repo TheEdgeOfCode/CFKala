@@ -3,8 +3,10 @@ package com.codefathers.cfkclient.dtos.customer;
 import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data @AllArgsConstructor
+@NoArgsConstructor
 public class InCartDTO {
     private MiniProductDto product;
     private String productName;

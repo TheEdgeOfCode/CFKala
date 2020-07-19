@@ -76,7 +76,7 @@ public class SellerAccount extends BackAbleController {
     private void loadImage() {
         Image image = null;
         try {
-            image = connector.userImage(username.getText());
+            image = connector.userImage();
             if (image == null) {
                 image = new Image(userPhoto);
             }

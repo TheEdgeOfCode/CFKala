@@ -16,10 +16,7 @@ import com.codefathers.cfkserver.service.file.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,7 +83,7 @@ public class ManagerController {
         }
     }
 
-    @GetMapping("/manager/show_products")
+    @PostMapping("/manager/show_products")
     private ResponseEntity<?> showProducts_Manager(HttpServletRequest request, HttpServletResponse response, @RequestBody FilterSortDto filterSortDto) {
         try {
             if (checkToken(response, request)) {
@@ -107,12 +104,13 @@ public class ManagerController {
         }
     }
 
-    @PostMapping("/manager/remove_product")
-    private ResponseEntity<?> removeProduct_Manager(HttpServletRequest request, HttpServletResponse response, @RequestBody String info) {
+    @PostMapping()
+    @RequestMapping("/manager/remove_product/{id}")
+    private ResponseEntity<?> removeProduct_Manager(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
         try {
             if (checkToken(response, request)) {
                 try {
-                    productService.deleteProduct(Integer.parseInt(info));
+                    productService.deleteProduct(Integer.parseInt(id));
                     return ResponseEntity.ok(ResponseEntity.status(200));
                 } catch (NoSuchAProductException e) {
                     sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());

@@ -1,8 +1,10 @@
 package com.codefathers.cfkclient.dtos.category;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class CategoryPM {
     private String name;
     private int indent;

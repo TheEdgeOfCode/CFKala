@@ -79,7 +79,7 @@ public class ProductPage extends BackAbleController {
                     break;
             }
         } catch (Exception e) {
-            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            new OopsAlert().show(e.getMessage());
         }
     }
 

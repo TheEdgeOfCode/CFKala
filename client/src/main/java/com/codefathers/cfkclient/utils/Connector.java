@@ -1,6 +1,5 @@
 package com.codefathers.cfkclient.utils;
 
-import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.category.CreateDTO;
@@ -16,6 +15,7 @@ import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
 import com.codefathers.cfkclient.dtos.off.OffDTO;
 import com.codefathers.cfkclient.dtos.off.OffListDTO;
 import com.codefathers.cfkclient.dtos.product.*;
+import com.codefathers.cfkclient.dtos.resources.ResourceListDto;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.Image;
@@ -73,11 +73,38 @@ public class Connector {
         headers.add("Authentication","cfk! " + token);
         HttpEntity<T> requestEntity = new HttpEntity<>(dto,headers);
         ResponseEntity<String> response = restTemplate.exchange(uri, GET, requestEntity, String.class);
+        String body = response.getBody();
         if (response.getStatusCode().equals(HttpStatus.OK)){
             Gson gson = new Gson();
-            return gson.fromJson(response.getBody(),type);
+            return gson.fromJson(body,type);
         }else {
-            throw new Exception(new GsonJsonParser().parseMap(response.getBody()).get("error").toString());
+            throw new Exception(new GsonJsonParser().parseMap(body).get("error").toString());
+        }
+    }
+
+    private<T> ByteArrayResource getResources(String uri,T dto) throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authentication","cfk! " + token);
+        HttpEntity<T> requestEntity = new HttpEntity<>(dto,headers);
+        ResponseEntity<ByteArrayResource> responseEntity = restTemplate.exchange(uri,GET,requestEntity,ByteArrayResource.class);
+        if (responseEntity.getStatusCode().equals(HttpStatus.OK)){
+            return responseEntity.getBody();
+        }else {
+            String error = responseEntity.getStatusCode().toString() +  responseEntity.getHeaders().get("ERROR");
+            throw new Exception(error);
+        }
+    }
+
+    private<T> ByteArrayResource[] getArrayResources(String uri, T dto) throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authentication","cfk! " + token);
+        HttpEntity<T> requestEntity = new HttpEntity<>(dto,headers);
+        ResponseEntity<ByteArrayResource[]> responseEntity = restTemplate.exchange(uri,GET,requestEntity, ByteArrayResource[].class);
+        if (responseEntity.getStatusCode().equals(HttpStatus.OK)){
+            return responseEntity.getBody();
+        }else {
+            String error = responseEntity.getStatusCode().toString() +  responseEntity.getHeaders().get("ERROR");
+            throw new Exception(error);
         }
     }
 
@@ -171,8 +198,7 @@ public class Connector {
     }
 
     public CompanyDTO viewCompanyInfo() throws Exception {
-        ResponseEntity<CompanyDTO> response = post(address + "/seller/view_company", null, CompanyDTO.class);
-        return response.getBody();
+        return get(address + "/seller/view_company", null, CompanyDTO.class);
     }
 
     public List<SellLogDTO> viewSalesHistory() throws Exception {
@@ -206,22 +232,20 @@ public class Connector {
     }
 
     public void addCategory(CreateDTO createDTO) throws Exception {
-        post(address + "/category/remove", createDTO, String.class);
+        post(address + "/category/add", createDTO, String.class);
     }
 
     public ArrayList<String> getSpecialFeatureOfCategory(Integer id) throws Exception {
-        return get(address + "/category/get_special", id, new TypeToken<ArrayList<String>>() {
-        }.getType());
+        return get(address + "/category/get_special/" + id, id, new TypeToken<ArrayList<String>>() {}.getType());
     }
 
     public List<String> getPublicFeaturesOfCategory() throws Exception {
         return get(address + "/category/get_public", null,
-                new TypeToken<ArrayList<String>>() {
-                }.getType());
+                new TypeToken<ArrayList<String>>() {}.getType());
     }
 
     public ArrayList<CategoryPM> getAllCategories() throws Exception {
-        return get("", null, new TypeToken<ArrayList<CategoryPM>>() {
+        return get(address + "/category/get_all", null, new TypeToken<ArrayList<CategoryPM>>() {
         }.getType());
     }
 
@@ -279,16 +303,6 @@ public class Connector {
         return post.getBody();
     }
 
-    public Image userImage(String text) throws Exception {
-        ByteArrayResource image = get(address + "/download/user/profile/" + text,null,
-                ByteArrayResource.class);
-        if (image != null) {
-            return new Image(new ByteArrayInputStream(image.getInputStream().readAllBytes()));
-        }else {
-            return null;
-        }
-    }
-
     public void sellerRemoveProduct(Integer id) throws Exception {
         post(address + "/seller/remove_product", id, String.class);
     }
@@ -304,12 +318,12 @@ public class Connector {
     }
 
     public List<MiniProductDto> showProducts_Manager(FilterSortDto filterSortDto) throws Exception {
-        return get(address + "/manager/show_products",
-                filterSortDto, MiniProductArrayListDto.class);
+        return post(address + "/manager/show_products",
+                filterSortDto, MiniProductArrayListDto.class).getBody().getDtos();
     }
 
     public void removeProduct_Manager(String id) throws Exception {
-        post(address + "/manager/remove_product", id, String.class);
+        post(address + "/manager/remove_product/" + id, id, String.class);
     }
 
     public List<RequestDTO> showRequests() throws Exception {
@@ -337,7 +351,7 @@ public class Connector {
     }
 
     public int createCompany(String[] info) throws Exception {
-        ResponseEntity<Integer> response = post(address + "",info,Integer.class);
+        ResponseEntity<Integer> response = post(address + "/users/create_company",info,Integer.class);
         return Objects.requireNonNull(response.getBody());
     }
 
@@ -359,35 +373,6 @@ public class Connector {
 
     public void updateProductMainImage(int id,InputStream[] streams) throws Exception {
         post(address + "/upload/product/" + id,streams,String.class);
-    }
-
-    public Image productMainImage(int id) throws Exception {
-        ByteArrayResource resource = get(address + "/download/product/" + id + "/main", null
-                , ByteArrayResource.class);
-        return createImageFromResource(resource);
-    }
-
-    public ArrayList<Image> loadImages(int id) throws Exception {
-        ArrayList<Image> images = new ArrayList<>();
-        ArrayList<ByteArrayResource> resources = get(address + "/download/product/" + id,null,
-                new TypeToken<ArrayList<ByteArrayResource>>(){}.getType());
-        resources.forEach(byteArrayResource -> {
-            try {
-                Image image = createImageFromResource(byteArrayResource);
-                if (image != null) {
-                    images.add(image);
-                }
-            } catch (IOException ignore) {}
-        });
-        return images;
-    }
-
-    private Image createImageFromResource(ByteArrayResource resource) throws IOException {
-        if (resource != null) {
-            return new Image(new ByteArrayInputStream(resource.getInputStream().readAllBytes()));
-        }else {
-            return null;
-        }
     }
 
     public ArrayList<MicroProductDto> similarNameProducts(String name) throws Exception {
@@ -468,5 +453,41 @@ public class Connector {
         ResponseEntity<Long> response = get("http://127.0.0.1:8050/bank/get_balance",
                 dto, Long.class);
         return Objects.requireNonNull(response.getBody());
+    }
+
+
+    /**Resources======================================================================================================*/
+
+    public Image userImage() throws Exception {
+        ByteArrayResource image = getResources(address + "/download/user/profile",null);
+        return createImageFromResource(image);
+    }
+
+    public Image productMainImage(int id) throws Exception {
+        ByteArrayResource resource = getResources(address + "/download/product/" + id + "/main", null);
+        return createImageFromResource(resource);
+    }
+
+    public ArrayList<Image> loadImages(int id) throws Exception {
+        ArrayList<Image> images = new ArrayList<>();
+        ByteArrayResource[] resources = getArrayResources(address + "/download/product/" + id, null);
+        Arrays.stream(resources).forEach(byteArrayResource -> {
+            try {
+                Image image = createImageFromResource(byteArrayResource);
+                if (image != null) {
+                    images.add(image);
+                }
+            } catch (IOException ignore) {
+            }
+        });
+        return images;
+    }
+
+    private Image createImageFromResource(ByteArrayResource resource) throws IOException {
+        if (resource != null) {
+            return new Image(new ByteArrayInputStream(resource.getInputStream().readAllBytes()));
+        }else {
+            return null;
+        }
     }
 }

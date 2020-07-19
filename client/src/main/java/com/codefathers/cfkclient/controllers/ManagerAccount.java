@@ -73,7 +73,7 @@ public class ManagerAccount extends BackAbleController {
     private void loadImage() {
         Image image;
         try {
-            image = connector.userImage(username.getText());
+            image = connector.userImage();
             imageCircle.setFill(new ImagePattern(image));
         } catch (Exception e) {
             image = new Image(userPhoto);
