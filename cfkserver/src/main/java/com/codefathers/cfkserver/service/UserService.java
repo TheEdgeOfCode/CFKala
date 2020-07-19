@@ -8,7 +8,6 @@ import com.codefathers.cfkserver.exceptions.model.user.*;
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.bank.CreateReceiptDTO;
-import com.codefathers.cfkserver.model.dtos.bank.ReceiptType;
 import com.codefathers.cfkserver.model.dtos.user.ChargeWalletDTO;
 import com.codefathers.cfkserver.model.dtos.user.CustomerDTO;
 import com.codefathers.cfkserver.model.dtos.user.ManagerDTO;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Optional;
-import java.util.Scanner;
 
 import static com.codefathers.cfkserver.model.dtos.bank.ReceiptType.MOVE;
 import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
@@ -197,7 +195,7 @@ public class UserService {
                         MOVE,
                         dto.getMoney(),
                         user.getAccountId(),
-                        bankService.getShopBankAccountId(),
+                        bankService.getInfo("AccountId"),
                         "Charge"
                 ));
         bankService.pay(receiptId);

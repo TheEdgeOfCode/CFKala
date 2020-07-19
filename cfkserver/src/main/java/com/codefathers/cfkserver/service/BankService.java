@@ -147,12 +147,18 @@ public class BankService {
         }
     }
 
-    public String getShopBankAccountId(){
-        File file = new File("src/main/resources/shop_bank_account_info");
+    public String getInfo(String request){
+        File file = new File("src/main/resources/application_info.txt");
         Scanner scanner;
         try {
             scanner = new Scanner(file);
-            return scanner.nextLine();
+            while (scanner.hasNextLine()) {
+                String fileLine = scanner.nextLine();
+                if (fileLine.startsWith(request)) {
+                    // AccountId = 123
+                    return fileLine.substring(fileLine.indexOf('=' + 2));
+                }
+            }
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found!!!");
         }

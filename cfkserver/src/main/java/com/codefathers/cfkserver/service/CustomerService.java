@@ -144,7 +144,7 @@ public class CustomerService {
                 MOVE,
                 totalPrice,
                 customer.getAccountId(),
-                bankService.getShopBankAccountId(),
+                bankService.getInfo("AccountId"),
                 "Purchase"
         ));
     }
