@@ -4,7 +4,10 @@ import com.codefathers.cfkclient.BackAbleController;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.auction.AuctionDTO;
+import com.codefathers.cfkclient.dtos.auction.AuctionLogDTO;
+import com.codefathers.cfkclient.dtos.auction.AuctionMessageDTO;
 import com.codefathers.cfkclient.utils.Connector;
+import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -17,15 +20,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import lombok.Data;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.net.Socket;
 import java.util.Random;
-import java.util.function.Consumer;
 
 public class AuctionPage extends BackAbleController {
     public JFXButton back;
@@ -58,20 +56,28 @@ public class AuctionPage extends BackAbleController {
 
     private static int PORT = 9090;
     private static String IP = "127.0.0.1";
-    private AuctionClient auctionClient = createClient();
-
-    private AuctionClient createClient() {
-        return new AuctionClient(PORT, IP, data -> Platform.runLater(() ->{
-            //TODO: Implement!!!
-        }));
-    }
+    private DataOutputStream output;
 
     @FXML
     public void initialize(){
         initButts();
         initLabels();
-        auctionClient.startConnection();
+        initClient();
         //initMessages();
+    }
+
+    private void initClient() {
+        try {
+            Socket socket = new Socket(IP, PORT);
+
+            output = new DataOutputStream(socket.getOutputStream());
+
+            AuctionClient client = new AuctionClient(socket, this);
+            Thread thread = new Thread(client);
+            thread.start();
+        } catch (IOException e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+        }
     }
 
     private void initButts() {
@@ -82,7 +88,6 @@ public class AuctionPage extends BackAbleController {
         close.setOnAction(e -> {
             Stage stage = (Stage) close.getScene().getWindow();
             stage.close();
-            closeConnection();
         });
         back.setOnAction(event -> handleBack());
         send.setOnAction(event -> handleSend());
@@ -96,18 +101,9 @@ public class AuctionPage extends BackAbleController {
         try {
             Scene scene = new Scene(CFK.loadFXML(back(), backForBackward()));
             CFK.setSceneToStage(back, scene);
-            closeConnection();
         } catch (IOException e) {
             Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             e.printStackTrace();
-        }
-    }
-
-    private void closeConnection() {
-        try {
-            auctionClient.closeConnection();
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -115,9 +111,14 @@ public class AuctionPage extends BackAbleController {
         long previous = Long.parseLong(currentPrice.getText().substring(0, currentPrice.getText().length() - 1));
         String finalPrice = (amount + previous) + "$";
         try {
-            //connector.addPriceAuction(finalPrice);
-            logContainer.getChildren().add(new AuctionLog().createLog(cacheData.getUsername(), finalPrice));
+            AuctionLog builder = new AuctionLog();
+            logContainer.getChildren().add(builder.createLog(cacheData.getUsername(), finalPrice));
             currentPrice.setText(finalPrice);
+
+            AuctionLogDTO dto = builder.getAuctionLogDto();
+            dto.setAuctionId(auctionDTO.getId());
+            String message = new Gson().toJson(dto);
+            sendMessage(message);
         } catch (IOException e) {
             Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             e.printStackTrace();
@@ -127,8 +128,13 @@ public class AuctionPage extends BackAbleController {
     private void handleApply() {
         if (checkInput()) {
             try {
-                //connector.suggestPriceAuction(finalPrice);
-                logContainer.getChildren().add(new AuctionLog().createLog(cacheData.getUsername(), priceEntry.getText()));
+                AuctionLog builder = new AuctionLog();
+                logContainer.getChildren().add(builder.createLog(cacheData.getUsername(), priceEntry.getText()));
+
+                AuctionLogDTO dto = builder.getAuctionLogDto();
+                dto.setAuctionId(auctionDTO.getId());
+                String message = new Gson().toJson(dto);
+                sendMessage(message);
             } catch (IOException e) {
                 Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
                 e.printStackTrace();
@@ -159,13 +165,28 @@ public class AuctionPage extends BackAbleController {
     private void handleSend() {
         try {
             String message = messageArea.getText();
-            messageContainer.getChildren().add(new AuctionMessage().createMessage(cacheData.getUsername(), message));
-            //connector.sendAuctionMessage(message);
+            AuctionMessage builder = new AuctionMessage();
+            messageContainer.getChildren().add(builder.createMessage("You", message));
+
+            AuctionMessageDTO dto = builder.getMessageDTO();
+            dto.setUsername(cacheData.getUsername());
+            String jsonMessage = new Gson().toJson(dto);
+            sendMessage(jsonMessage);
         } catch (IOException e) {
             Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             e.printStackTrace();
         }
         messageArea.clear();
+    }
+
+    private void sendMessage(String jsonMessage) {
+        try {
+            output.writeUTF(jsonMessage);
+            output.flush();
+        } catch (IOException e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
     }
 
     private void initLabels() {
@@ -188,54 +209,58 @@ public class AuctionPage extends BackAbleController {
     }
 }
 
-@Data
-class AuctionClient {
-    private Consumer<Serializable> onReceiveCallBack;
-    private AuctionThread auctionThread = new AuctionThread();
-    private int port;
-    private String ip;
+class AuctionClient implements Runnable {
+    Socket socket;
+    AuctionPage client;
+    DataInputStream input;
 
-    public AuctionClient(int port, String ip, Consumer<Serializable> onReceiveCallBack){
-        this.onReceiveCallBack = onReceiveCallBack;
-        this.port = port;
-        this.ip = ip;
-        this.auctionThread.setDaemon(true);
+    public AuctionClient(Socket socket, AuctionPage client) {
+        this.socket = socket;
+        this.client = client;
     }
 
-    public void startConnection(){
-        auctionThread.start();
-    }
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                input = new DataInputStream(socket.getInputStream());
+                String message = input.readUTF();
 
-    public void send(Serializable data) throws IOException {
-        auctionThread.out.writeObject(data);
-    }
-
-    public void closeConnection() throws IOException {
-        auctionThread.socket.close();
-    }
-
-    private class AuctionThread extends Thread{
-        private ObjectOutputStream out;
-        private Socket socket;
-
-        @Override
-        public void run() {
-            try(Socket socket = new Socket(ip, port);
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-
-                this.out = out;
-                this.socket = socket;
-                socket.setTcpNoDelay(true);
-
-                while (true){
-                    Serializable data = (Serializable) in.readObject();
-                    onReceiveCallBack.accept(data);
-                }
-
-            } catch(Exception e){
-                onReceiveCallBack.accept("Connection Lost");
+                Platform.runLater(() -> {
+                    if (message.startsWith("{\"expression\"")){
+                        AuctionLogDTO dto = new Gson().fromJson(message, AuctionLogDTO.class);
+                        addLog(dto);
+                    } else {
+                        AuctionMessageDTO dto = new Gson().fromJson(message, AuctionMessageDTO.class);
+                        addMessage(dto);
+                    }
+                });
+            } catch (IOException e) {
+                Notification.show("Error", e.getMessage(), client.back.getScene().getWindow(), true);
+                e.printStackTrace();
+                break;
             }
+        }
+    }
+
+    private void addLog(AuctionLogDTO dto) {
+        AuctionLog builder = new AuctionLog();
+        try {
+            client.logContainer.getChildren().add(builder.createLog(dto.getUsername(), dto.getPrice()));
+        } catch (IOException e) {
+            Notification.show("Error", e.getMessage(), client.back.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
+        client.currentPrice.setText(dto.getPrice());
+    }
+
+    private void addMessage(AuctionMessageDTO dto) {
+        AuctionMessage builder = new AuctionMessage();
+        try {
+            client.messageContainer.getChildren().add(builder.createMessage(dto.getUsername(), dto.getMessage()));
+        } catch (IOException e) {
+            Notification.show("Error", e.getMessage(), client.back.getScene().getWindow(), true);
+            e.printStackTrace();
         }
     }
 }

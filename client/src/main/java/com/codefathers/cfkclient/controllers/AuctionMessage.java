@@ -1,6 +1,7 @@
 package com.codefathers.cfkclient.controllers;
 
 import com.codefathers.cfkclient.CFK;
+import com.codefathers.cfkclient.dtos.auction.AuctionMessageDTO;
 import com.codefathers.cfkclient.utils.Connector;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +27,7 @@ public class AuctionMessage {
 
     private Connector connector = Connector.getInstance();
     private static final String USER_PHOTO = "/Images/user-png-icon-male-user-icon-512.png";
+    private AuctionMessageDTO dto;
 
     @FXML
     public void initialize(){
@@ -53,7 +55,16 @@ public class AuctionMessage {
         root = loader.load();
         AuctionMessage controller = loader.getController();
         controller.init(username, message);
+        dto = createDTO(message, username, time.getText());
         return root;
+    }
+
+    private AuctionMessageDTO createDTO(String message, String username, String text) {
+        return new AuctionMessageDTO(message, username, text);
+    }
+
+    public AuctionMessageDTO getMessageDTO() {
+        return dto;
     }
 
     private void init(String username, String message) {
