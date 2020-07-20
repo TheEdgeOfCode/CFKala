@@ -6,8 +6,6 @@ import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.support.Message;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,7 +21,6 @@ import javafx.stage.Stage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.log4j.Log4j;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.WebSocketClient;
@@ -215,7 +212,7 @@ public class SupportAccount extends BackAbleController {
 
         {
             stomp = new CFStomp();
-            url = "";
+            url = "ws://127.0.0.1:8050/chat";
         }
 
         @Override
@@ -231,7 +228,6 @@ public class SupportAccount extends BackAbleController {
             stomp.send(message, receiver);
         }
 
-        @Log4j
         public class CFStomp extends StompSessionHandlerAdapter {
             StompSession stompSession;
 
@@ -249,9 +245,9 @@ public class SupportAccount extends BackAbleController {
             @Override
             public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
                 String username = CacheData.getInstance().getUsername();
-                log.info("New session established : " + session.getSessionId());
+                System.out.println("New session established : " + session.getSessionId());
                 session.subscribe("/topic/messages/" + username,this);
-                log.info("Subscribed");
+                System.out.println("Subscribed");
                 stompSession = session;
             }
 
@@ -262,7 +258,7 @@ public class SupportAccount extends BackAbleController {
 
             void send(Message message,String receiver){
                 stompSession.send("/app/chat/" + receiver,message);
-                log.info("Message sent tp ws server");
+                System.out.println("Message sent tp ws server");
             }
         }
     }

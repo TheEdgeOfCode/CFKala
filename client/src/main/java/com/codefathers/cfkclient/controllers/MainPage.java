@@ -125,6 +125,7 @@ public class MainPage extends BackAbleController {
         } else {
             fxml = "accountManagerPopUp";
         }
+
         try {
             accountPopOver = new PopOver(CFK.loadFXML(fxml));
             accountPopOver.setTitle("Account");

@@ -99,7 +99,7 @@
                   </ScrollPane>
                   <HBox alignment="CENTER" prefHeight="45.0" prefWidth="462.0" spacing="10.0" style="-fx-background-color: #85dcb2; -fx-background-radius: 5;">
                       <children>
-                          <TextField fx:id="text" prefHeight="26.0" prefWidth="472.0" style="-fx-background-color: white;" />
+                          <TextField fx:id="text" prefHeight="26.0" prefWidth="431.0" style="-fx-background-color: white;" />
                           <JFXButton fx:id="send" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ripplerFill="BLACK" style="-fx-background-radius: 5; -fx-background-color: #41b3a3;">
                               <graphic>
                                   <FontIcon iconColor="WHITE" iconLiteral="fa-send" iconSize="15" />

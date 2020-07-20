@@ -14,7 +14,7 @@ public class CacheData {
     public CacheData() {
         roleProperty = new SimpleStringProperty("");
         companyID = 0;
-        username = "";
+        username = "hatam";
         role = "";
         productId = 2;
     }
