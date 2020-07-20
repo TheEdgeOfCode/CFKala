@@ -24,4 +24,7 @@ public class Auction {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date endTime;
+
+    private long currentPrice;
+    private String mostPriceUser;
 }
