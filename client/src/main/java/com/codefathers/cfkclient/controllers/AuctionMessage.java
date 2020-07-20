@@ -1,11 +1,14 @@
 package com.codefathers.cfkclient.controllers;
 
 import com.codefathers.cfkclient.CFK;
+import com.codefathers.cfkclient.utils.Connector;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -21,9 +24,23 @@ public class AuctionMessage {
     public TextFlow textFlow;
     public HBox root;
 
+    private Connector connector = Connector.getInstance();
+    private static final String USER_PHOTO = "/Images/user-png-icon-male-user-icon-512.png";
+
     @FXML
     public void initialize(){
         initLabels();
+        initImage();
+    }
+
+    private void initImage() {
+        Image image;
+        try {
+            image = connector.userImage();
+        } catch (Exception e) {
+            image = new Image(USER_PHOTO);;
+        }
+        this.image.setFill(new ImagePattern(image));
     }
 
     private void initLabels() {

@@ -1,5 +1,6 @@
 package com.codefathers.cfkclient;
 
+import com.codefathers.cfkclient.dtos.auction.AuctionDTO;
 import com.codefathers.cfkclient.dtos.user.SellerDTO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -26,6 +27,8 @@ public class CacheData {
     private int productId;
     private SellerDTO signUpData;
 
+    //-> Auction
+    private AuctionDTO auctionDTO;
 
     public void logout(){
         roleProperty.set("");
