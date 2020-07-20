@@ -1,5 +1,6 @@
 package com.codefathers.cfkclient.controllers;
 
+import com.codefathers.cfkclient.BackAbleController;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.Sound;
 import com.codefathers.cfkclient.SoundCenter;
@@ -25,7 +26,7 @@ import java.util.List;
 import static com.codefathers.cfkclient.dtos.bank.PaymentType.BANK;
 import static com.codefathers.cfkclient.dtos.bank.PaymentType.WALLET;
 
-public class Purchase {
+public class Purchase extends BackAbleController {
     @FXML private Label pay;
     @FXML private Label discount;
     @FXML private Label price;
@@ -370,7 +371,7 @@ public class Purchase {
 
     private void handleBackButton() {
         try {
-            Scene scene = new Scene(CFK.loadFXML("CustomerAccount"));
+            Scene scene = new Scene(CFK.loadFXML(back(), backForBackward()));
             CFK.setSceneToStage(back, scene);
         } catch (IOException ignore){}
     }

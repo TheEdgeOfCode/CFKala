@@ -166,15 +166,15 @@ public class CustomerService {
         long totalPrice = 0;
 
         for (SubCart subCart : cart.getSubCarts()) {
-            totalPrice = findPrice(subCart);
+            totalPrice += findPrice(subCart);
         }
 
         if (discountCode != null) {
-            double discount = (double) cart.getTotalPrice() * discountCode.getOffPercentage() / 100;
+            double discount = (double) totalPrice * discountCode.getOffPercentage() / 100;
             if (discount > discountCode.getMaxDiscount()) {
-                totalPrice = cart.getTotalPrice() - discountCode.getMaxDiscount();
+                totalPrice -= discountCode.getMaxDiscount();
             } else {
-                totalPrice = cart.getTotalPrice() - (int) discount;
+                totalPrice -= (int) discount;
             }
         }
         return totalPrice;
@@ -182,7 +182,7 @@ public class CustomerService {
 
     int findPrice(SubCart subCart) throws NoSuchAPackageException {
         SellPackage sellPackage = subCart.getSeller().findPackageByProductId(subCart.getProduct().getId());
-        return sellPackage.isOnOff() ? sellPackage.getPrice() * (100 - sellPackage.getOff().getOffPercentage()) / 100 : sellPackage.getPrice();
+        return sellPackage.isOnOff() ? (int) (sellPackage.getPrice() * (double) (100 - sellPackage.getOff().getOffPercentage()) / 100) : sellPackage.getPrice();
     }
 
     public void checkIfCustomerHasEnoughMoneyInWallet(long difference) throws NotEnoughMoneyException {
