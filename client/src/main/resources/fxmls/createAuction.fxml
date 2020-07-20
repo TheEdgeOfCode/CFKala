@@ -1,52 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.SellerAccount">
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.CreateAuction">
    <children>
-      <ImageView fitHeight="595.0" fitWidth="677.0" layoutX="76.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <image>
-            <Image url="@../Images/auction.jpg" />
-         </image>
-      </ImageView>
-      <AnchorPane layoutX="677.0" prefHeight="595.0" prefWidth="284.0">
-         <children>
-            <Label layoutX="32.0" layoutY="38.0" text="Create Auction">
-               <font>
-                  <Font name="System Bold" size="32.0" />
-               </font>
-            </Label>
-            <Label layoutX="16.0" layoutY="220.0" prefHeight="20.0" prefWidth="254.0" text="Start Date">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <DatePicker fx:id="startDate" layoutX="13.0" layoutY="251.0" prefHeight="26.0" prefWidth="254.0" />
-            <Label layoutX="16.0" layoutY="307.0" prefHeight="20.0" prefWidth="254.0" text="End Date">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <DatePicker fx:id="endDate" layoutX="16.0" layoutY="334.0" prefHeight="26.0" prefWidth="254.0" />
-            <JFXButton fx:id="create" layoutX="17.0" layoutY="529.0" prefHeight="44.0" prefWidth="254.0" text="Create Auction">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </JFXButton>
-            <ComboBox fx:id="products" layoutX="15.0" layoutY="153.0" prefHeight="26.0" prefWidth="254.0" />
-            <Label layoutX="15.0" layoutY="120.0" prefHeight="20.0" prefWidth="254.0" text="Choose a Product">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
+      <BorderPane prefHeight="594.0" prefWidth="960.0">
+         <top>
+            <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+               <children>
+                  <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" />
+                     </graphic>
+                  </JFXButton>
+                  <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-minimize" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="close" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" ripplerFill="#9f0909" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-close" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <AnchorPane prefHeight="593.0" prefWidth="960.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="595.0" fitWidth="677.0" layoutX="76.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <image>
+                        <Image url="@../Images/auction.jpg" />
+                     </image>
+                  </ImageView>
+                  <AnchorPane layoutX="677.0" prefHeight="595.0" prefWidth="284.0">
+                     <children>
+                        <Label layoutX="32.0" layoutY="38.0" text="Create Auction">
+                           <font>
+                              <Font name="System Bold" size="32.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="16.0" layoutY="220.0" prefHeight="20.0" prefWidth="254.0" text="Start Date">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="startDate" layoutX="13.0" layoutY="251.0" prefHeight="26.0" prefWidth="254.0" />
+                        <Label layoutX="16.0" layoutY="307.0" prefHeight="20.0" prefWidth="254.0" text="End Date">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="endDate" layoutX="16.0" layoutY="334.0" prefHeight="26.0" prefWidth="254.0" />
+                        <JFXButton fx:id="create" layoutX="17.0" layoutY="529.0" prefHeight="44.0" prefWidth="254.0" text="Create Auction">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </JFXButton>
+                        <ComboBox fx:id="products" layoutX="15.0" layoutY="153.0" prefHeight="26.0" prefWidth="254.0" />
+                        <Label layoutX="15.0" layoutY="120.0" prefHeight="20.0" prefWidth="254.0" text="Choose a Product">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </center>
+      </BorderPane>
    </children>
 </AnchorPane>
