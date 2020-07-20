@@ -32,7 +32,7 @@ public class AuctionMessage {
     }
 
     public HBox createMessage(String username, String message) throws IOException {
-        FXMLLoader loader = CFK.getFXMLLoader("messageInAuction");
+        FXMLLoader loader = CFK.getFXMLLoader("auction_message");
         root = loader.load();
         AuctionMessage controller = loader.getController();
         controller.init(username, message);

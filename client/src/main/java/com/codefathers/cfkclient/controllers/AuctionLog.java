@@ -27,7 +27,7 @@ public class AuctionLog {
     }
 
     public HBox createLog(String username, String price) throws IOException {
-        FXMLLoader loader = CFK.getFXMLLoader("auctionLog");
+        FXMLLoader loader = CFK.getFXMLLoader("auction_log");
         root = loader.load();
         AuctionLog controller = loader.getController();
         controller.init(username, price);
