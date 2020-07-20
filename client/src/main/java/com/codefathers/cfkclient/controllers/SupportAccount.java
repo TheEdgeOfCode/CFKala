@@ -200,7 +200,10 @@ public class SupportAccount extends BackAbleController {
 
     private Image loadImage(String username) {
         try {
-            return connector.userImage(username);
+            Image image = connector.userImage(username);
+            if (image != null) {
+                return image;
+            }else throw new Exception();
         } catch (Exception e) {
             return new Image(userPhoto);
         }

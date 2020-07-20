@@ -74,7 +74,14 @@ public class ContentController {
 
     @PostMapping("/content/add_content")
     private void addContent(@RequestBody String body,HttpServletRequest request, HttpServletResponse response){
-
+        try {
+            checkToken(response, request);
+            MainContent content = new MainContent(body.split("~~~")[0],body.split("~~~")[1]);
+            mainContentRepository.save(content);
+            System.out.println("here");
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
     }
 
 

@@ -43,7 +43,7 @@ public class UserService {
         if (optionalUser.isPresent()){
             return optionalUser.get();
         } else {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("User not found");
         }
     }
 
@@ -115,17 +115,24 @@ public class UserService {
         if (isCorrectPassword(user, password)) {
             Optional<Customer> customer = customerRepository.findById(username);
             if (customer.isPresent()) return "Customer";
+
             Optional<Seller> seller = sellerRepository.findById(username);
             if (seller.isPresent()) if (seller.get().getVerified())
                 return "Seller";
             else
-                throw new NotVerifiedSeller();
+                throw new NotVerifiedSeller("Your not verified yet");
+
             Optional<Manager> manager = managerRepository.findById(username);
             if (manager.isPresent()) {
                 return "Manager";
             }
+
+            Optional<Support> support = supportRepository.findById(username);
+            if (support.isPresent()){
+                return "Support";
+            }
         } else {
-            throw new WrongPasswordException(username);
+            throw new WrongPasswordException("Wrong Password");
         }
         return "";
     }
