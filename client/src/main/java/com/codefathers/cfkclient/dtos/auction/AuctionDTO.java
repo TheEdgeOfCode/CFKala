@@ -14,4 +14,6 @@ public class AuctionDTO {
     private long userPrice;
     private int productId;
     private String productName;
+    private long currentPrice;
+    private String mostPriceUser;
 }

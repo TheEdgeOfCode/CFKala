@@ -142,13 +142,12 @@ public class AuctionPage extends BackAbleController {
 
     private void initLabels() {
         try {
-            //TODO: Get Info From the Server!!!
             productImage.setImage(connector.productMainImage(auctionDTO.getProductId()));
             productName.setText(auctionDTO.getProductName());
             firstPrice.setText(String.valueOf(auctionDTO.getSellPackageDto().getPrice()));
-            //currentPrice.setText(connector.getAuctionCurrentPrice(auctionDTO.getId()));
+            currentPrice.setText(String.valueOf(auctionDTO.getCurrentPrice()));
             yourPrice.setText(String.valueOf(auctionDTO.getUserPrice()));
-            //mostPriceUser.setText(connector.getAuctionMostPriceUser(auctionDTO.getId()));
+            mostPriceUser.setText(auctionDTO.getMostPriceUser());
         } catch (Exception e) {
             productImage.setImage(new Image(PRODUCT_PHOTO));
             e.printStackTrace();
