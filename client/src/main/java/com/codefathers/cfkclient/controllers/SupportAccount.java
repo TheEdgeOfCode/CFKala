@@ -71,7 +71,12 @@ public class SupportAccount extends BackAbleController {
     }
 
     private void startMessagingUnit() {
+        sendOnline();
         new Thread(messenger).start();
+    }
+
+    private void sendOnline() {
+        connector.setThisSupportOnline();
     }
 
     private void binds() {
