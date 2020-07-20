@@ -467,7 +467,7 @@ public class Connector {
     }
 
     public Image userImage(String username) throws Exception {
-        ByteArrayResource image = getResources(address + "/download/user/profile",null);
+        ByteArrayResource image = getResources(address + "/download/user/profile/" + username ,null);
         return createImageFromResource(image);
     }
 

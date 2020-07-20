@@ -6,6 +6,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -23,11 +24,6 @@
                 <padding>
                     <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                 </padding>
-                <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" text=" ">
-                    <graphic>
-                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" />
-                    </graphic>
-                </JFXButton>
                 <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                 <JFXButton fx:id="minimize" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="26.0" prefWidth="26.0" text=" ">
                     <graphic>
@@ -42,32 +38,47 @@
             </HBox>
         </top>
         <left>
-          <VBox fx:id="settings" alignment="TOP_CENTER" prefHeight="554.0" prefWidth="145.0" spacing="10.0" style="-fx-background-radius: 3; -fx-background-color: #e27d60;" stylesheets="@../CSSs/button.css" BorderPane.alignment="CENTER">
+          <VBox fx:id="settings" alignment="TOP_CENTER" prefHeight="556.0" prefWidth="174.0" spacing="10.0" style="-fx-background-radius: 3; -fx-background-color: #e27d60;" stylesheets="@../CSSs/button.css" BorderPane.alignment="CENTER">
               <BorderPane.margin>
                   <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
               </BorderPane.margin>
               <children>
                   <Circle fx:id="image" fill="DODGERBLUE" radius="53.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: transparent;" />
+                  <Label fx:id="username" text="username">
+                      <font>
+                          <Font name="Forte" size="20.0" />
+                      </font>
+                  </Label>
+               <Separator prefWidth="200.0" />
                   <JFXButton fx:id="changeProfile" focusTraversable="false" prefHeight="38.0" prefWidth="110.0" ripplerFill="WHITE" text="Profile">
                       <font>
                           <Font name="System Bold" size="19.0" />
                       </font>
                   </JFXButton>
-                  <Label fx:id="username" text="username">
-                      <font>
-                          <Font size="15.0" />
-                      </font>
-                  </Label>
-                  <Label fx:id="name" layoutX="40.0" layoutY="98.0" text="name">
-                      <font>
-                          <Font size="15.0" />
-                      </font>
-                  </Label>
+               <JFXButton fx:id="changePass" focusTraversable="false" layoutX="28.0" layoutY="142.0" prefHeight="42.0" prefWidth="126.0" ripplerFill="WHITE" text="Password">
+                  <font>
+                     <Font name="System Bold" size="15.0" />
+                  </font>
+                  <graphic>
+                     <FontIcon iconLiteral="fa-lock" iconSize="18" />
+                  </graphic>
+               </JFXButton>
                   <Region VBox.vgrow="ALWAYS" />
+                   <JFXButton fx:id="back" focusTraversable="false" prefHeight="38.0" prefWidth="171.0" text="Log Out" textFill="#392d2d">
+                       <graphic>
+                           <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" />
+                       </graphic>
+                  <font>
+                     <Font name="System Bold" size="17.0" />
+                  </font>
+                   </JFXButton>
                   <Label text="Support">
                       <font>
                           <Font name="System Bold" size="28.0" />
                       </font>
+                  <graphic>
+                     <FontIcon iconLiteral="fa-support" />
+                  </graphic>
                   </Label>
               </children>
               <padding>
