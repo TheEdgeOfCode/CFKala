@@ -7,11 +7,13 @@ import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.support.Message;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
+import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -22,8 +24,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;
@@ -38,12 +38,13 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class SupportAccount extends BackAbleController {
     @FXML private HBox chatsLoading;
     @FXML private HBox usersLoading;
 
-    @FXML private JFXButton changePass;
     @FXML private JFXButton back;
     @FXML private JFXButton minimize;
     @FXML private JFXButton close;
@@ -52,6 +53,7 @@ public class SupportAccount extends BackAbleController {
     @FXML private Circle image;
     @FXML private JFXButton changeProfile;
     @FXML private Label username;
+    @FXML private JFXButton changePass;
     
     @FXML private VBox chat;
     @FXML private VBox messageBox;
@@ -65,8 +67,8 @@ public class SupportAccount extends BackAbleController {
 
     private Messenger messenger = new Messenger();
 
-    private HashMap<String,HBox> users = new HashMap<>();
-    private StringProperty currentChat = new SimpleStringProperty();
+    private StringProperty currentChat = new SimpleStringProperty("");
+    private HashMap<String,Chat> chatHashMap = new HashMap<>();
 
     @FXML
     private void initialize(){
@@ -79,16 +81,16 @@ public class SupportAccount extends BackAbleController {
 
     private void listeners() {
         currentChat.addListener((o, oldValue,newValue) -> {
-            Chat chat = Chat.getBy(newValue);
-            if (chat != null) {
-                buildChat(chat);
-            }
+            // TODO: 7/21/2020
         });
     }
 
     private void startMessagingUnit() {
         sendOnline();
         new Thread(messenger).start();
+        text.setOnAction(event -> {
+            if (!text.getText().isEmpty())sendMessage();
+        });
     }
 
     private void sendOnline() {
@@ -124,13 +126,38 @@ public class SupportAccount extends BackAbleController {
     private void sendMessage() {
         Message message = new Message(username.getText(),text.getText());
         String receiver = currentChat.getValue();
-        Chat.sendMessage(receiver,message);
         messenger.send(message,receiver);
+        Chat chat = chatHashMap.get(receiver);
+        chat.send(message);
+        text.clear();
     }
 
     private void receiveMessage(Message message){
-        // TODO: 7/21/2020
+        Platform.runLater(() -> {
+            String sender = message.getSender();
+            Chat chat = chatHashMap.get(sender);
+            if (chat != null) {
+                chat.receive(message,isCurrent(sender));
+            }else {
+                createAChat(sender,message,this);
+            }
+        });
         System.out.println(message);
+    }
+
+    private void createAChat(String sender, Message message,SupportAccount supportAccount) {
+        usersLoading.setVisible(true);
+        Chat chat = new Chat(sender);
+        try {
+            Entry<Parent, ChatUser> build = ChatUser.build(sender,supportAccount);
+            chatBar.getChildren().add(build.getKey());
+            chat.setUserPlate(build.getValue());
+            chatHashMap.put(sender,chat);
+            chat.receive(message,isCurrent(sender));
+        } catch (IOException ignore) {
+        } finally {
+            usersLoading.setVisible(false);
+        }
     }
 
     private void handleChangePass() {
@@ -193,36 +220,21 @@ public class SupportAccount extends BackAbleController {
     }
 
     private void exceptionHandler(Throwable throwable){
-        // TODO: 7/20/2020
+        Notification.show("Error", throwable.getMessage(),back.getScene().getWindow(),true);
     }
 
-    private void createUser(){
-        // TODO: 7/20/2020
+    void changeChat(String username){
+        Chat chat =  chatHashMap.get(username);
+        if (chat != null) {
+            messageBox.getChildren().clear();
+            messageBox.getChildren().addAll(chat.getMessageTemplates());
+            chat.setRead();
+            currentChat.setValue(username);
+        }
     }
 
-    private void addMessageToChat(Message message){
-        // TODO: 7/20/2020
-    }
-
-    private void buildChat(Chat chat){
-        // TODO: 7/20/2020
-    }
-
-    private HBox generateUser(String username){
-        HBox box = new HBox(10);
-        box.setStyle("-fx-background-radius: 10;" +
-                "-fx-background-color : rgba(0, 0, 0, 0.15);");
-        box.setPrefHeight(50);
-        box.setPrefWidth(212);
-        box.setPadding(new Insets(5));
-        box.setAlignment(Pos.CENTER_LEFT);
-        Image image = loadImage(username);
-        Circle circle = new Circle(65,new ImagePattern(image));
-        circle.setRadius(30);
-        Label label = new Label(username);
-        box.getChildren().addAll(circle,label);
-        box.setOnMouseClicked(event -> currentChat.setValue(username));
-        return box;
+    private boolean isCurrent(String username){
+        return currentChat.getValue().equalsIgnoreCase(username);
     }
 
     private Image loadImage(String username) {
@@ -288,7 +300,6 @@ public class SupportAccount extends BackAbleController {
 
             void send(Message message,String receiver){
                 stompSession.send("/app/chat/" + receiver,message);
-                System.out.println("Message sent tp ws server");
             }
 
             void stop(){
@@ -296,44 +307,51 @@ public class SupportAccount extends BackAbleController {
             }
         }
     }
-}
 
-@Data
-@AllArgsConstructor
-@Builder
-class Chat{
-    private static HashMap<String,Chat> chats;
-    private String user;
-    private ArrayList<Message> messages;
+    @Data
+    private class Chat{
+        private String username;
+        private ArrayList<HBox> messageTemplates;
+        private ChatUser userPlate;
+        private byte pastSender;
+        private IntegerProperty unread;
 
-    public static void reciveMessage(String user, Message message) {
-        Chat chat = chats.get(user);
-        if (chat == null) chats.put(user, createNewChat(user, message));
-        else chat.getMessages().add(message);
-    }
+        Chat(String username) {
+            this.username = username;
+            pastSender = 0;
+            unread = new SimpleIntegerProperty(0);
+            messageTemplates = new ArrayList<>();
+            bindings();
+        }
 
-    private static Chat createNewChat(String user, Message message) {
-        ArrayList<Message> messages = new ArrayList<>();
-        messages.add(message);
-        return new Chat(user,messages);
-    }
+        private void bindings() {
+            unread.addListener((o,oldValue,newValue) -> userPlate.setUnreadAmount(newValue.intValue()));
+        }
 
-    static Chat getBy(String user){
-        return chats.getOrDefault(user,null);
-    }
+        void send(Message message){
+            HBox template = (HBox) MessageBuilder.build(message.getMessage(),message.getSender(),
+                    true,pastSender==1);
+            pastSender = 0;
+            messageTemplates.add(template);
+            messageBox.getChildren().add(template);
+        }
 
-    static void sendMessage(String to,Message message){
-        Chat chat = chats.get(to);
-        if (chat == null) chats.put(to, createNewChat(to, message));
-    }
+        void receive(Message message,boolean isCurrent){
+            HBox template = (HBox) MessageBuilder.build(message.getMessage(),message.getSender(),
+                    false,pastSender==0);
+            pastSender = 1;
+            if (isCurrent){
+                unread.setValue(0);
+                messageTemplates.add(template);
+                messageBox.getChildren().add(template);
+            }else {
+                unread.setValue(unread.get() + 1);
+                messageTemplates.add(template);
+            }
+        }
 
-    public static ArrayList<Message> getAllMessagesFrom(String username) throws Exception {
-        Chat chat = chats.get(username);
-        if (chat != null) return chat.getMessages();
-        throw new Exception("No Such A User");
-    }
-
-    public static void deleteAChat(){
-        // TODO: 7/20/2020
+        void setRead(){
+            userPlate.setRead();
+        }
     }
 }

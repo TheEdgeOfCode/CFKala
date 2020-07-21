@@ -97,9 +97,9 @@
                         </padding></VBox>
                       </content>
                   </ScrollPane>
-                  <HBox alignment="CENTER" prefHeight="45.0" prefWidth="462.0" spacing="10.0" style="-fx-background-color: #85dcb2; -fx-background-radius: 5;">
+                  <HBox alignment="CENTER" prefHeight="45.0" prefWidth="462.0" spacing="10.0" style="-fx-background-color: #85dcb2; -fx-background-radius: 5;" VBox.vgrow="NEVER">
                       <children>
-                          <TextField fx:id="text" prefHeight="26.0" prefWidth="431.0" style="-fx-background-color: white;" />
+                          <TextField fx:id="text" minWidth="200.0" prefHeight="26.0" prefWidth="362.0" style="-fx-background-color: white;" />
                           <JFXButton fx:id="send" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ripplerFill="BLACK" style="-fx-background-radius: 5; -fx-background-color: #41b3a3;">
                               <graphic>
                                   <FontIcon iconColor="WHITE" iconLiteral="fa-send" iconSize="15" />
@@ -120,7 +120,7 @@
           </VBox>
         </center>
         <right>
-          <VBox fx:id="chatBar" prefHeight="560.0" prefWidth="242.0" spacing="5.0" style="-fx-background-color: #80bbaa; -fx-background-radius: 3;" BorderPane.alignment="CENTER">
+          <VBox fx:id="chatBar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="298.0" spacing="5.0" style="-fx-background-color: #80bbaa; -fx-background-radius: 3;" BorderPane.alignment="CENTER">
               <BorderPane.margin>
                   <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
               </BorderPane.margin>

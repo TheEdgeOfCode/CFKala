@@ -69,11 +69,7 @@ public class SupportCenter {
     }
 
     private void listeners() {
-        cacheData.roleProperty.addListener(observable -> {
-            initUsername();
-            messenger.stomp.stop();
-            initMessenger();
-        });
+
     }
 
     private void binds() {
@@ -160,7 +156,7 @@ public class SupportCenter {
     }
 
     private void openChat() {
-        chatBox.getChildren().clear();
+        messageBox.getChildren().clear();
         supportPane.setVisible(false);
         chatBox.setVisible(true);
         label.setText(supportName.getValue());
@@ -168,6 +164,8 @@ public class SupportCenter {
 
     private void closeChat(){
         availableSupports.getChildren().clear();
+        supportPane.setVisible(true);
+        chatBox.setVisible(false);
         initOnlineSupports();
     }
 
