@@ -1,14 +1,18 @@
 package com.codefathers.cfkclient.controllers;
 
 import com.codefathers.cfkclient.BackAbleController;
+import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.support.Message;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -29,9 +33,11 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.codefathers.cfkclient.controllers.MessageBuilder.build;
 
@@ -60,14 +66,27 @@ public class SupportAccount extends BackAbleController {
     private static Connector connector = Connector.getInstance();
 
     private Messenger messenger = new Messenger();
-    
+
+    private HashMap<String,HBox> users = new HashMap<>();
+    private StringProperty currentChat = new SimpleStringProperty();
+
     @FXML
     private void initialize(){
         personalInfo();
         buttons();
         binds();
+        listeners();
         startMessagingUnit();
 //        test();
+    }
+
+    private void listeners() {
+        currentChat.addListener((o, oldValue,newValue) -> {
+            Chat chat = Chat.getBy(newValue);
+            if (chat != null) {
+                buildChat(chat);
+            }
+        });
     }
 
     private void startMessagingUnit() {
@@ -76,11 +95,16 @@ public class SupportAccount extends BackAbleController {
     }
 
     private void sendOnline() {
-        connector.setThisSupportOnline();
+        try {
+            connector.setThisSupportOnline();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     private void binds() {
         send.disableProperty().bind(text.textProperty().isEmpty());
+        chat.disableProperty().bind(currentChat.isEmpty());
     }
 
     private void personalInfo() {
@@ -97,17 +121,18 @@ public class SupportAccount extends BackAbleController {
         changeProfile.setOnAction(event -> handleChangeProfile());
         changePass.setOnAction(event -> handleChangePass());
         send.setOnAction(event -> sendMessage());
+        text.setOnAction(event -> sendMessage());
     }
 
     private void sendMessage() {
-        Message message = new Message();
-        String receiver = "";
-        // TODO: 7/20/2020
+        Message message = new Message(username.getText(),text.getText());
+        String receiver = currentChat.getValue();
+        Chat.sendMessage(receiver,message);
         messenger.send(message,receiver);
     }
 
     private void receiveMessage(Message message){
-        // TODO: 7/20/2020
+        // TODO: 7/21/2020
         System.out.println(message);
     }
 
@@ -150,7 +175,12 @@ public class SupportAccount extends BackAbleController {
 
     private void logoutHandle() {
         shutdownService();
-        // TODO: 7/20/2020
+        try {
+            Scene scene = new Scene(CFK.loadFXML("MainPage"));
+            CFK.setSceneToStage(back,scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleClose() {
@@ -159,10 +189,24 @@ public class SupportAccount extends BackAbleController {
     }
 
     private void shutdownService() {
-        // TODO: 7/20/2020
+        try {
+            connector.setThisSupportOffline();
+        } catch (Exception ignore) {}
     }
 
     private void exceptionHandler(Throwable throwable){
+        // TODO: 7/20/2020
+    }
+
+    private void createUser(){
+        // TODO: 7/20/2020
+    }
+
+    private void addMessageToChat(Message message){
+        // TODO: 7/20/2020
+    }
+
+    private void buildChat(Chat chat){
         // TODO: 7/20/2020
     }
 
@@ -200,6 +244,7 @@ public class SupportAccount extends BackAbleController {
         circle.setRadius(30);
         Label label = new Label(username);
         box.getChildren().addAll(circle,label);
+        box.setOnMouseClicked(event -> currentChat.setValue(username));
         return box;
     }
 
@@ -276,18 +321,14 @@ public class SupportAccount extends BackAbleController {
 @AllArgsConstructor
 @Builder
 class Chat{
-    private static ArrayList<Chat> chats;
+    private static HashMap<String,Chat> chats;
     private String user;
     private ArrayList<Message> messages;
 
     public static void reciveMessage(String user, Message message) {
-        for (Chat chat : chats) {
-            if (chat.user.equalsIgnoreCase(user)){
-                chat.getMessages().add(message);
-                return;
-            }
-        }
-        chats.add(createNewChat(user,message));
+        Chat chat = chats.get(user);
+        if (chat == null) chats.put(user, createNewChat(user, message));
+        else chat.getMessages().add(message);
     }
 
     private static Chat createNewChat(String user, Message message) {
@@ -296,21 +337,18 @@ class Chat{
         return new Chat(user,messages);
     }
 
+    public static Chat getBy(String user){
+        return chats.getOrDefault(user,null);
+    }
+
     public static void sendMessage(String to,Message message){
-        for (Chat chat : chats) {
-            if (chat.user.equalsIgnoreCase(to)){
-                chat.getMessages().add(message);
-                return;
-            }
-        }
+        Chat chat = chats.get(to);
+        if (chat == null) chats.put(to, createNewChat(to, message));
     }
 
     public static ArrayList<Message> getAllMessagesFrom(String username) throws Exception {
-        for (Chat chat : chats) {
-            if (chat.user.equalsIgnoreCase(username)){
-                return chat.getMessages();
-            }
-        }
+        Chat chat = chats.get(username);
+        if (chat != null) return chat.getMessages();
         throw new Exception("No Such A User");
     }
 

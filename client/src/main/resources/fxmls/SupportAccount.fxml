@@ -43,7 +43,7 @@
                   <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
               </BorderPane.margin>
               <children>
-                  <Circle fx:id="image" fill="DODGERBLUE" radius="53.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: transparent;" />
+                  <Circle fx:id="image" fill="WHITE" radius="53.0" stroke="BLACK" strokeType="INSIDE" />
                   <Label fx:id="username" text="username">
                       <font>
                           <Font name="Forte" size="20.0" />
