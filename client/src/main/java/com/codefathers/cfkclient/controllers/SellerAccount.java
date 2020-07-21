@@ -205,6 +205,7 @@ public class SellerAccount extends BackAbleController {
     }
 
     private void handleFindButt() {
+        find.disableProperty().bind(transType.valueProperty().isNull());
         String chosen = transType.getSelectionModel().getSelectedItem();
         switch (chosen) {
             case "All" :

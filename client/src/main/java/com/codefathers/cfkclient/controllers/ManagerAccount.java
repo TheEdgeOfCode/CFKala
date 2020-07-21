@@ -30,6 +30,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.script.Bindings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -233,6 +234,7 @@ public class ManagerAccount extends BackAbleController {
     }
 
     private void handleFindButt() {
+        find.visibleProperty().bind(transType.valueProperty().isNull());
         String chosen = transType.getSelectionModel().getSelectedItem();
         switch (chosen) {
             case "All" :

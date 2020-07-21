@@ -212,11 +212,11 @@ public class UserService {
                 username,
                 getPassByUsername(username),
                 dto.getToken(),
-                DEPOSIT,
+                MOVE,
                 dto.getMoney(),
-                Integer.toString(-1),
+                bankService.getInfo("AccountId"),
                 user.getAccountId(),
-                "Deposit"
+                "Move"
         ));
         bankService.pay(receiptId);
         if (dto.getRole().equals(CUSTOMER)) {
