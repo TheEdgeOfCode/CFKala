@@ -39,8 +39,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.codefathers.cfkclient.controllers.MessageBuilder.build;
-
 public class SupportAccount extends BackAbleController {
     @FXML private HBox chatsLoading;
     @FXML private HBox usersLoading;
@@ -77,7 +75,6 @@ public class SupportAccount extends BackAbleController {
         binds();
         listeners();
         startMessagingUnit();
-//        test();
     }
 
     private void listeners() {
@@ -191,6 +188,7 @@ public class SupportAccount extends BackAbleController {
     private void shutdownService() {
         try {
             connector.setThisSupportOffline();
+            messenger.stomp.stop();
         } catch (Exception ignore) {}
     }
 
@@ -208,27 +206,6 @@ public class SupportAccount extends BackAbleController {
 
     private void buildChat(Chat chat){
         // TODO: 7/20/2020
-    }
-
-    private void test() {
-        chatBar.getChildren().addAll(generateUser("hatam"));
-        messageBox.getChildren().addAll(build("Hello!\nHow You Doin' ?!","hatam",false,true),
-                build("Hi, Thanks!!","s",true,true),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false),
-                build("Hi, Thanks!!","s",true,false));
     }
 
     private HBox generateUser(String username){
@@ -277,7 +254,7 @@ public class SupportAccount extends BackAbleController {
             stompClient.connect(url,handler);
         }
 
-        public void send(Message message,String receiver){
+        void send(Message message,String receiver){
             stomp.send(message, receiver);
         }
 
@@ -313,6 +290,10 @@ public class SupportAccount extends BackAbleController {
                 stompSession.send("/app/chat/" + receiver,message);
                 System.out.println("Message sent tp ws server");
             }
+
+            void stop(){
+                stompSession.disconnect();
+            }
         }
     }
 }
@@ -337,11 +318,11 @@ class Chat{
         return new Chat(user,messages);
     }
 
-    public static Chat getBy(String user){
+    static Chat getBy(String user){
         return chats.getOrDefault(user,null);
     }
 
-    public static void sendMessage(String to,Message message){
+    static void sendMessage(String to,Message message){
         Chat chat = chats.get(to);
         if (chat == null) chats.put(to, createNewChat(to, message));
     }

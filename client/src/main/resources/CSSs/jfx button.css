@@ -1,0 +1,10 @@
+.jfx-button {
+    -jfx-button-type: RAISED;
+    -fx-background-color: #85dcb2;
+    -fx-background-radius: 100;
+}
+
+.jfx-button :hover {
+    -jfx-button-type: RAISED;
+    -fx-background-color: #65b3dc;
+}
