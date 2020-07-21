@@ -225,4 +225,17 @@ public class UserController {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
+    @PostMapping("/users/take_money")
+    public ResponseEntity<?> takeMoneyIntoAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody TakeMoneyDTO dto) {
+        try {
+            if (checkToken(response, request)) {
+                int receiptId = userService.takeMoneyIntoAccount(dto, getUsernameFromToken(request));
+                return ResponseEntity.ok(receiptId);
+            }
+        } catch (Exception e) {
+            sendError(response, UNAUTHORIZED, e.getMessage());
+        }
+        return null;
+    }
 }

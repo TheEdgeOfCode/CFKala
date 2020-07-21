@@ -8,10 +8,7 @@ import com.codefathers.cfkserver.exceptions.model.user.*;
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.bank.CreateReceiptDTO;
-import com.codefathers.cfkserver.model.dtos.user.ChargeWalletDTO;
-import com.codefathers.cfkserver.model.dtos.user.CustomerDTO;
-import com.codefathers.cfkserver.model.dtos.user.ManagerDTO;
-import com.codefathers.cfkserver.model.dtos.user.SellerDTO;
+import com.codefathers.cfkserver.model.dtos.user.*;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.RequestType;
 import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
@@ -26,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.Optional;
 
+import static com.codefathers.cfkserver.model.dtos.bank.ReceiptType.DEPOSIT;
 import static com.codefathers.cfkserver.model.dtos.bank.ReceiptType.MOVE;
 import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
 
@@ -206,5 +204,28 @@ public class UserService {
             Seller seller = sellerService.findSellerByUsername(username);
             seller.setBalance(seller.getBalance() + dto.getMoney());
         }
+    }
+
+    public int takeMoneyIntoAccount(TakeMoneyDTO dto, String username) throws UserNotFoundException, IOException, InvalidDestAccountException, InvalidTokenException, InvalidSourceAccountException, InvalidAccountIdException, InvalidMoneyException, InvalidDescriptionExcxeption, InvalidParameterPassedException, InvalidRecieptTypeException, InvalidUsernameException, ExpiredTokenException, EqualSourceDestException, NotEnoughMoneyAtSourceException, PaidReceiptException, InvalidReceiptIdException, NoSuchACustomerException, NoSuchSellerException {
+        User user = getUserByUsername(username);
+        int receiptId = bankService.createReceipt(new CreateReceiptDTO(
+                username,
+                getPassByUsername(username),
+                dto.getToken(),
+                DEPOSIT,
+                dto.getMoney(),
+                Integer.toString(-1),
+                user.getAccountId(),
+                "Deposit"
+        ));
+        bankService.pay(receiptId);
+        if (dto.getRole().equals(CUSTOMER)) {
+            Customer customer = customerService.getCustomerByUsername(username);
+            customer.setBalance(customer.getBalance() - dto.getMoney());
+        } else {
+            Seller seller = sellerService.findSellerByUsername(username);
+            seller.setBalance(seller.getBalance() - dto.getMoney());
+        }
+        return receiptId;
     }
 }

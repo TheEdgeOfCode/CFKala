@@ -461,6 +461,12 @@ public class Connector {
         post("http://127.0.0.1:8050/bank/pay", receiptId, String.class);
     }*/
 
+    public int takeMoneyIntoAccount(TakeMoneyDTO dto) throws Exception {
+        dto.setToken(bankToken);
+        ResponseEntity<Integer> response = post(address + "/users/take_money", dto, Integer.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
     public List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws Exception {
         dto.setToken(bankToken);
         ResponseEntity<TransactionListDTO> response = get("http://127.0.0.1:8050/bank/get_transactions",

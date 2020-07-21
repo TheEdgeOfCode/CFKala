@@ -5,6 +5,7 @@ import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.user.ChargeWalletDTO;
 import com.codefathers.cfkclient.dtos.user.CompanyDTO;
+import com.codefathers.cfkclient.dtos.user.TakeMoneyDTO;
 import com.codefathers.cfkclient.dtos.user.UserFullDTO;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
@@ -33,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import static com.codefathers.cfkclient.dtos.bank.ReceiptType.DEPOSIT;
 import static com.codefathers.cfkclient.dtos.bank.TransactType.*;
 import static com.codefathers.cfkclient.dtos.user.Role.SELLER;
 
@@ -251,23 +251,20 @@ public class SellerAccount extends BackAbleController {
     private void handleTakeMoney() {
         long money = new TakeMoneyDialog().show(userFullDTO.getBalance());
         long formerMoney = Long.parseLong(wallet.getText());
-        /*try {
-            int receiptId = connector.createReceipt(new CreateReceiptDTO(
-                    userFullDTO.getUsername(),
-                    userFullDTO.getPassword(),
-                    "",
-                    DEPOSIT,
-                    money,
-                    -1,
-                    Integer.parseInt(userFullDTO.getAccountId()),
-                    "Deposit"
-            ));
-            connector.pay(Integer.toString(receiptId));
+        TakeMoneyDTO takeMoneyDTO = new TakeMoneyDTO(
+                "",
+                money,
+                SELLER
+        );
+        try {
+            int receiptId = connector.takeMoneyIntoAccount(takeMoneyDTO);
             balance.setText(String.valueOf(userFullDTO.getBalance() + money));
-            wallet.setText(String.valueOf(formerMoney + money));
+            wallet.setText(String.valueOf(formerMoney - money));
+            Notification.show("Successful", "Successfully Token To Account With ReceiptId "
+                    + receiptId, back.getScene().getWindow(), false);
         } catch (Exception e) {
-            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), false);
-        }*/
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+        }
     }
 
     private void handleChargeWalletButt() {
@@ -277,6 +274,7 @@ public class SellerAccount extends BackAbleController {
             connector.chargeWallet(new ChargeWalletDTO(money, SELLER));
             wallet.setText(String.valueOf(formerMoney + money));
             balance.setText(String.valueOf(userFullDTO.getBalance() - money));
+            Notification.show("Successful", "Charged Successfully", back.getScene().getWindow(), false);
         } catch (Exception e) {
             Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             e.printStackTrace();
