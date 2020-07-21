@@ -137,11 +137,11 @@ public class BankController {
     private ResponseEntity<?> getManagerInfo(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
-                String[] info = new String[3];
-                info[0] = bankService.getInfo("AccountId");
-                info[1] = bankService.getInfo("Toll");
-                info[2] = bankService.getInfo("Minimum Balance");
-                return ResponseEntity.ok(new InfoDTO(info));
+                String accountId = bankService.getInfo("AccountId");
+                String toll = bankService.getInfo("Toll");
+                String minimum_balance = bankService.getInfo("Minimum Balance");
+                InfoDTO infoDTO = new InfoDTO(accountId, toll, minimum_balance);
+                return ResponseEntity.ok(infoDTO);
             }
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());

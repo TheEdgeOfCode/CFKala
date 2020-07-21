@@ -5,5 +5,7 @@ import lombok.Data;
 
 @Data @AllArgsConstructor
 public class InfoDTO {
-    private String[] info;
+    private String accountId;
+    private String toll;
+    private String minimumBalance;
 }

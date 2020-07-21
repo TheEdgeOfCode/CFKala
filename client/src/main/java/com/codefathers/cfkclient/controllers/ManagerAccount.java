@@ -207,28 +207,29 @@ public class ManagerAccount extends BackAbleController {
     }
 
     private boolean updateEditAttributes_Budget(TollMinimumBalanceEditAttribute attribute) {
+        boolean succesful = false;
         if (tollText.isVisible() && !checkInput(tollText)) {
             if (tollText.getText().matches("\\b([1-9]|[1-9][0-9]|100)\\b")) {
                 attribute.setNewToll(tollText.getText());
                 toll.setText(tollText.getText());
-                return true;
+                succesful = true;
             }
             else {
                 errorField(tollText, "Wrong Toll Format!It Should Be Between 1 To 100!");
-                return false;
+                succesful = false;
             }
-        } else if (minimumBalanceText.isVisible() && !checkInput(minimumBalanceText)) {
+        } if (minimumBalanceText.isVisible() && !checkInput(minimumBalanceText)) {
             if (minimumBalanceText.getText().matches("\\d+") && Integer.parseInt(minimumBalanceText.getText()) > 0) {
                 attribute.setNewMinimumBalance(minimumBalanceText.getText());
                 minimumBalance.setText(minimumBalanceText.getText());
-                return true;
+                succesful = true;
             }
             else {
                 errorField(minimumBalanceText, "Balance Should Be Positive Numerical!");
-                return false;
+                succesful = false;
             }
         }
-        return false;
+        return succesful;
     }
 
     private void handleFindButt() {
@@ -294,16 +295,16 @@ public class ManagerAccount extends BackAbleController {
         main.setVisible(false);
         budget.setVisible(true);
         try {
-            String[] info = connector.getManagerInfoInBank();
-            initBudgetLabels(info);
+            InfoDTO infoDTO = connector.getManagerInfoInBank();
+            initBudgetLabels(infoDTO);
         } catch (Exception e) {
             Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
         }
     }
 
-    private void initBudgetLabels(String[] info) throws Exception {
-        toll.setText(info[1]);
-        minimumBalance.setText(info[2]);
+    private void initBudgetLabels(InfoDTO infoDTO) throws Exception {
+        toll.setText(infoDTO.getToll());
+        minimumBalance.setText(infoDTO.getMinimumBalance());
         shopBalance.setText(calculateTotalBalance());
         shopBalanceText.setPromptText(calculateTotalBalance());
     }
@@ -504,34 +505,35 @@ public class ManagerAccount extends BackAbleController {
     }
 
     private boolean updateEditAttributes(UserEditAttributes attributes) {
+        boolean successful = false;
         if (fNameText.isVisible() && !checkInput(fNameText)) {
             attributes.setNewFirstName(fNameText.getText());
             fName.setText(fNameText.getText());
-            return true;
-        } else if (lNameText.isVisible() && !checkInput(lNameText)) {
+            successful = true;
+        } if (lNameText.isVisible() && !checkInput(lNameText)) {
             attributes.setNewLastName(lNameText.getText());
             lName.setText(lNameText.getText());
-            return true;
-        } else if (phoneText.isVisible() && !checkInput(phoneText)) {
+            successful = true;
+        } if (phoneText.isVisible() && !checkInput(phoneText)) {
             if (phoneText.getText().matches("\\d+")) {
                 attributes.setNewPhone(phoneText.getText());
                 phone.setText(phoneText.getText());
-                return true;
+                successful = true;
             } else {
                 errorField(phoneText, "Wrong Phone Number Format");
-                return false;
+                successful = false;
             }
-        } else if (emailText.isVisible() && !checkInput(emailText)) {
+        } if (emailText.isVisible() && !checkInput(emailText)) {
             if (emailText.getText().matches(("\\S+@\\S+\\.(org|net|ir|com|uk|site)"))) {
                 attributes.setNewEmail(emailText.getText());
                 email.setText(emailText.getText());
                 return true;
             } else {
                 errorField(emailText, "Wrong Email Format");
-                return false;
+                successful = false;
             }
         }
-        return false;
+        return successful;
     }
 
     private boolean checkInput(JFXTextField field) {

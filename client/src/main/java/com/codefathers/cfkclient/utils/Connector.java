@@ -515,10 +515,10 @@ public class Connector {
         }
     }
 
-    public String[] getManagerInfoInBank() throws Exception {
+    public InfoDTO getManagerInfoInBank() throws Exception {
         ResponseEntity<InfoDTO> response = get(address + "/bank/get_info",
                 null, InfoDTO.class);
-        return Objects.requireNonNull(response.getBody()).getInfo();
+        return Objects.requireNonNull(response.getBody());
     }
 
     public void editTollMinimumBalanceInfo(TollMinimumBalanceEditAttribute attribute) throws Exception {
