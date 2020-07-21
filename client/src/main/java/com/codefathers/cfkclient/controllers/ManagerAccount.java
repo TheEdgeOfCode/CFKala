@@ -3,15 +3,27 @@ package com.codefathers.cfkclient.controllers;
 import com.codefathers.cfkclient.BackAbleController;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
+import com.codefathers.cfkclient.dtos.bank.InfoDTO;
+import com.codefathers.cfkclient.dtos.bank.NeededForTransactionDTO;
+import com.codefathers.cfkclient.dtos.bank.TransactType;
+import com.codefathers.cfkclient.dtos.bank.TransactionDTO;
+import com.codefathers.cfkclient.dtos.edit.TollMinimumBalanceEditAttribute;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.user.UserFullDTO;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -22,8 +34,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+
+import static com.codefathers.cfkclient.dtos.bank.TransactType.*;
 
 public class ManagerAccount extends BackAbleController {
+    @FXML private TableColumn<TransactionDTO, Integer> idCol;
+    @FXML private TableColumn<TransactionDTO, Boolean> paidCol;
+    @FXML private TableColumn<TransactionDTO, Integer> destCol;
+    @FXML private TableColumn<TransactionDTO, Integer> sourceCol;
+    @FXML private TableColumn<TransactionDTO, Long> moneyCol;
+    @FXML private TableColumn<TransactionDTO, String> typeCol;
+    @FXML private TableView<TransactionDTO> transTable;
+    @FXML private JFXComboBox<String> transType;
+    @FXML private JFXButton find;
+    @FXML private JFXButton confirmButtBud;
+    @FXML private JFXButton cancelButtBud;
+    @FXML private JFXButton editMinimumButt;
+    @FXML private JFXTextField minimumBalanceText;
+    @FXML private Label minimumBalance;
+    @FXML private JFXButton editTollButt;
+    @FXML private Label toll;
+    @FXML private JFXTextField tollText;
+    @FXML private Label shopBalance;
+    @FXML private JFXTextField shopBalanceText;
+    @FXML private AnchorPane budget;
+    @FXML private AnchorPane main;
+    @FXML private JFXButton manageBudget;
     @FXML
     private JFXButton back;
     @FXML private JFXButton minimize;
@@ -62,12 +99,20 @@ public class ManagerAccount extends BackAbleController {
 
     private Connector connector = Connector.getInstance();
     private CacheData cacheData = CacheData.getInstance();
+    private UserFullDTO userFullPM;
 
     @FXML
     public void initialize() {
-        handleButtons();
         setLabels();
+        handleButtons();
         loadImage();
+        loadComboBox();
+    }
+
+    private void loadComboBox() {
+        transType.getItems().add("All");
+        transType.getItems().add("Source_You");
+        transType.getItems().add("Destination_You");
     }
 
     private void loadImage() {
@@ -83,7 +128,7 @@ public class ManagerAccount extends BackAbleController {
 
     private void setLabels() {
         try {
-            UserFullDTO userFullPM = connector.viewPersonalInfo();
+            userFullPM = connector.viewPersonalInfo();
 
             username.setText(userFullPM.getUsername());
             fName.setText(userFullPM.getFirstName());
@@ -111,6 +156,7 @@ public class ManagerAccount extends BackAbleController {
         categoriesButt.setOnAction(event -> handleCategories());
         discountButt.setOnAction(event -> handleDiscount());
         requestButt.setOnAction(event -> handleRequests());
+        manageBudget.setOnAction(event -> handleBudgetButt());
         changePassButt.setOnAction(event -> handleChangePass());
         logoutButt.setOnAction(event -> handleLogout());
         addManagerButt.setOnAction(event -> handleAddManager());
@@ -123,6 +169,152 @@ public class ManagerAccount extends BackAbleController {
         editPhoneButt.setOnAction(event -> handleEditPhone());
         confirmButt.setOnAction(event -> handleConfirm());
         cancelButt.setOnAction(event -> handleCancel());
+        editTollButt.setOnAction(event -> handleEditTollButt());
+        editMinimumButt.setOnAction(event -> handleEditMinimumButt());
+        confirmButt.setOnAction(event -> handleConfirm_Budget());
+        cancelButtBud.setOnAction(event -> handleCancelButt_Budget());
+
+        find.setOnAction(event -> handleFindButt());
+    }
+
+    private void handleCancelButt_Budget() {
+        disableEditFields(tollText, toll);
+        disableEditFields(minimumBalanceText, minimumBalance);
+
+        resetSettingForFields(tollText, toll.getText());
+        resetSettingForFields(minimumBalanceText, minimumBalance.getText());
+
+        cancelButtBud.setVisible(false);
+        confirmButtBud.setVisible(false);
+    }
+
+    private void handleConfirm_Budget() {
+        TollMinimumBalanceEditAttribute attribute = new TollMinimumBalanceEditAttribute();
+        if (updateEditAttributes_Budget(attribute)) {
+            try {
+                connector.editTollMinimumBalanceInfo(attribute);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            confirmButtBud.setVisible(false);
+            cancelButtBud.setVisible(false);
+
+            Notification.show("Successful", "Your information is updated successfully!",
+                    back.getScene().getWindow(), false);
+
+            handleCancelButt_Budget();
+        }
+    }
+
+    private boolean updateEditAttributes_Budget(TollMinimumBalanceEditAttribute attribute) {
+        if (tollText.isVisible() && !checkInput(tollText)) {
+            if (tollText.getText().matches("\\b([1-9]|[1-9][0-9]|100)\\b")) {
+                attribute.setNewToll(tollText.getText());
+                toll.setText(tollText.getText());
+                return true;
+            }
+            else {
+                errorField(tollText, "Wrong Toll Format!It Should Be Between 1 To 100!");
+                return false;
+            }
+        } else if (minimumBalanceText.isVisible() && !checkInput(minimumBalanceText)) {
+            if (minimumBalanceText.getText().matches("\\d+") && Integer.parseInt(minimumBalanceText.getText()) > 0) {
+                attribute.setNewMinimumBalance(minimumBalanceText.getText());
+                minimumBalance.setText(minimumBalanceText.getText());
+                return true;
+            }
+            else {
+                errorField(minimumBalanceText, "Balance Should Be Positive Numerical!");
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private void handleFindButt() {
+        String chosen = transType.getSelectionModel().getSelectedItem();
+        switch (chosen) {
+            case "All" :
+                getTransactionOfType(ALL);
+                break;
+            case "Source_You" :
+                getTransactionOfType(SOURCE_YOU);
+                break;
+            case "Destination_You" :
+                getTransactionOfType(DEST_YOU);
+                break;
+            default: Notification.show("Error", "Choose one choice in all transactions please!",
+                    back.getScene().getWindow(), true);
+        }
+    }
+
+    private void getTransactionOfType(TransactType transactType) {
+        NeededForTransactionDTO dto = new NeededForTransactionDTO(
+                userFullPM.getUsername(),
+                userFullPM.getPassword(),
+                "",
+                transactType
+        );
+        try {
+            List<TransactionDTO> dtos = connector.getTransactions(dto);
+            transTable.setItems(null);
+            loadTable(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadTable(List<TransactionDTO> transactionDTOS) {
+        ObservableList<TransactionDTO> data = FXCollections.observableArrayList(transactionDTOS);
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("receiptType"));
+        moneyCol.setCellValueFactory(new PropertyValueFactory<>("money"));
+        sourceCol.setCellValueFactory(new PropertyValueFactory<>("sourceAccountID"));
+        destCol.setCellValueFactory(new PropertyValueFactory<>("destAccountID"));
+        paidCol.setCellValueFactory(new PropertyValueFactory<>("paid"));
+        idCol.setCellValueFactory(new PropertyValueFactory<>("receiptId"));
+        transTable.setItems(data);
+    }
+
+    private void handleEditMinimumButt() {
+        enableEditFields(minimumBalanceText, minimumBalance);
+        enableEditButts_Budget();
+    }
+
+    private void enableEditButts_Budget() {
+        confirmButtBud.setVisible(true);
+        cancelButtBud.setVisible(true);
+    }
+
+    private void handleEditTollButt() {
+        enableEditFields(tollText, toll);
+        enableEditButts_Budget();
+    }
+
+    private void handleBudgetButt() {
+        main.setVisible(false);
+        budget.setVisible(true);
+        try {
+            String[] info = connector.getManagerInfoInBank();
+            initBudgetLabels(info);
+        } catch (Exception e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+        }
+    }
+
+    private void initBudgetLabels(String[] info) throws Exception {
+        toll.setText(info[1]);
+        minimumBalance.setText(info[2]);
+        shopBalance.setText(calculateTotalBalance());
+        shopBalanceText.setPromptText(calculateTotalBalance());
+    }
+
+    private String calculateTotalBalance() throws Exception {
+        List<UserFullDTO> dtos = connector.showUsers();
+        long totalBalance = 0;
+        for (UserFullDTO dto : dtos) {
+            totalBalance += dto.getBalance();
+        }
+        return Long.toString(totalBalance);
     }
 
     private void handleMainContent() {
