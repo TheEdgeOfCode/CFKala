@@ -1,7 +1,5 @@
 package com.codefathers.cfkserver.service;
 
-import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
-import com.codefathers.cfkserver.exceptions.model.bank.receipt.*;
 import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.model.user.*;
@@ -12,14 +10,12 @@ import com.codefathers.cfkserver.model.dtos.user.ChargeWalletDTO;
 import com.codefathers.cfkserver.model.dtos.user.CustomerDTO;
 import com.codefathers.cfkserver.model.dtos.user.ManagerDTO;
 import com.codefathers.cfkserver.model.dtos.user.SellerDTO;
+import com.codefathers.cfkserver.model.dtos.user.UserDTO;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.RequestType;
 import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
 import com.codefathers.cfkserver.model.entities.user.*;
-import com.codefathers.cfkserver.model.repositories.CustomerRepository;
-import com.codefathers.cfkserver.model.repositories.ManagerRepository;
-import com.codefathers.cfkserver.model.repositories.SellerRepository;
-import com.codefathers.cfkserver.model.repositories.UserRepository;
+import com.codefathers.cfkserver.model.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +41,8 @@ public class UserService {
     @Autowired
     private CompanyService companyService;
     @Autowired
+    private SupportRepository supportRepository;
+    @Autowired
     private BankService bankService;
     @Autowired
     private CustomerService customerService;
@@ -56,7 +54,7 @@ public class UserService {
         if (optionalUser.isPresent()){
             return optionalUser.get();
         } else {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("User not found");
         }
     }
 
@@ -109,6 +107,13 @@ public class UserService {
         managerRepository.save(manager);
     }
 
+    public void createSupport(UserDTO userDTO) throws UserAlreadyExistsException {
+        checkUsername(userDTO.getUsername());
+        Support support = new Support(userDTO.getUsername(),userDTO.getPassword(),userDTO.getFirstName(),
+                userDTO.getLastName(),userDTO.getEmail(),userDTO.getPhoneNumber(),null);
+        supportRepository.save(support);
+    }
+
     private void checkUsername(String username) throws UserAlreadyExistsException {
         if(userRepository.findById(username).isPresent()){
             throw new UserAlreadyExistsException();
@@ -125,13 +130,19 @@ public class UserService {
             if (seller.isPresent()) if (seller.get().getVerified())
                 return "Seller";
             else
-                throw new NotVerifiedSeller();
+                throw new NotVerifiedSeller("Your not verified yet");
+
             Optional<Manager> manager = managerRepository.findById(username);
             if (manager.isPresent()) {
                 return "Manager";
             }
+
+            Optional<Support> support = supportRepository.findById(username);
+            if (support.isPresent()){
+                return "Support";
+            }
         } else {
-            throw new WrongPasswordException(username);
+            throw new WrongPasswordException("Wrong Password");
         }
         return "";
     }

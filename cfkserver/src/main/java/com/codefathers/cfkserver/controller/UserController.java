@@ -12,14 +12,9 @@ import com.codefathers.cfkserver.model.entities.product.Company;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
 import com.codefathers.cfkserver.model.entities.user.Customer;
-import com.codefathers.cfkserver.model.entities.user.Role;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.User;
-import com.codefathers.cfkserver.service.CompanyService;
-import com.codefathers.cfkserver.service.CustomerService;
-import com.codefathers.cfkserver.service.SellerService;
-import com.codefathers.cfkserver.service.UserService;
-import com.codefathers.cfkserver.utils.ErrorUtil;
+import com.codefathers.cfkserver.service.*;
 import com.codefathers.cfkserver.utils.JwtUtil;
 import com.codefathers.cfkserver.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +24,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
-import static com.codefathers.cfkserver.model.entities.user.Role.SELLER;
-import static com.codefathers.cfkserver.utils.ErrorUtil.*;
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
 import static com.codefathers.cfkserver.utils.TokenUtil.*;
 import static org.springframework.http.HttpStatus.*;
@@ -221,6 +210,18 @@ public class UserController {
                 userService.chargeWallet(dto, getUsernameFromToken(request));
             }
         } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping("/users/create/support")
+    private void createSuuport(@RequestBody UserDTO userDTO,HttpServletRequest request, HttpServletResponse response){
+        try {
+            checkToken(response, request);
+            userService.createSupport(userDTO);
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, UNAUTHORIZED, e.getMessage());
+        } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

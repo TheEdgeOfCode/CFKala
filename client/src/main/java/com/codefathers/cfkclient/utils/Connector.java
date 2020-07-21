@@ -478,11 +478,36 @@ public class Connector {
         return Objects.requireNonNull(response.getBody());
     }
 
+    public void createSupport(UserDTO userDTO) throws Exception {
+        post(address + "/users/create/support",userDTO,String.class);
+    }
+
+    public void setThisSupportOnline() throws Exception {
+        post(address + "/support/online",null,String.class);
+    }
+
+    public void setThisSupportOffline() throws Exception {
+        post(address + "/support/offline",null,String.class);
+    }
+
+    public ArrayList<String> getAllSupports() throws Exception {
+        return get(address + "/support/get/all",null,
+                new TypeToken<ArrayList<String>>(){}.getType());
+    }
+
+    public String getGuestToken() throws Exception {
+        return get(address + "/support/guest/get_account",null,String.class);
+    }
 
     /**Resources======================================================================================================*/
 
     public Image userImage() throws Exception {
         ByteArrayResource image = getResources(address + "/download/user/profile",null);
+        return createImageFromResource(image);
+    }
+
+    public Image userImage(String username) throws Exception {
+        ByteArrayResource image = getResources(address + "/download/user/profile/" + username ,null);
         return createImageFromResource(image);
     }
 
@@ -513,4 +538,6 @@ public class Connector {
             return null;
         }
     }
+
+
 }

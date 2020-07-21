@@ -166,7 +166,7 @@ public class CustomerAccount extends BackAbleController {
     private void handleChooseProf() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.jpeg", "*.png", "*.jpg"));
+                new FileChooser.ExtensionFilter("Image Files", "*.jpg"));
         File selected = fileChooser.showOpenDialog(back.getScene().getWindow());
 
         if (selected != null) {
