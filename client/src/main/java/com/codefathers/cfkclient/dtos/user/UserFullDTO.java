@@ -17,6 +17,7 @@ public class UserFullDTO {
     private String phoneNumber;
     private long balance;
     private String role;
+    private String accountId;
 
     @Override
     public String toString() {

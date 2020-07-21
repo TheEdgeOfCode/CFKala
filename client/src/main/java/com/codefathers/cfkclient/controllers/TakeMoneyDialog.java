@@ -1,13 +1,11 @@
 package com.codefathers.cfkclient.controllers;
 
 import com.codefathers.cfkclient.CFK;
-import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -19,20 +17,20 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 
-public class ChargeWalletDialog {
+public class TakeMoneyDialog {
+
+    @FXML private JFXButton cancel;
+    @FXML private JFXButton submitButt;
+    @FXML private JFXTextField money;
+    @FXML private AnchorPane rootPane;
 
     private static long result = 0;
     private static double xOffset;
     private static double yOffset;
-    private Connector connector = Connector.getInstance();
+    private static long total;
 
-    @FXML
-    private AnchorPane rootPane;
-    public JFXTextField money;
-    @FXML private JFXButton submitButt;
-    @FXML private JFXButton cancel;
-
-    public long show() {
+    public long show(long totalBalance) {
+        total = totalBalance;
         result = 0;
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -95,7 +93,12 @@ public class ChargeWalletDialog {
             money.setFocusColor(Paint.valueOf("#c0392b"));
             money.setPromptText("Should Be Numerical");
             money.requestFocus();
-        } else {
+        } else if (Long.parseLong(money.getText()) > total) {
+            money.setFocusColor(Paint.valueOf("#c0392b"));
+            money.setPromptText("You Don't Have This Amount In Your Wallet!");
+            money.requestFocus();
+        }
+        else {
             result = Long.parseLong(money.getText());
             close();
         }

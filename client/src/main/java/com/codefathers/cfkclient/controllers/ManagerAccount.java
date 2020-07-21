@@ -216,7 +216,7 @@ public class ManagerAccount extends BackAbleController {
             }
             else {
                 errorField(tollText, "Wrong Toll Format!It Should Be Between 1 To 100!");
-                succesful = false;
+                return false;
             }
         } if (minimumBalanceText.isVisible() && !checkInput(minimumBalanceText)) {
             if (minimumBalanceText.getText().matches("\\d+") && Integer.parseInt(minimumBalanceText.getText()) > 0) {
@@ -226,7 +226,7 @@ public class ManagerAccount extends BackAbleController {
             }
             else {
                 errorField(minimumBalanceText, "Balance Should Be Positive Numerical!");
-                succesful = false;
+                return false;
             }
         }
         return succesful;
@@ -521,7 +521,7 @@ public class ManagerAccount extends BackAbleController {
                 successful = true;
             } else {
                 errorField(phoneText, "Wrong Phone Number Format");
-                successful = false;
+                return false;
             }
         } if (emailText.isVisible() && !checkInput(emailText)) {
             if (emailText.getText().matches(("\\S+@\\S+\\.(org|net|ir|com|uk|site)"))) {
@@ -530,7 +530,7 @@ public class ManagerAccount extends BackAbleController {
                 return true;
             } else {
                 errorField(emailText, "Wrong Email Format");
-                successful = false;
+                return false;
             }
         }
         return successful;

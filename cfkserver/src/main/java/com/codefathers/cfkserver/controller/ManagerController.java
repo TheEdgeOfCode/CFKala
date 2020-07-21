@@ -194,7 +194,8 @@ public class ManagerController {
                 user.getPassword(),
                 user.getFirstName(),
                 user.getLastName(), user.getEmail(), user.getPhoneNumber(),
-                user.getClass().getName().split("\\.")[2]);
+                user.getClass().getName().split("\\.")[2],
+                user.getAccountId());
     }
 
     @GetMapping("manager/is_first")
