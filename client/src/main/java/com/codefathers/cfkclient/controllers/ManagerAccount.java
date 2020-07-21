@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ManagerAccount extends BackAbleController {
+
     @FXML private JFXButton addSupportButt;
     @FXML private JFXButton back;
     @FXML private JFXButton minimize;
