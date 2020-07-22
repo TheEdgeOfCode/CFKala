@@ -227,4 +227,16 @@ public class UserController {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
+    @PostMapping("/users/create/support")
+    private void createSupport(@RequestBody UserDTO userDTO,HttpServletRequest request, HttpServletResponse response){
+        try {
+            checkToken(response, request);
+            userService.createSupport(userDTO);
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, UNAUTHORIZED, e.getMessage());
+        } catch (UserAlreadyExistsException e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 }
