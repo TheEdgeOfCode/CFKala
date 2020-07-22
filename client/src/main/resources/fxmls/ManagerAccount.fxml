@@ -300,7 +300,7 @@
                         <FontIcon iconLiteral="fa-unlock-alt" iconSize="15" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="addManagerButt" focusTraversable="false" layoutX="418.0" layoutY="509.0" prefHeight="38.0" prefWidth="151.0" text="Add Manager">
+                  <JFXButton fx:id="addManagerButt" focusTraversable="false" layoutX="343.0" layoutY="509.0" prefHeight="38.0" prefWidth="151.0" text="Add Manager">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
@@ -308,7 +308,7 @@
                         <FontIcon iconLiteral="fa-user-plus" iconSize="15" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="logoutButt" focusTraversable="false" layoutX="577.0" layoutY="509.0" prefHeight="38.0" prefWidth="94.0" text="Logout">
+                  <JFXButton fx:id="logoutButt" focusTraversable="false" layoutX="14.0" layoutY="470.0" prefHeight="38.0" prefWidth="94.0" text="Logout">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
@@ -316,12 +316,20 @@
                         <FontIcon iconLiteral="fa-sign-out" iconSize="15" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="manageBudget" focusTraversable="false" layoutX="255.0" layoutY="509.0" prefHeight="38.0" prefWidth="155.0" text="Manage Budget">
+                  <JFXButton fx:id="manageBudget" focusTraversable="false" layoutX="188.0" layoutY="509.0" prefHeight="38.0" prefWidth="155.0" text="Manage Budget">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                      <graphic>
                         <FontIcon iconLiteral="fa-dollar" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="addSupportButt" focusTraversable="false" layoutX="494.0" layoutY="509.0" prefHeight="38.0" prefWidth="151.0" text="Add Support">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     <graphic>
+                        <FontIcon iconLiteral="fa-support" iconSize="15" />
                      </graphic>
                   </JFXButton>
                </children>

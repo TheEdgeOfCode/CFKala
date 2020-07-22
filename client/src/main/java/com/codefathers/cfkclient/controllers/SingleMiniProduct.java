@@ -15,7 +15,7 @@ import javafx.scene.layout.Pane;
 import java.io.IOException;
 
 public class SingleMiniProduct {
-    @FXML
+    @FXML // TODO: 7/21/2020 change to rectangle
     private ImageView productPreViewImage;
     @FXML private ImageView specialOffer;
     @FXML private Label productName;

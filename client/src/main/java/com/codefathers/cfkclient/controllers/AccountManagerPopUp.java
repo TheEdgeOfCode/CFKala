@@ -48,6 +48,10 @@ public class AccountManagerPopUp {
                 case "seller":
                     scene = new Scene(CFK.loadFXML("SellerAccount", "MainPage"));
                     break;
+                case "Support":
+                case "support":
+                    scene = new Scene(CFK.loadFXML("SupportAccount","MainPage"));
+                    break;
             }
             CFK.moveSceneOnMouse(scene, stage);
             stage.setScene(scene);

@@ -24,8 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ManagerAccount extends BackAbleController {
-    @FXML
-    private JFXButton back;
+
+    @FXML private JFXButton addSupportButt;
+    @FXML private JFXButton back;
     @FXML private JFXButton minimize;
     @FXML private JFXButton close;
     @FXML private Circle imageCircle;
@@ -114,6 +115,7 @@ public class ManagerAccount extends BackAbleController {
         changePassButt.setOnAction(event -> handleChangePass());
         logoutButt.setOnAction(event -> handleLogout());
         addManagerButt.setOnAction(event -> handleAddManager());
+        addSupportButt.setOnAction(event -> handleAddSupport());
         chooseProf.setOnAction(event -> handleChooseProf());
         mainContent.setOnAction(event -> handleMainContent());
 
@@ -123,6 +125,15 @@ public class ManagerAccount extends BackAbleController {
         editPhoneButt.setOnAction(event -> handleEditPhone());
         confirmButt.setOnAction(event -> handleConfirm());
         cancelButt.setOnAction(event -> handleCancel());
+    }
+
+    private void handleAddSupport() {
+        try {
+            Scene scene = new Scene(CFK.loadFXML("CreateSupport", backForForward("ManagerAccount")));
+            CFK.setSceneToStage(back, scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleMainContent() {
