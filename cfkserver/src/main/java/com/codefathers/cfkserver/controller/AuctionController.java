@@ -9,8 +9,11 @@ import com.codefathers.cfkserver.exceptions.model.product.ProductNotAvailableExc
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.auction.CreateAuctionDTO;
+import com.codefathers.cfkserver.model.dtos.auction.MiniAuctionDTO;
+import com.codefathers.cfkserver.model.dtos.auction.MiniAuctionListDTO;
 import com.codefathers.cfkserver.model.dtos.bank.TransactionDTO;
 import com.codefathers.cfkserver.model.dtos.bank.TransactionListDTO;
+import com.codefathers.cfkserver.model.entities.offs.Auction;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.service.AuctionService;
 import com.codefathers.cfkserver.service.SellerService;
@@ -18,6 +21,7 @@ import com.codefathers.cfkserver.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,5 +60,29 @@ public class AuctionController {
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
         }
+    }
+
+    @GetMapping("/auction/get_auctions")
+    private ResponseEntity<?> getAllAuctions(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (checkToken(response, request)) {
+                List<MiniAuctionDTO> dtos = new ArrayList<>();
+                List<Auction> auctions = auctionService.getAllAuctions();
+                for (Auction auction : auctions) {
+                    dtos.add(new MiniAuctionDTO(
+                            auction.getSellPackage().getProduct().getName(),
+                            auction.getSellPackage().getProduct().getId(),
+                            auction.getCurrentPrice(),
+                            auction.getStartTime(),
+                            auction.getEndTime(),
+                            auction.getSellPackage().getSeller().getUsername()
+                    ));
+                }
+                return ResponseEntity.ok(new MiniAuctionListDTO(new ArrayList<>(dtos)));
+            }
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+        return null;
     }
 }

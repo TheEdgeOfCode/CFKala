@@ -57,6 +57,7 @@ public class CreateAuction extends BackAbleController {
             try {
                 connector.createAuction(createAuctionDTO);
                 Notification.show("Successful", "Auction Created Successfully!", back.getScene().getWindow(), false);
+                handleBackButt();
             } catch (Exception e) {
                 Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             }

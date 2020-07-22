@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,6 +38,10 @@ public class AuctionService {
         } else {
             throw new AuctionNotFoundException("Auction Was Not Found");
         }
+    }
+
+    public List<Auction> getAllAuctions() {
+        return auctionRepository.findAllBy();
     }
 
     public void createAuction(Seller seller, CreateAuctionDTO dto) throws InvalidTimesException, NoSuchAProductException,

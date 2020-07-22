@@ -2,6 +2,8 @@ package com.codefathers.cfkclient.utils;
 
 import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.auction.CreateAuctionDTO;
+import com.codefathers.cfkclient.dtos.auction.MiniAuctionDTO;
+import com.codefathers.cfkclient.dtos.auction.MiniAuctionListDTO;
 import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.category.CreateDTO;
@@ -534,5 +536,14 @@ public class Connector {
 
     public void createAuction(CreateAuctionDTO dto) throws Exception {
         post(address + "/auction/create_auction", dto, String.class);
+    }
+
+    public List<MiniAuctionDTO> getAllAuctions() throws Exception {
+        ResponseEntity<MiniAuctionListDTO> response = get(
+                address + "/auction/get_auctions",
+                null,
+                MiniAuctionListDTO.class
+        );
+        return Objects.requireNonNull(response.getBody()).getDtos();
     }
 }
