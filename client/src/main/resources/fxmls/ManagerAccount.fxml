@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
-<?import org.kordamp.ikonli.javafx.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.ManagerAccount">
+<AnchorPane prefHeight="593.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.ManagerAccount">
    <BorderPane prefHeight="594.0" prefWidth="960.0">
       <top>
          <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="960.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
@@ -87,7 +98,7 @@
       </left>
       <center>
          <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ecf0f1;" BorderPane.alignment="CENTER">
-            <AnchorPane fx:id="main" prefHeight="562.0" prefWidth="686.0" visible="false">
+            <AnchorPane fx:id="main" prefHeight="562.0" prefWidth="686.0">
                <children>
                   <VBox prefHeight="478.0" prefWidth="454.0" spacing="35.0">
                      <padding>
@@ -297,7 +308,7 @@
                         <FontIcon iconLiteral="fa-user-plus" iconSize="15" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="logoutButt" focusTraversable="false" layoutX="14.0" layoutY="470.0" prefHeight="38.0" prefWidth="94.0" text="Logout">
+                  <JFXButton fx:id="logoutButt" focusTraversable="false" layoutX="17.0" layoutY="470.0" prefHeight="38.0" prefWidth="94.0" text="Logout">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
@@ -321,9 +332,17 @@
                         <FontIcon iconLiteral="fa-support" iconSize="15" />
                      </graphic>
                   </JFXButton>
+                  <JFXButton fx:id="orders" focusTraversable="false" layoutX="501.0" layoutY="470.0" prefHeight="38.0" prefWidth="94.0" text="Orders">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     <graphic>
+                        <FontIcon iconLiteral="fa-tasks" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="budget" prefHeight="562.0" prefWidth="685.0">
+            <AnchorPane fx:id="budget" prefHeight="562.0" prefWidth="685.0" visible="false">
                <children>
                   <HBox alignment="CENTER" layoutX="56.0" layoutY="14.0" prefHeight="42.0" prefWidth="476.0" spacing="10.0">
                      <padding>
@@ -474,6 +493,115 @@
                         <FontIcon iconLiteral="fa-check" iconSize="15" />
                      </graphic>
                   </JFXButton>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="ordersRoot" layoutX="10.0" layoutY="10.0" prefHeight="562.0" prefWidth="685.0" visible="false">
+               <children>
+                  <VBox layoutX="326.0" layoutY="16.0" prefHeight="502.0" prefWidth="353.0" spacing="3.0">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="158.0" text="Order No">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="no">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="78.0" text="Date">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="date">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </HBox>
+                        <Separator layoutX="10.0" layoutY="72.0" prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="76.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="66.0" text="Price">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="price">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </HBox>
+                        <Separator layoutX="10.0" layoutY="138.0" prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="207.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="250.0" text="Delivery Status">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="delStatus">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </HBox>
+                        <Separator layoutX="10.0" layoutY="269.0" prefWidth="200.0" />
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="232.0" prefHeight="77.0" prefWidth="287.0" spacing="15.0">
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <JFXButton fx:id="changeStatus" prefHeight="44.0" prefWidth="254.0" styleClass="signIButton" stylesheets="@../CSSs/button.css" text="Change To Delivered">
+                                 <font>
+                                    <Font name="System Bold" size="19.0" />
+                                 </font>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_RIGHT" prefHeight="560.0" prefWidth="320.0" spacing="15.0">
+                     <children>
+                        <TableView fx:id="orderTable" prefHeight="502.0" prefWidth="234.0">
+                           <columns>
+                              <TableColumn fx:id="orderNoColumn" prefWidth="150.39997214078903" text="Order No." />
+                              <TableColumn fx:id="dateColumn" prefWidth="138.40000305175784" text="Date" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </VBox>
                </children>
             </AnchorPane>
          </AnchorPane>

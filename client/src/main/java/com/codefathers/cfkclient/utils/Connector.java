@@ -1,6 +1,5 @@
 package com.codefathers.cfkclient.utils;
 
-import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.auction.CreateAuctionDTO;
 import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
@@ -11,6 +10,8 @@ import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.dtos.customer.*;
 import com.codefathers.cfkclient.dtos.discount.*;
 import com.codefathers.cfkclient.dtos.edit.*;
+import com.codefathers.cfkclient.dtos.log.PurchaseLogDTO;
+import com.codefathers.cfkclient.dtos.log.PurchaseLogDTOList;
 import com.codefathers.cfkclient.dtos.log.SellLogDTO;
 import com.codefathers.cfkclient.dtos.log.SellLogListDTO;
 import com.codefathers.cfkclient.dtos.off.CreateOffDTO;
@@ -431,6 +432,11 @@ public class Connector {
         return listDTO.getOffs();
     }
 
+    public List<PurchaseLogDTO> viewAllLogs() throws Exception {
+        PurchaseLogDTOList listDTO = get(address + "/manager/show_all_logs", null, PurchaseLogDTOList.class);
+        return listDTO.getDtos();
+    }
+
     public boolean isTheFirstManager() {
         try {
             return get(address + "/manager/is_first",null,Boolean.class);
@@ -519,6 +525,10 @@ public class Connector {
 
     public void createAuction(CreateAuctionDTO dto) throws Exception {
         post(address + "/auction/create_auction", dto, String.class);
+    }
+
+    public void changeLogStatus(Integer logId) throws Exception {
+        post(address + "/manager/change_log_status", logId, String.class);
     }
 
     /**Resources======================================================================================================*/
