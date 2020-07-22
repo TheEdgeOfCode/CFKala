@@ -1,0 +1,9 @@
+.text_area{
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: white;
+}
+
+.root{
+    -fx-background-radius: 15px;
+    -fx-background-color: #39b94c;
+}

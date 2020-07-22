@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox fx:id="root" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="40.0" prefWidth="467.0" styleClass="root"
+      stylesheets="@../CSSs/auction_center.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.codefathers.cfkclient.controllers.AuctionLog">
+   <children>
+      <Label fx:id="expression" prefHeight="22.0" prefWidth="62.0" text="Wow">
+         <padding>
+            <Insets top="5.0" />
+         </padding>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Separator orientation="VERTICAL" prefHeight="60.0" prefWidth="12.0" visible="false" />
+      <Label fx:id="user" layoutX="15.0" layoutY="33.0" prefHeight="22.0" prefWidth="73.0" text="Asghar">
+         <padding>
+            <Insets top="5.0" />
+         </padding>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Separator layoutX="44.0" layoutY="15.0" orientation="VERTICAL" prefHeight="60.0" prefWidth="12.0" visible="false" />
+      <Label layoutX="56.0" layoutY="33.0" text="Has Made An Increase to ">
+         <padding>
+            <Insets top="5.0" />
+         </padding>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Separator layoutX="77.0" layoutY="15.0" orientation="VERTICAL" prefHeight="60.0" prefWidth="12.0" visible="false" />
+      <Label fx:id="price" layoutX="89.0" layoutY="33.0" text="1000$">
+         <padding>
+            <Insets top="5.0" />
+         </padding>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</HBox>

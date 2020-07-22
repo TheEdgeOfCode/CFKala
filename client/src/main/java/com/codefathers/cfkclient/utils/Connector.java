@@ -1,6 +1,7 @@
 package com.codefathers.cfkclient.utils;
 
 import com.codefathers.cfkclient.CacheData;
+import com.codefathers.cfkclient.dtos.auction.CreateAuctionDTO;
 import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.category.CreateDTO;
@@ -529,5 +530,9 @@ public class Connector {
 
     public void editTollMinimumBalanceInfo(TollMinimumBalanceEditAttribute attribute) throws Exception {
         post(address + "/bank/edit_info", attribute, String.class);
+    }
+
+    public void createAuction(CreateAuctionDTO dto) throws Exception {
+        post(address + "/auction/create_auction", dto, String.class);
     }
 }
