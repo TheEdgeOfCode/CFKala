@@ -35,8 +35,8 @@ public class Customer extends User {
 
     private long allPurchase;
 
-    public Customer(String username, String password, String firstName, String lastName, String email, String phoneNumber, Cart cart, long balance) {
-        super(username, password, firstName, lastName, email, phoneNumber, cart);
+    public Customer(String username, String password, String firstName, String lastName, String email, String phoneNumber, Cart cart, long balance, String accountId) {
+        super(username, password, firstName, lastName, email, phoneNumber, cart, accountId);
         this.balance = balance;
         this.customerInformation = new ArrayList<>();
         this.purchaseLogs = new ArrayList<>();
