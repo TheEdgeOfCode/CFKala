@@ -309,4 +309,27 @@ public class UserService {
             seller.setBalance(seller.getBalance() + dto.getMoney());
         }
     }
+
+    public int takeMoneyIntoAccount(TakeMoneyDTO dto, String username) throws UserNotFoundException, IOException, InvalidDestAccountException, InvalidTokenException, InvalidSourceAccountException, InvalidAccountIdException, InvalidMoneyException, InvalidDescriptionExcxeption, InvalidParameterPassedException, InvalidRecieptTypeException, InvalidUsernameException, ExpiredTokenException, EqualSourceDestException, NotEnoughMoneyAtSourceException, PaidReceiptException, InvalidReceiptIdException, NoSuchACustomerException, NoSuchSellerException {
+        User user = getUserByUsername(username);
+        int receiptId = bankService.createReceipt(new CreateReceiptDTO(
+                username,
+                getPassByUsername(username),
+                dto.getToken(),
+                MOVE,
+                dto.getMoney(),
+                bankService.getInfo("AccountId"),
+                user.getAccountId(),
+                "Move"
+        ));
+        bankService.pay(receiptId);
+        if (dto.getRole().equals(CUSTOMER)) {
+            Customer customer = customerService.getCustomerByUsername(username);
+            customer.setBalance(customer.getBalance() - dto.getMoney());
+        } else {
+            Seller seller = sellerService.findSellerByUsername(username);
+            seller.setBalance(seller.getBalance() - dto.getMoney());
+        }
+        return receiptId;
+    }
 }

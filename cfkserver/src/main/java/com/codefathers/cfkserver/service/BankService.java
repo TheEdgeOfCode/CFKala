@@ -1,5 +1,6 @@
 package com.codefathers.cfkserver.service;
 
+import com.codefathers.cfkserver.model.dtos.edit.TollMinimumBalanceEditAttribute;
 import com.codefathers.cfkserver.utils.BankUtil;
 import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
 import com.codefathers.cfkserver.exceptions.model.bank.account.PasswordsDoNotMatchException;
@@ -10,9 +11,7 @@ import com.codefathers.cfkserver.model.dtos.bank.*;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -163,5 +162,27 @@ public class BankService {
             System.out.println("File Not Found!!!");
         }
         return null;
+    }
+
+    public void editTollMinimumBalanceInfo(TollMinimumBalanceEditAttribute attribute) {
+        String accountId = getInfo("AccountId");
+        String toll = getInfo("Toll");
+        String minimum = getInfo("Minimum Balance");
+        try {
+            PrintWriter printWriter = new PrintWriter(
+                    new FileWriter("src/main/resources/application_info.txt", false
+                    ));
+            printWriter.write("AccountId = " + accountId + "\n");
+            if (attribute.getNewToll() != null)
+                printWriter.write("Toll = " + attribute.getNewToll() + "\n");
+            else printWriter.write("Toll = " + toll + "\n");
+            if (attribute.getNewMinimumBalance() != null)
+                printWriter.write("Minimum Balance = " + attribute.getNewMinimumBalance());
+            else printWriter.write("Minimum Balance = " + minimum);
+            printWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

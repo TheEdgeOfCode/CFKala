@@ -1,16 +1,26 @@
 package com.codefathers.cfkclient.controllers;
 
 import com.codefathers.cfkclient.*;
+import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
+import com.codefathers.cfkclient.dtos.user.ChargeWalletDTO;
 import com.codefathers.cfkclient.dtos.user.CompanyDTO;
+import com.codefathers.cfkclient.dtos.user.TakeMoneyDTO;
 import com.codefathers.cfkclient.dtos.user.UserFullDTO;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -22,8 +32,29 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+
+import static com.codefathers.cfkclient.dtos.bank.TransactType.*;
+import static com.codefathers.cfkclient.dtos.user.Role.SELLER;
 
 public class SellerAccount extends BackAbleController {
+    @FXML private Label balance;
+    @FXML private JFXButton find;
+    @FXML private JFXComboBox<String> transType;
+    @FXML private TableColumn<TransactionDTO, Boolean> paidCol;
+    @FXML private TableColumn<TransactionDTO, Integer> idCol;
+    @FXML private TableColumn<TransactionDTO, Integer> destCol;
+    @FXML private TableColumn<TransactionDTO, Integer> sourceCol;
+    @FXML private TableColumn<TransactionDTO, Long> moneyCol;
+    @FXML private TableColumn<TransactionDTO, String> typeCol;
+    @FXML private TableView<TransactionDTO> transTable;
+    @FXML private JFXButton takeMoney;
+    @FXML private JFXButton chargeWallet;
+    @FXML private Label wallet;
+    @FXML private AnchorPane budget;
+    @FXML private JFXButton auction;
+    @FXML private AnchorPane main;
+    @FXML private JFXButton manageBud;
     @FXML private JFXButton back;
     @FXML private JFXButton minimize;
     @FXML private JFXButton close;
@@ -68,9 +99,16 @@ public class SellerAccount extends BackAbleController {
     private PopOver popOver;
 
     public void initialize() {
-        handleButtons();
         setLabels();
+        handleButtons();
         loadImage();
+        loadComboBox();
+    }
+
+    private void loadComboBox() {
+        transType.getItems().add("All");
+        transType.getItems().add("Dest_You");
+        transType.getItems().add("Source_You");
     }
 
     private void loadImage() {
@@ -102,6 +140,14 @@ public class SellerAccount extends BackAbleController {
         lName.setText(userFullDTO.getLastName());
         email.setText(userFullDTO.getEmail());
         phone.setText(userFullDTO.getPhoneNumber());
+        wallet.setText(String.valueOf(userFullDTO.getBalance()));
+        try {
+            balance.setText(String.valueOf(connector.getBalance(
+                    new BalanceDTO(userFullDTO.getUsername(), userFullDTO.getPassword()))));
+        } catch (Exception e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
         companyName.setText(companyDTO.getName() + "  (ID : " + companyDTO.getId() + " )");
         companyPhone.setText(companyDTO.getPhone());
     }
@@ -142,6 +188,103 @@ public class SellerAccount extends BackAbleController {
         loadPopup();
         ad.setOnAction(event -> showPopUp());
         requestsButt.setOnAction(event -> handleRequestView());
+        manageBud.setOnAction(event -> handleManageBudButt());
+        chargeWallet.setOnAction(event -> handleChargeWalletButt());
+        takeMoney.setOnAction(event -> handleTakeMoney());
+        find.setOnAction(event -> handleFindButt());
+        auction.setOnAction(event -> handleAuction());
+    }
+
+    private void handleAuction() {
+        try {
+            Scene scene = new Scene(CFK.loadFXML("createAuction", backForForward("SellerAccount")));
+            CFK.setSceneToStage(auction, scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleFindButt() {
+        find.disableProperty().bind(transType.valueProperty().isNull());
+        String chosen = transType.getSelectionModel().getSelectedItem();
+        switch (chosen) {
+            case "All" :
+                getTransactionOfType(ALL);
+                break;
+            case "Source_You" :
+                getTransactionOfType(SOURCE_YOU);
+                break;
+            case "Destination_You" :
+                getTransactionOfType(DEST_YOU);
+                break;
+            default: Notification.show("Error", "Choose one choice in all transactions please!",
+                    back.getScene().getWindow(), true);
+        }
+    }
+
+    private void getTransactionOfType(TransactType transactType) {
+        NeededForTransactionDTO dto = new NeededForTransactionDTO(
+                userFullDTO.getUsername(),
+                userFullDTO.getPassword(),
+                "",
+                transactType
+        );
+        try {
+            List<TransactionDTO> dtos = connector.getTransactions(dto);
+            transTable.setItems(null);
+            loadTable(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadTable(List<TransactionDTO> transactionDTOS) {
+        ObservableList<TransactionDTO> data = FXCollections.observableArrayList(transactionDTOS);
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("receiptType"));
+        moneyCol.setCellValueFactory(new PropertyValueFactory<>("money"));
+        sourceCol.setCellValueFactory(new PropertyValueFactory<>("sourceAccountID"));
+        destCol.setCellValueFactory(new PropertyValueFactory<>("destAccountID"));
+        paidCol.setCellValueFactory(new PropertyValueFactory<>("paid"));
+        idCol.setCellValueFactory(new PropertyValueFactory<>("receiptId"));
+        transTable.setItems(data);
+    }
+
+    private void handleTakeMoney() {
+        long money = new TakeMoneyDialog().show(userFullDTO.getBalance());
+        long formerMoney = Long.parseLong(wallet.getText());
+        TakeMoneyDTO takeMoneyDTO = new TakeMoneyDTO(
+                "",
+                money,
+                SELLER
+        );
+        try {
+            int receiptId = connector.takeMoneyIntoAccount(takeMoneyDTO);
+            balance.setText(String.valueOf(userFullDTO.getBalance() + money));
+            wallet.setText(String.valueOf(formerMoney - money));
+            Notification.show("Successful", "Successfully Token To Account With ReceiptId "
+                    + receiptId, back.getScene().getWindow(), false);
+        } catch (Exception e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+        }
+    }
+
+    private void handleChargeWalletButt() {
+        long money = new ChargeWalletDialog().show();
+        long formerMoney = Long.parseLong(wallet.getText());
+        try {
+            connector.chargeWallet(new ChargeWalletDTO(money, SELLER));
+            wallet.setText(String.valueOf(formerMoney + money));
+            balance.setText(String.valueOf(userFullDTO.getBalance() - money));
+            Notification.show("Successful", "Charged Successfully", back.getScene().getWindow(), false);
+        } catch (Exception e) {
+            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
+    }
+
+    private void handleManageBudButt() {
+        main.setVisible(false);
+        budget.setVisible(true);
     }
 
     private void handleRequestView() {
