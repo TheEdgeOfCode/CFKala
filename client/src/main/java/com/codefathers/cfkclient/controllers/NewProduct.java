@@ -9,6 +9,7 @@ import com.codefathers.cfkclient.dtos.product.CreateProductDTO;
 import com.codefathers.cfkclient.dtos.product.MicroProductDto;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import javafx.beans.binding.Bindings;
@@ -31,6 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class NewProduct extends BackAbleController {
+    @FXML private  JFXCheckBox fileCheck;
+    @FXML private  JFXButton chooseFile;
+    @FXML private  Label fileLocation;
+
     @FXML
     private ComboBox<CategoryPM> category;
     @FXML private JFXTextField productName;
@@ -55,13 +60,19 @@ public class NewProduct extends BackAbleController {
     private static final Paint blueColor = Paint.valueOf("#405aa8");
     private final CacheData cacheData = CacheData.getInstance();
     private final Connector connector = Connector.getInstance();
+    private File file;
 
     @FXML
     public void initialize() {
+        binds();
         initButtons();
         initFields();
         initCategoryBox();
         initializeListeners();
+    }
+
+    private void binds() {
+        stock.disableProperty().bind(fileCheck.selectedProperty());
     }
 
     private void initButtons() {
@@ -71,6 +82,17 @@ public class NewProduct extends BackAbleController {
         back.setOnAction(event -> handleBack());
         pickPic.setOnAction(event -> pickPictures());
         reset.setOnAction(event -> deleteSelectedImage());
+        chooseFile.setOnAction(event -> pickFile());
+    }
+
+    private void pickFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image", "*.jpg"));
+        this.file = fileChooser.showOpenDialog(null);
+        if (file!=null){
+            fileLocation.setText(file.getName());
+            Notification.show("Successful", "File Picked!!!", back.getScene().getWindow(), false);
+        } else fileLocation.setText("File location");
     }
 
     private void initFields() {
@@ -246,6 +268,18 @@ public class NewProduct extends BackAbleController {
     }
 
     private void handleCreate() {
+        if (fileCheck.isSelected()){
+            createFileProduct();
+        }else {
+            createNormalProduct();
+        }
+    }
+
+    private void createFileProduct() {
+
+    }
+
+    private void createNormalProduct(){
         if (checkForEmptyValues()) {
             String[] productInfo = new String[7];
             HashMap<String, String> publicFeatures = new HashMap<>();

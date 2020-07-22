@@ -19,7 +19,6 @@ import com.codefathers.cfkclient.dtos.product.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.Image;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.json.GsonJsonParser;
 import com.codefathers.cfkclient.dtos.user.*;
 import org.springframework.core.io.ByteArrayResource;
@@ -28,20 +27,18 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
 import static org.springframework.http.HttpMethod.*;
 
-@ConfigurationProperties(prefix = "uri")
 public class Connector {
     private String token;
-    private String address = "http://127.0.0.1:8050";
+    private String address;
     private String bankToken;
     private RestTemplate restTemplate;
     private static Connector connector = new Connector();
@@ -51,6 +48,15 @@ public class Connector {
     }
 
     public Connector(){
+        try {
+            FileReader reader = new FileReader("com/codefathers/cfkclient/info.properties");
+            Properties properties = new Properties();
+            properties.load(reader);
+            address = (String) properties.get("uri");
+            System.out.println(address);
+        } catch (IOException e) {
+            address = "http://127.0.0.1:8050";
+        }
         token = "";
         bankToken = "";
         restTemplate = new RestTemplate();
@@ -445,6 +451,11 @@ public class Connector {
     public void chargeWallet(ChargeWalletDTO dto) throws Exception {
         dto.setToken(bankToken);
         post( address + "/users/charge_wallet", dto, String.class);
+    }
+
+    public int createFileProduct(CreateDocumentDto dto) throws Exception {
+        String response = post(address + "",dto,String.class).getBody();
+        return Integer.parseInt(response);
     }
 
     //TODO: We Do not need these!!!

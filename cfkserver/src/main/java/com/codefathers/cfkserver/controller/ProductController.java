@@ -1,6 +1,9 @@
 package com.codefathers.cfkserver.controller;
 
+import com.codefathers.cfkserver.exceptions.model.category.CategoryNotFoundException;
+import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
+import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.product.*;
@@ -249,4 +252,19 @@ public class ProductController {
     }
 
 
+    @PostMapping("/products/create/file")
+    private ResponseEntity<?> createFileProduct(@RequestBody CreateDocumentDto documentDto
+            ,HttpServletRequest request, HttpServletResponse response){
+        try {
+            checkToken(response, request);
+            int id = productService.createFileProduct(documentDto);
+            return ResponseEntity.ok(Integer.toString(id));
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
+            return null;
+        } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
+            return null;
+        }
+    }
 }

@@ -17,6 +17,7 @@ import java.util.*;
 public class StorageService {
     private String users = "src/main/resources/db/users/";
     private String products = "src/main/resources/db/products/image/";
+    private String productFiles = "src/main/resources/db/files/products/";
 
     @PostConstruct
     private void init() {
@@ -130,5 +131,11 @@ public class StorageService {
     public ByteArrayResource getProductMainImage(int id) {
         File image = new File(products + id + "/main.jpg");
         return loadFileAsResource(image);
+    }
+
+    public String saveProductFile(int id,ByteArrayResource resource,String format) throws IOException {
+        File file = new File(productFiles+ "id."+format);
+        saveDataToFile(resource.getInputStream(),file);
+        return file.getPath();
     }
 }

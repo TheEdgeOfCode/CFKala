@@ -1,5 +1,7 @@
 package com.codefathers.cfkserver.service;
 
+import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
+import com.codefathers.cfkserver.exceptions.model.bank.receipt.*;
 import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.model.user.*;
@@ -196,7 +198,8 @@ public class UserService {
             InvalidSourceAccountException, InvalidAccountIdException, InvalidMoneyException, InvalidDescriptionExcxeption,
             InvalidParameterPassedException, InvalidRecieptTypeException, InvalidUsernameException, ExpiredTokenException,
             EqualSourceDestException, NotEnoughMoneyAtSourceException, PaidReceiptException, InvalidReceiptIdException,
-            NoSuchACustomerException, NoSuchSellerException {
+            NoSuchACustomerException, NoSuchSellerException, InvalidDestAccountException, InvalidSourceAccountException,
+            InvalidAccountIdException, InvalidMoneyException, InvalidDescriptionExcxeption, InvalidUsernameException {
         User user = getUserByUsername(username);
         int receiptId = bankService.createReceipt(
                 new CreateReceiptDTO(

@@ -5,6 +5,7 @@ import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyExceptio
 import com.codefathers.cfkserver.exceptions.model.product.EditorIsNotSellerException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
+import com.codefathers.cfkserver.model.dtos.product.CreateDocumentDto;
 import com.codefathers.cfkserver.model.dtos.product.CreateProductDTO;
 import com.codefathers.cfkserver.model.dtos.product.MicroProductDto;
 import com.codefathers.cfkserver.model.entities.offs.Off;
@@ -16,6 +17,8 @@ import com.codefathers.cfkserver.model.entities.user.Cart;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.SubCart;
 import com.codefathers.cfkserver.model.repositories.*;
+import com.codefathers.cfkserver.service.file.StorageException;
+import com.codefathers.cfkserver.service.file.StorageService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,11 @@ public class ProductService {
     private RequestRepository requestRepository;
     @Autowired
     private OffRepository offRepository;
+    @Autowired
+    private StorageService storageService;
+    @Autowired
+    private DocumentRepository documentRepository;
+
 
     public List<Product> getAllActiveProduct(){
         return productRepository.findAllByProductStatusEquals(ProductStatus.VERIFIED);
@@ -71,12 +79,36 @@ public class ProductService {
     public int createProduct(CreateProductDTO dto)
             throws NoSuchACompanyException, NoSuchSellerException, CategoryNotFoundException {
         Product product = createProductFromDto(dto);
+        product.setDocument(null);
+        product.setFile(false);
         productRepository.save(product);
         String username = dto.getSellerName();
         String request = String.format("User \"%20s\" Requested to Create Product\" %30s\"",
                 username, product.getName());
         requestService.createRequest(product, RequestType.CREATE_PRODUCT,request,username);
         return product.getId();
+    }
+
+    public int createFileProduct(CreateDocumentDto dto)
+            throws NoSuchSellerException, NoSuchACompanyException, CategoryNotFoundException {
+        Product product = createProductFromDto(dto);
+        product.setFile(true);
+        productRepository.save(product);
+        Document document = createDocumentFromDto(product.getId(),dto);
+        document.setProduct(product);
+        product.setDocument(document);
+        documentRepository.save(document);
+        productRepository.save(product);
+        return product.getId();
+    }
+
+    private Document createDocumentFromDto(int id,CreateDocumentDto dto) {
+        try {
+            String uri = storageService.saveProductFile(id, dto.getResource(), dto.getFormat());
+            return new Document(dto.getName(),dto.getFormat(),uri,dto.getResource().contentLength());
+        } catch (IOException e) {
+            throw new StorageException("Unable To Save File Uploaded");
+        }
     }
 
     private Product createProductFromDto(CreateProductDTO dto)
