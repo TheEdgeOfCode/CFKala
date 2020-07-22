@@ -25,6 +25,7 @@ import static com.codefathers.cfkclient.Sound.POP_UP;
 import static com.codefathers.cfkclient.controllers.Notification.show;
 
 public class MainPage extends BackAbleController {
+    @FXML private JFXButton auction;
     @FXML
     private JFXButton minimize;
     @FXML private JFXButton close;
@@ -143,6 +144,17 @@ public class MainPage extends BackAbleController {
         minimize.setOnAction(event -> ((Stage) close.getScene().getWindow()).setIconified(true));
         cart.setOnAction(event -> gotoCart());
         account.setOnAction(event -> accountManager());
+        auction.setOnAction(event -> handleAuction());
+    }
+
+    private void handleAuction() {
+        try {
+            Scene scene = new Scene(CFK.loadFXML("AllAuctionPage", "MainPage"));
+            CFK.setSceneToStage(cart, scene);
+        } catch (IOException e) {
+            show("Error", e.getMessage(), cart.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
     }
 
     private void accountManager() {

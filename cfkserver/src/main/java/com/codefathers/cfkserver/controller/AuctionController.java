@@ -1,23 +1,17 @@
 package com.codefathers.cfkserver.controller;
 
-import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
-import com.codefathers.cfkserver.exceptions.model.bank.receipt.InvalidReceiptIdException;
-import com.codefathers.cfkserver.exceptions.model.off.InvalidTimesException;
-import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
-import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
-import com.codefathers.cfkserver.exceptions.model.product.ProductNotAvailableException;
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
+import com.codefathers.cfkserver.model.dtos.auction.AuctionDTO;
 import com.codefathers.cfkserver.model.dtos.auction.CreateAuctionDTO;
+import com.codefathers.cfkserver.model.dtos.auction.AuctionListDTO;
 import com.codefathers.cfkserver.model.dtos.auction.MiniAuctionDTO;
-import com.codefathers.cfkserver.model.dtos.auction.MiniAuctionListDTO;
-import com.codefathers.cfkserver.model.dtos.bank.TransactionDTO;
-import com.codefathers.cfkserver.model.dtos.bank.TransactionListDTO;
+import com.codefathers.cfkserver.model.dtos.product.SellPackageDto;
 import com.codefathers.cfkserver.model.entities.offs.Auction;
+import com.codefathers.cfkserver.model.entities.product.SellPackage;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.service.AuctionService;
 import com.codefathers.cfkserver.service.SellerService;
-import com.codefathers.cfkserver.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,22 +60,41 @@ public class AuctionController {
         try {
             if (checkToken(response, request)) {
                 List<MiniAuctionDTO> dtos = new ArrayList<>();
-                List<Auction> auctions = auctionService.getAllAuctions();
+                List<Auction> auctions = auctionService.getAllAvailableAuctions();
                 for (Auction auction : auctions) {
                     dtos.add(new MiniAuctionDTO(
-                            auction.getSellPackage().getProduct().getName(),
-                            auction.getSellPackage().getProduct().getId(),
-                            auction.getCurrentPrice(),
+                            getAuctionDTO(auction),
                             auction.getStartTime(),
-                            auction.getEndTime(),
-                            auction.getSellPackage().getSeller().getUsername()
+                            auction.getEndTime()
                     ));
                 }
-                return ResponseEntity.ok(new MiniAuctionListDTO(new ArrayList<>(dtos)));
+                return ResponseEntity.ok(new AuctionListDTO(new ArrayList<>(dtos)));
             }
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
         }
         return null;
+    }
+
+    private AuctionDTO getAuctionDTO(Auction auction) {
+        return new AuctionDTO(
+                auction.getId(),
+                createSellPackageDTO(auction.getSellPackage()),
+                0,
+                auction.getSellPackage().getProduct().getId(),
+                auction.getSellPackage().getProduct().getName(),
+                auction.getCurrentPrice(),
+                auction.getMostPriceUser()
+        );
+    }
+
+    private SellPackageDto createSellPackageDTO(SellPackage sellPackage) {
+        return new SellPackageDto(
+                sellPackage.getOff().getOffPercentage(),
+                sellPackage.getPrice(),
+                sellPackage.getStock(),
+                sellPackage.getSeller().getUsername(),
+                sellPackage.isAvailable()
+        );
     }
 }

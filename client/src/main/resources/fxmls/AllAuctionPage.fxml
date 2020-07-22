@@ -30,10 +30,10 @@
                <children>
                   <JFXButton fx:id="back" text=" ">
                      <graphic>
-                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" text="" wrappingWidth="7.142856597900391" />
+                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" text="" wrappingWidth="12.14285659790039" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="cart" prefHeight="28.0" prefWidth="13.0" text=" ">
+                  <JFXButton fx:id="cart" prefHeight="28.0" prefWidth="31.0" text=" ">
                      <graphic>
                         <FontIcon iconLiteral="fa-shopping-basket" iconSize="20" wrappingWidth="15.85714340209961" />
                      </graphic>

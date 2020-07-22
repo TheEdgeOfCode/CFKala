@@ -4,7 +4,6 @@ import com.codefathers.cfkclient.BackAbleController;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.auction.MiniAuctionDTO;
-import com.codefathers.cfkclient.dtos.product.MiniProductDto;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;

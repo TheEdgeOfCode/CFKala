@@ -6,6 +6,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data @AllArgsConstructor
-public class MiniAuctionListDTO {
+public class AuctionListDTO {
     List<MiniAuctionDTO> dtos;
 }

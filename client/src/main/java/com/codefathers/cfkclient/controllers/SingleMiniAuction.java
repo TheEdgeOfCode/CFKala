@@ -32,9 +32,9 @@ public class SingleMiniAuction {
     }
 
     private void initData(MiniAuctionDTO pm) {
-        String nameOfProduct = pm.getProductName();
-        String nameOfSeller = pm.getSellerName();
-        long money = pm.getMoney();
+        String nameOfProduct = pm.getAuctionDTO().getProductName();
+        String nameOfSeller = pm.getAuctionDTO().getSellPackageDto().getSellerUsername();
+        long money = pm.getAuctionDTO().getCurrentPrice();
         String dateStart = String.valueOf(pm.getStartDate());
         String dateEnd = String.valueOf(pm.getEndDate());
         auctionPrice.setText(money + "$");
@@ -43,17 +43,16 @@ public class SingleMiniAuction {
         productName.setText(nameOfProduct);
         sellerName.setText(nameOfSeller);
         pane.setOnMouseClicked(e -> {
-            CacheData.getInstance().setProductId(pm.getId());
-            // TODO : check
+            CacheData.getInstance().setAuctionDTO(pm.getAuctionDTO());
             try {
-                Scene scene = new Scene(CFK.loadFXML("ProductDigest", "MainPage", "AllAuctionPage"));
+                Scene scene = new Scene(CFK.loadFXML("auction_page", "MainPage", "AllAuctionPage"));
                 CFK.setSceneToStage(pane, scene);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
         try {
-            productPreViewImage.setImage(Connector.getInstance().productMainImage(pm.getId()));
+            productPreViewImage.setImage(Connector.getInstance().productMainImage(pm.getAuctionDTO().getProductId()));
         } catch (Exception ignore) {}
     }
 

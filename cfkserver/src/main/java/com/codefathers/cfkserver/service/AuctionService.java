@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,8 +41,16 @@ public class AuctionService {
         }
     }
 
-    public List<Auction> getAllAuctions() {
-        return auctionRepository.findAllBy();
+    public List<Auction> getAllAvailableAuctions() {
+        Date date = new Date();
+        List<Auction> allAuctions =  auctionRepository.findAllBy();
+        List<Auction> availableAuctions = new ArrayList<>();
+        for (Auction auction : allAuctions) {
+            if (!date.after(auction.getEndTime())){
+                availableAuctions.add(auction);
+            }
+        }
+        return availableAuctions;
     }
 
     public void createAuction(Seller seller, CreateAuctionDTO dto) throws InvalidTimesException, NoSuchAProductException,
