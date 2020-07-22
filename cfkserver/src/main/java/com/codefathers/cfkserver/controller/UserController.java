@@ -118,7 +118,8 @@ public class UserController {
                         user.getLastName(),
                         user.getEmail(),
                         user.getPhoneNumber(),
-                        user.getClass().getName().split("\\.")[2]
+                        user.getClass().getName().split("\\.")[2],
+                        user.getAccountId()
                 );
                 return ResponseEntity.ok(dto);
             } else {
