@@ -1,9 +1,6 @@
 package com.codefathers.cfkclient.controllers;
 
-import com.codefathers.cfkclient.BackAbleController;
-import com.codefathers.cfkclient.CFK;
-import com.codefathers.cfkclient.CacheData;
-import com.codefathers.cfkclient.SoundCenter;
+import com.codefathers.cfkclient.*;
 import com.codefathers.cfkclient.dtos.content.AdPM;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.utils.Connector;
@@ -175,6 +172,7 @@ public class MainPage extends BackAbleController {
 
     private void handleAuction() {
         try {
+            SoundCenter.play(CLICK);
             Scene scene = new Scene(CFK.loadFXML("AllAuctionPage", "MainPage"));
             CFK.setSceneToStage(cart, scene);
         } catch (IOException e) {

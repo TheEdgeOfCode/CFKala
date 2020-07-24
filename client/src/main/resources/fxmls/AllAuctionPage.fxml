@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXRadioButton?>
-<?import com.jfoenix.controls.JFXSlider?>
-<?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -60,98 +50,10 @@
                </padding>
             </HBox>
          </top>
-         <left>
-            <HBox prefHeight="560.0" prefWidth="216.0" BorderPane.alignment="CENTER">
-               <children>
-                  <ScrollPane fx:id="filterPane" prefHeight="560.0" prefWidth="231.0">
-                     <content>
-                        <VBox prefHeight="92.0" prefWidth="214.0">
-                           <children>
-                              <HBox prefHeight="27.0" prefWidth="198.0">
-                                 <children>
-                                    <Button fx:id="searchButt" mnemonicParsing="false" prefHeight="27.0" prefWidth="194.0" text="Search" />
-                                    <Button fx:id="ignoreSearch" mnemonicParsing="false" prefHeight="27.0" prefWidth="35.0" text=" ">
-                                       <graphic>
-                                          <FontIcon iconLiteral="fa-repeat" wrappingWidth="1.2857141494750977" />
-                                       </graphic>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <TitledPane expanded="false" prefHeight="25.0" prefWidth="177.0" text="Filters">
-                                 <content>
-                                    <VBox fx:id="filterVBox" prefWidth="199.0" spacing="5.0">
-                                       <padding>
-                                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                                       </padding>
-                                       <children>
-                                          <Label text="Min Price" />
-                                          <JFXSlider fx:id="minPrice" max="2000.0" value="-1.0" />
-                                          <Label text="Max Price" />
-                                          <JFXSlider fx:id="maxPrice" layoutX="25.0" layoutY="53.0" max="2000.0" value="-1.0" />
-                                          <Separator prefWidth="200.0" />
-                                          <JFXToggleButton fx:id="availableOnly" alignment="CENTER_LEFT" graphicTextGap="20.0" layoutX="25.0" layoutY="144.0" prefHeight="58.0" prefWidth="178.0" size="8.0" text="Available Only">
-                                             <opaqueInsets>
-                                                <Insets />
-                                             </opaqueInsets>
-                                          </JFXToggleButton>
-                                          <Separator prefWidth="200.0" />
-                                          <TableView fx:id="featureTable" prefHeight="115.0" prefWidth="169.0">
-                                             <columns>
-                                                <TableColumn fx:id="filterCol" prefWidth="75.0" text="Filter" />
-                                                <TableColumn fx:id="fieldCol" prefWidth="75.0" />
-                                             </columns>
-                                          </TableView>
-                                          <Separator layoutX="25.0" layoutY="243.0" prefWidth="200.0" />
-                                          <Label text="Filter By Name" />
-                                          <TextField fx:id="nameFilter" />
-                                          <Label layoutX="25.0" layoutY="379.0" text="Filter By Brand" />
-                                          <TextField fx:id="brandFilter" layoutX="25.0" layoutY="401.0" />
-                                          <Label layoutX="25.0" layoutY="432.0" text="Filter By Seller" />
-                                          <TextField fx:id="sellerFilter" layoutX="25.0" layoutY="448.0" />
-                                          <Button fx:id="filterByFiled" mnemonicParsing="false" prefHeight="26.0" prefWidth="210.0" text="Filter By Fields" />
-                                       </children>
-                                    </VBox>
-                                 </content>
-                              </TitledPane>
-                              <TitledPane expanded="false" text="Sorts">
-                                 <content>
-                                    <VBox prefWidth="197.0" spacing="10.0">
-                                       <children>
-                                          <JFXRadioButton selected="true" text="Ascending">
-                                             <toggleGroup>
-                                                <ToggleGroup fx:id="ADOrder" />
-                                             </toggleGroup>
-                                          </JFXRadioButton>
-                                          <JFXRadioButton text="Descending" toggleGroup="$ADOrder" />
-                                          <Separator prefWidth="200.0" />
-                                          <JFXRadioButton text="Price">
-                                             <toggleGroup>
-                                                <ToggleGroup fx:id="type" />
-                                             </toggleGroup>
-                                          </JFXRadioButton>
-                                          <JFXRadioButton layoutX="25.0" layoutY="95.0" text="Date Added" toggleGroup="$type" />
-                                          <JFXRadioButton layoutX="25.0" layoutY="123.0" selected="true" text="View" toggleGroup="$type" />
-                                          <JFXRadioButton layoutX="25.0" layoutY="151.0" text="Bought" toggleGroup="$type" />
-                                          <JFXRadioButton layoutX="25.0" layoutY="179.0" text="Name" toggleGroup="$type" />
-                                          <JFXRadioButton layoutX="25.0" layoutY="207.0" text="Score" toggleGroup="$type" />
-                                       </children>
-                                       <padding>
-                                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                                       </padding>
-                                    </VBox>
-                                 </content>
-                              </TitledPane>
-                           </children>
-                        </VBox>
-                     </content>
-                  </ScrollPane>
-               </children>
-            </HBox>
-         </left>
          <center>
-            <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <ScrollPane prefHeight="560.0" prefWidth="898.0" BorderPane.alignment="CENTER">
                <content>
-                  <VBox fx:id="auctionVBox" prefHeight="200.0" prefWidth="736.0" />
+                  <VBox fx:id="auctionVBox" alignment="CENTER" prefHeight="250.0" prefWidth="956.0" />
                </content>
             </ScrollPane>
          </center></BorderPane>

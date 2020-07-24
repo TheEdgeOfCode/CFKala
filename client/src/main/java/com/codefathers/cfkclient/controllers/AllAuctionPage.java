@@ -20,26 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO : complete filters
-
 public class AllAuctionPage extends BackAbleController {
-    @FXML private ScrollPane filterPane;
-    @FXML private ToggleGroup type;
-    @FXML private ToggleGroup ADOrder;
-    @FXML private Button filterByFiled;
-    @FXML private TextField sellerFilter;
-    @FXML private TextField brandFilter;
-    @FXML private TextField nameFilter;
-    @FXML private TableColumn fieldCol;
-    @FXML private TableColumn filterCol;
-    @FXML private TableView<ProductsPage.TableFeatureRow> featureTable;
-    @FXML private JFXToggleButton availableOnly;
-    @FXML private JFXSlider maxPrice;
-    @FXML private JFXSlider minPrice;
-    @FXML private VBox filterVBox;
     @FXML private VBox auctionVBox;
-    @FXML private Button ignoreSearch;
-    @FXML private Button searchButt;
     @FXML private JFXButton close;
     @FXML private JFXButton minimize;
     @FXML private JFXButton cart;
@@ -108,16 +90,6 @@ public class AllAuctionPage extends BackAbleController {
 
     private void bindings() {
         cart.disableProperty().bind(cacheData.roleProperty.isEqualTo("Customer").not());
-        minPrice.valueProperty().addListener((v, oldValue, newValue) -> {
-            if (newValue.doubleValue() > maxPrice.getValue()) {
-                maxPrice.setValue(newValue.doubleValue());
-            }
-        });
-        maxPrice.valueProperty().addListener((v, oldValue, newValue) -> {
-            if (newValue.doubleValue() < minPrice.getValue()) {
-                minPrice.setValue(newValue.doubleValue());
-            }
-        });
     }
 
     private void initButts() {
