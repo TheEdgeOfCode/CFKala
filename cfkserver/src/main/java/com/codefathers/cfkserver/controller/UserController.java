@@ -80,6 +80,7 @@ public class UserController {
             String token = JwtUtil.generateToken(dto.getUsername(),"customer");
             return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
         } catch (Exception e) {
+            e.printStackTrace();
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }

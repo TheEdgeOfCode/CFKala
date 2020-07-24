@@ -122,8 +122,11 @@ public class RequestService {
         if (sellerOptional.isPresent()){
             seller = sellerOptional.get();
             SellPackage sellPackage = product.getPackages().get(0);
+            System.out.println(sellPackage);
             seller.getPackages().add(sellPackage);
             sellerRepository.save(seller);
+        } else {
+            System.out.println("NOT FOUND");
         }
     }
 

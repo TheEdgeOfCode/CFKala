@@ -86,7 +86,7 @@ public class ProductService {
         String username = dto.getSellerName();
         String request = String.format("User \"%20s\" Requested to Create Product\" %30s\"",
                 username, product.getName());
-        requestService.createRequest(product, RequestType.CREATE_PRODUCT,request,username);
+        requestService.createRequest(product, RequestType.CREATE_PRODUCT, username, request);
         return product.getId();
     }
 

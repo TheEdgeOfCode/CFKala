@@ -69,13 +69,13 @@ public class UserService {
             InvalidDestAccountException, PaidReceiptException, InvalidDescriptionExcxeption, InvalidParameterPassedException,
             InvalidRecieptTypeException, InvalidReceiptIdException, ExpiredTokenException, EqualSourceDestException {
         checkUsername(sellerDTO.getUsername());
-        String accountId =  bankService.createAccount(new CreateBankAccountDTO(
+        /*String accountId =  bankService.createAccount(new CreateBankAccountDTO(
                 sellerDTO.getFirstName(),
                 sellerDTO.getLastName(),
                 sellerDTO.getUsername(),
                 sellerDTO.getPassword(),
                 sellerDTO.getPassword())
-        );
+        );*/
         Seller seller = new Seller(
                 sellerDTO.getUsername(),
                 sellerDTO.getPassword(),
@@ -86,9 +86,9 @@ public class UserService {
                 new Cart(),
                 companyService.getCompanyById(sellerDTO.getCompanyID()),
                 0,
-                accountId
+                "456123123513"
         );
-        chargeBankAccount(sellerDTO.getUsername(), sellerDTO.getPassword(), sellerDTO.getBalance(), accountId);
+        //chargeBankAccount(sellerDTO.getUsername(), sellerDTO.getPassword(), sellerDTO.getBalance(), accountId);
         sellerRepository.save(seller);
         String requestStr = String.format("%s has requested to create a seller with email %s", sellerDTO.getUsername(), sellerDTO.getEmail());
         Request request = requestService.createRequest(seller, RequestType.REGISTER_SELLER, sellerDTO.getUsername(), requestStr);
@@ -103,13 +103,13 @@ public class UserService {
             InvalidParameterPassedException, InvalidRecieptTypeException, InvalidReceiptIdException,
             ExpiredTokenException, EqualSourceDestException {
         checkUsername(customerDTO.getUsername());
-        String accountId =  bankService.createAccount(new CreateBankAccountDTO(
+        /*String accountId =  bankService.createAccount(new CreateBankAccountDTO(
                 customerDTO.getFirstName(),
                 customerDTO.getLastName(),
                 customerDTO.getUsername(),
                 customerDTO.getPassword(),
                 customerDTO.getPassword())
-        );
+        );*/
         Customer customer = new Customer(
                 customerDTO.getUsername(),
                 customerDTO.getPassword(),
@@ -119,9 +119,9 @@ public class UserService {
                 customerDTO.getPhoneNumber(),
                 new Cart(),
                 0,
-                accountId
+                "456313"
         );
-        chargeBankAccount(customerDTO.getUsername(), customerDTO.getPassword(), customerDTO.getBalance(), accountId);
+        //chargeBankAccount(customerDTO.getUsername(), customerDTO.getPassword(), customerDTO.getBalance(), accountId);
         customerRepository.save(customer);
     }
 
