@@ -2,10 +2,6 @@ package com.codefathers.cfkserver.controller;
 
 import com.codefathers.cfkserver.exceptions.model.log.NoSuchALogException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
-import com.codefathers.cfkserver.model.dtos.customer.OrderLogDTO;
-import com.codefathers.cfkserver.model.dtos.customer.OrderLogListDTO;
-import com.codefathers.cfkserver.model.dtos.customer.OrderProductDTO;
-import com.codefathers.cfkserver.model.dtos.customer.PurchaseDTO;
 import com.codefathers.cfkserver.model.dtos.log.PurchaseLogDTO;
 import com.codefathers.cfkserver.model.dtos.log.PurchaseLogDTOList;
 import com.codefathers.cfkserver.model.dtos.product.FilterSortDto;
@@ -29,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +57,14 @@ public class ManagerController {
     @Autowired
     private LogService logService;
 
-    @PostMapping("/manager/show_users")
-    private ResponseEntity<?> showUsers(HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping("/manager/show_users")
+    private UserFullListDTO showUsers(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
                 List<User> allUsers = managerService.getAllUsers();
                 List<UserFullDTO> userDTOS = new ArrayList<>();
                 allUsers.forEach(user -> userDTOS.add(createUserFullDTO(user)));
-                return ResponseEntity.ok(new UserFullListDTO(new ArrayList<>(userDTOS)));
+                return new UserFullListDTO(new ArrayList<>(userDTOS));
             } else {
                 return null;
             }

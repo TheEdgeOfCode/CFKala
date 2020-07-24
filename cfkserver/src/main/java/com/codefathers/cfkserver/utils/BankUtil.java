@@ -55,8 +55,11 @@ public class BankUtil {
     public void sendMessage(String msg) throws IOException {
         try {
             outputStream.writeUTF(msg);
+            Thread.sleep(100);
         } catch (IOException e) {
             throw new IOException("Exception while sending message:");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

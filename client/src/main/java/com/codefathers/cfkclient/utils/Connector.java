@@ -486,11 +486,9 @@ public class Connector {
         post("http://127.0.0.1:8050/bank/pay", receiptId, String.class);
     }
 
-    public long getBalance(BalanceDTO dto) throws Exception {
-        dto.setToken(bankToken);
-        ResponseEntity<Long> response = get("http://127.0.0.1:8050/bank/get_balance",
-                dto, Long.class);
-        return Objects.requireNonNull(response.getBody());
+    public long getBalance(String username) throws Exception {
+        return get(address + "/bank/get_balance/" + username,
+                null, Long.class);
     }
 
     public void createSupport(UserDTO userDTO) throws Exception {
@@ -559,9 +557,8 @@ public class Connector {
     }
 
     public InfoDTO getManagerInfoInBank() throws Exception {
-        ResponseEntity<InfoDTO> response = get(address + "/bank/get_info",
+        return get(address + "/bank/get_info",
                 null, InfoDTO.class);
-        return Objects.requireNonNull(response.getBody());
     }
 
     public void editTollMinimumBalanceInfo(TollMinimumBalanceEditAttribute attribute) throws Exception {
