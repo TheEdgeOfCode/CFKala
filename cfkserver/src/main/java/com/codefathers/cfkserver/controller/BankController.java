@@ -118,7 +118,7 @@ public class BankController {
         }
     }
 
-    @GetMapping("/bank/get_balance")
+    @PostMapping("/bank/get_balance")
     private ResponseEntity<?> getBalance(HttpServletRequest request, HttpServletResponse response,
                                          @RequestBody BalanceDTO dto) {
         try {
@@ -156,6 +156,7 @@ public class BankController {
                                                          @RequestBody TollMinimumBalanceEditAttribute attribute) {
         try {
             if (checkToken(response, request)) {
+                System.out.println("aaa");
                 bankService.editTollMinimumBalanceInfo(attribute);
                 return ResponseEntity.ok(ResponseEntity.status(200));
             }

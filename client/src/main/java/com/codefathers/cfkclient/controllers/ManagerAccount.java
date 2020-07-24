@@ -3,10 +3,7 @@ package com.codefathers.cfkclient.controllers;
 import com.codefathers.cfkclient.BackAbleController;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
-import com.codefathers.cfkclient.dtos.bank.InfoDTO;
-import com.codefathers.cfkclient.dtos.bank.NeededForTransactionDTO;
-import com.codefathers.cfkclient.dtos.bank.TransactType;
-import com.codefathers.cfkclient.dtos.bank.TransactionDTO;
+import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.edit.TollMinimumBalanceEditAttribute;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
 import com.codefathers.cfkclient.dtos.log.DeliveryStatus;
@@ -403,11 +400,8 @@ public class ManagerAccount extends BackAbleController {
     }
 
     private String calculateTotalBalance() throws Exception {
-        List<UserFullDTO> dtos = connector.showUsers();
         long totalBalance = 0;
-        for (UserFullDTO dto : dtos) {
-            totalBalance += dto.getBalance();
-        }
+        totalBalance = connector.getBalance(new BalanceDTO(cacheData.getUsername(), userFullPM.getPassword()));
         return Long.toString(totalBalance);
     }
 
@@ -620,7 +614,7 @@ public class ManagerAccount extends BackAbleController {
             if (emailText.getText().matches(("\\S+@\\S+\\.(org|net|ir|com|uk|site)"))) {
                 attributes.setNewEmail(emailText.getText());
                 email.setText(emailText.getText());
-                return true;
+                successful = true;
             } else {
                 errorField(emailText, "Wrong Email Format");
                 return false;
