@@ -277,7 +277,7 @@ public class UserService {
         return user.getPassword().equals(password);
     }
 
-    String getPassByUsername(String username) throws UserNotFoundException {
+    public String getPassByUsername(String username) throws UserNotFoundException {
         User user = getUserByUsername(username);
         return user.getPassword();
     }

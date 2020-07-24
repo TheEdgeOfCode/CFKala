@@ -1,2 +1,3 @@
-AccountId = hello 1003
-Toll = 0Minimum Balance = 0
+AccountId = 0
+Toll = 0
+Minimum Balance = 0
