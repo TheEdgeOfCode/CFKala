@@ -106,8 +106,7 @@ public class CustomerAccount extends BackAbleController {
         phone.setText(userFullDTO.getPhoneNumber());
         wallet.setText(String.valueOf(userFullDTO.getBalance()));
         try {
-            balance.setText(String.valueOf(connector.getBalance(
-                    new BalanceDTO(userFullDTO.getUsername(), userFullDTO.getPassword()))));
+            balance.setText(String.valueOf(connector.getBalance(cacheData.getUsername())));
         } catch (Exception e) {
             Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             e.printStackTrace();

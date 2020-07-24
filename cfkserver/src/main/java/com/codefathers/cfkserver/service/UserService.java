@@ -25,6 +25,7 @@ import java.io.*;
 import java.util.Optional;
 import java.util.Scanner;
 
+import static com.codefathers.cfkserver.model.dtos.bank.ReceiptType.DEPOSIT;
 import static com.codefathers.cfkserver.model.dtos.bank.ReceiptType.MOVE;
 import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
 
@@ -147,7 +148,7 @@ public class UserService {
     }
 
     public void createManager(ManagerDTO managerDTO) throws UserAlreadyExistsException, InvalidUsernameException,
-            IOException, PasswordsDoNotMatchException {
+            IOException, PasswordsDoNotMatchException, UserNotFoundException, PaidReceiptException, InvalidDestAccountException, InvalidTokenException, InvalidSourceAccountException, InvalidAccountIdException, InvalidMoneyException, NotEnoughMoneyAtSourceException, InvalidDescriptionExcxeption, InvalidParameterPassedException, InvalidRecieptTypeException, InvalidReceiptIdException, ExpiredTokenException, EqualSourceDestException {
         checkUsername(managerDTO.getUsername());
         String accountId;
 
@@ -160,6 +161,7 @@ public class UserService {
                     managerDTO.getPassword())
             );
             saveToFile(accountId);
+            chargeShop(managerDTO, accountId);
         } else {
             accountId = bankService.getInfo("AccountId");
         }
@@ -177,6 +179,22 @@ public class UserService {
         managerRepository.save(manager);
     }
 
+    private void chargeShop(ManagerDTO managerDTO, String accountId) throws IOException, InvalidRecieptTypeException, InvalidMoneyException, InvalidParameterPassedException, InvalidTokenException, ExpiredTokenException, InvalidSourceAccountException, InvalidDestAccountException, EqualSourceDestException, InvalidAccountIdException, InvalidDescriptionExcxeption, InvalidUsernameException, UserNotFoundException, InvalidReceiptIdException, PaidReceiptException, NotEnoughMoneyAtSourceException {
+        String token = bankService.getToken(new TokenRequestDTO(managerDTO.getUsername(), managerDTO.getPassword()));
+        int receiptId = bankService.createReceipt(
+                new CreateReceiptDTO(
+                        managerDTO.getUsername(),
+                        managerDTO.getPassword(),
+                        token,
+                        DEPOSIT,
+                        10000,
+                        "-1",
+                        accountId,
+                        "Charge"
+                ));
+        bankService.pay(receiptId);
+    }
+
     private void saveToFile(String accountId) {
         File file = new File("cfkserver/src/main/resources/application_info.txt");
         Scanner scanner;
@@ -187,7 +205,7 @@ public class UserService {
                 String fileLine = scanner.nextLine();
                 if (fileLine.startsWith("AccountId")) {
                     String changed = fileLine.replaceFirst(fileLine.substring(fileLine.indexOf('=') + 2), accountId);
-                    info.append(changed);
+                    info.append(changed + "\n");
                 } else {
                     info.append(fileLine).append("\n");
                 }

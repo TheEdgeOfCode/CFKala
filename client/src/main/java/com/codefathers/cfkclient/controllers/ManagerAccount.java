@@ -401,7 +401,7 @@ public class ManagerAccount extends BackAbleController {
 
     private String calculateTotalBalance() throws Exception {
         long totalBalance = 0;
-        totalBalance = connector.getBalance(new BalanceDTO(cacheData.getUsername(), userFullPM.getPassword()));
+        totalBalance = connector.getBalance(cacheData.getUsername());
         return Long.toString(totalBalance);
     }
 

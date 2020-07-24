@@ -118,15 +118,19 @@ public class BankController {
         }
     }
 
-    @PostMapping("/bank/get_balance")
-    private ResponseEntity<?> getBalance(HttpServletRequest request, HttpServletResponse response,
-                                         @RequestBody BalanceDTO dto) {
+    @GetMapping("/bank/get_balance/{username}")
+    private Long getBalance(HttpServletRequest request, HttpServletResponse response,
+                                         @PathVariable String username) {
         try {
             if (checkToken(response, request)) {
                 try {
-                    return ResponseEntity.ok(bankService.getBalance(dto));
+                    String password = userService.getPassByUsername(username);
+                    String token = bankService.getToken(new TokenRequestDTO(username, password));
+                    return bankService.getBalance(new BalanceDTO(username, password, token));
                 } catch (IOException | InvalidUsernameException e) {
                     sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+                } catch (UserNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
         } catch (ExpiredTokenException | InvalidTokenException e) {

@@ -486,11 +486,9 @@ public class Connector {
         post("http://127.0.0.1:8050/bank/pay", receiptId, String.class);
     }
 
-    public long getBalance(BalanceDTO dto) throws Exception {
-        dto.setToken(bankToken);
-        ResponseEntity<Long> response = post(address + "/bank/get_balance",
-                dto, Long.class);
-        return response.getBody();
+    public long getBalance(String username) throws Exception {
+        return get(address + "/bank/get_balance/" + username,
+                null, Long.class);
     }
 
     public void createSupport(UserDTO userDTO) throws Exception {
