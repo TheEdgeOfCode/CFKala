@@ -12,6 +12,6 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 public class Support extends User {
     public Support(String username, String password, String firstName, String lastName, String email, String phoneNumber, Cart cart) {
-        super(username, password, firstName, lastName, email, phoneNumber, cart);
+        super(username, password, firstName, lastName, email, phoneNumber, cart, "");
     }
 }
