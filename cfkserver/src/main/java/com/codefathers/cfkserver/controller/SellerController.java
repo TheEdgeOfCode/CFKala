@@ -162,7 +162,6 @@ public class SellerController {
         try {
             checkToken(response, request);
             List<Product> sellerProducts = sellerService.viewProducts(username);
-            System.out.println(sellerProducts);
             List<MicroProductDto> list = new ArrayList<>();
             if (sellerProducts != null)
                 sellerProducts.forEach(product -> list.add(new MicroProductDto(product.getName(), product.getId())));

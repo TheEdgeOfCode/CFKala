@@ -65,6 +65,8 @@ public class Connector {
         restTemplate = new RestTemplate();
     }
 
+
+
     private <T,U> ResponseEntity<U> post(String uri,T dto ,Class<U> type) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authentication","cfk! " + token);
@@ -93,10 +95,10 @@ public class Connector {
         }
     }
 
-    private<T> ByteArrayResource getResources(String uri,T dto) throws Exception {
+    private<T> ByteArrayResource getResources(String uri) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authentication","cfk! " + token);
-        HttpEntity<T> requestEntity = new HttpEntity<>(dto,headers);
+        HttpEntity<T> requestEntity = new HttpEntity<>(null,headers);
         ResponseEntity<ByteArrayResource> responseEntity = restTemplate.exchange(uri,GET,requestEntity,ByteArrayResource.class);
         if (responseEntity.getStatusCode().equals(HttpStatus.OK)){
             return responseEntity.getBody();
@@ -344,7 +346,7 @@ public class Connector {
     }
 
     public void removeProduct_Manager(String id) throws Exception {
-        post(address + "/manager/remove_product/" + id, id, String.class);
+        post(address + "/manager/remove_product/" + id, null, String.class);
     }
 
     public List<RequestDTO> showRequests() throws Exception {
@@ -532,26 +534,34 @@ public class Connector {
         post(address + "/manager/change_log_status", logId, String.class);
     }
 
+    public ArrayList<Doc> getPurchasedDocs() throws Exception {
+        return get(address+"/customer/docs",null,new TypeToken<ArrayList<Doc>>(){}.getType());
+    }
+
+    public ByteArrayResource getDoc(int id) throws Exception {
+        return getResources(address + "/docs/download/" + id);
+    }
+
     /**Resources======================================================================================================*/
 
     public Image userImage() throws Exception {
-        ByteArrayResource image = getResources(address + "/download/user/profile",null);
+        ByteArrayResource image = getResources(address + "/download/user/profile");
         return createImageFromResource(image);
     }
 
     public Image userImage(String username) throws Exception {
-        ByteArrayResource image = getResources(address + "/download/user/profile/" + username ,null);
+        ByteArrayResource image = getResources(address + "/download/user/profile/" + username);
         return createImageFromResource(image);
     }
 
     public Image productMainImage(int id) throws Exception {
-        ByteArrayResource resource = getResources(address + "/download/product/" + id + "/main", null);
+        ByteArrayResource resource = getResources(address + "/download/product/" + id + "/main");
         return createImageFromResource(resource);
     }
 
     public ArrayList<Image> loadImages(int id) throws Exception {
         ArrayList<Image> images = new ArrayList<>();
-        ByteArrayResource resources = getResources(address + "/download/product/" + id, null);
+        ByteArrayResource resources = getResources(address + "/download/product/" + id);
         images.add(createImageFromResource(resources));
         return images;
     }
@@ -579,11 +589,12 @@ public class Connector {
     }
 
     public List<MiniAuctionDTO> getAllAuctions() throws Exception {
-        ResponseEntity<AuctionListDTO> response = get(
+        AuctionListDTO respomse = get(
                 address + "/auction/get_auctions",
                 null,
                 AuctionListDTO.class
         );
-        return Objects.requireNonNull(response.getBody()).getDtos();
+
+        return respomse.getDtos();
     }
 }

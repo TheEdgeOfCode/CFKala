@@ -76,7 +76,8 @@ public class AuctionPage extends BackAbleController {
             Thread thread = new Thread(client);
             thread.start();
         } catch (IOException e) {
-            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            new OopsAlert().show(e.getMessage());
+            e.printStackTrace();
         }
     }
 

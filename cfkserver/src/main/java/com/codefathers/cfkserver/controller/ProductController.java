@@ -7,13 +7,11 @@ import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.product.*;
-import com.codefathers.cfkserver.model.entities.product.Comment;
-import com.codefathers.cfkserver.model.entities.product.CommentStatus;
-import com.codefathers.cfkserver.model.entities.product.Product;
-import com.codefathers.cfkserver.model.entities.product.SellPackage;
+import com.codefathers.cfkserver.model.entities.product.*;
 import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribute;
 import com.codefathers.cfkserver.model.entities.user.User;
 import com.codefathers.cfkserver.service.*;
+import com.codefathers.cfkserver.service.file.StorageService;
 import com.codefathers.cfkserver.utils.TokenUtil;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +45,8 @@ public class ProductController {
     private CartService cartService;
     @Autowired
     private FeedbackService feedbackService;
+    @Autowired
+    private StorageService storageService;
 
 
     @PostMapping("/product/get_all_products")
@@ -281,5 +281,25 @@ public class ProductController {
         } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @GetMapping
+    @RequestMapping("/docs/download/{id}")
+    private ResponseEntity<?> getDoc(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id){
+        try {
+            checkToken(response,request);
+            Document document = productService.purchasedDocument(id,getUsernameFromToken(request));
+            return ResponseEntity.ok(getFile(document));
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            return null;
+        } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    private ByteArrayResource getFile(Document document) {
+        return storageService.getFile(document);
     }
 }

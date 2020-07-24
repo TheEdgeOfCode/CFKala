@@ -78,6 +78,7 @@ public class ProductRowForSM {
                 connector.removeProduct_Manager(Integer.toString(idProduct));
             } catch (Exception e) {
                 Notification.show("Error", e.getMessage(), delete.getScene().getWindow(), true);
+                e.printStackTrace();
             }
         }
     }

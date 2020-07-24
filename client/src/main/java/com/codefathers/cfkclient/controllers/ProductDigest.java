@@ -65,6 +65,7 @@ public class ProductDigest extends BackAbleController {
     private static final CacheData cacheData = CacheData.getInstance();
     private static Connector connector = Connector.getInstance();
     private ArrayList<Image> images;
+    private int stock;
 
     @FXML
     public void initialize() {
@@ -271,6 +272,7 @@ public class ProductDigest extends BackAbleController {
             loadInformation(pm.getProduct());
             loadImage();
             initialFeatures(pm.getFeatures());
+            stock = pm.getProduct().getSellPackages().get(0).getStock();
         } catch (Exception e) {
             new OopsAlert().show(e.getMessage());
             e.printStackTrace();

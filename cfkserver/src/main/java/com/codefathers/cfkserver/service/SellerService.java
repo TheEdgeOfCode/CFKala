@@ -61,10 +61,8 @@ public class SellerService {
         Seller seller = findSellerByUsername(username);
         List<Product> toReturn = new ArrayList<>();
         if (seller.getPackages().size() != 0) {
-            System.out.println(seller.getPackages());
             seller.getPackages().forEach(sellPackage -> toReturn.add(sellPackage.getProduct()));
         }
-
         return toReturn;
     }
 

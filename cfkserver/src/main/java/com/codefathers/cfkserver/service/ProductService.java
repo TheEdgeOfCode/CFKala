@@ -5,6 +5,7 @@ import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyExceptio
 import com.codefathers.cfkserver.exceptions.model.product.EditorIsNotSellerException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
+import com.codefathers.cfkserver.exceptions.model.user.NoSuchACustomerException;
 import com.codefathers.cfkserver.model.dtos.product.CreateDocumentDto;
 import com.codefathers.cfkserver.model.dtos.product.CreateProductDTO;
 import com.codefathers.cfkserver.model.dtos.product.MicroProductDto;
@@ -14,6 +15,7 @@ import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.RequestType;
 import com.codefathers.cfkserver.model.entities.request.edit.ProductEditAttribute;
 import com.codefathers.cfkserver.model.entities.user.Cart;
+import com.codefathers.cfkserver.model.entities.user.Customer;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.SubCart;
 import com.codefathers.cfkserver.model.repositories.*;
@@ -62,6 +64,8 @@ public class ProductService {
     private StorageService storageService;
     @Autowired
     private DocumentRepository documentRepository;
+    @Autowired
+    private CustomerService customerService;
 
 
     public List<Product> getAllActiveProduct(){
@@ -207,7 +211,6 @@ public class ProductService {
     public void deleteProduct(Product product) {
         List<SellPackage> packages = product.getPackages();
         product.setPackages(new ArrayList<>());
-        productRepository.save(product);
         packages.forEach(this::deleteSellPackage);
         deleteAllRequestRelatedToProduct(product);
         Category category = product.getCategory();
@@ -216,15 +219,16 @@ public class ProductService {
         product.setCategory(null);
         product.setCompanyClass(null);
         deletePictures(product.getId());
+        productRepository.save(product);
     }
 
     private void deletePictures(int id) {
-        File directory = new File("src/main/resources/db/images/products/" + id);
+        /*File directory = new File("src/main/resources/db/images/products/" + id);
         try {
             FileUtils.deleteDirectory(directory);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void deleteAllRequestRelatedToProduct(Product product) {
@@ -330,5 +334,14 @@ public class ProductService {
 
     public List<SellPackage> getOffPackages(){
         return sellPackageRepository.findAllByIsOnOffTrue();
+    }
+
+    public Document purchasedDocument(int id,String username) throws Exception {
+        Customer customer = customerService.getCustomerByUsername(username);
+        List<Document> docs = customer.getDocumentsPurchased();
+        for (Document doc : docs) {
+            if (doc.getId() == id) return doc;
+        }
+        throw new Exception("You Didn't Buy This Product");
     }
 }

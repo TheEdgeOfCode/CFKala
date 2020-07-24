@@ -18,6 +18,8 @@ import com.codefathers.cfkserver.model.dtos.bank.CreateReceiptDTO;
 import com.codefathers.cfkserver.model.entities.logs.PurchaseLog;
 import com.codefathers.cfkserver.model.entities.maps.DiscountcodeIntegerMap;
 import com.codefathers.cfkserver.model.entities.offs.DiscountCode;
+import com.codefathers.cfkserver.model.entities.product.Document;
+import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.model.entities.product.SellPackage;
 import com.codefathers.cfkserver.model.entities.user.*;
 import com.codefathers.cfkserver.model.repositories.CustomerRepository;
@@ -93,9 +95,13 @@ public class CustomerService {
         }
         String name = customer.getUsername();
         cart.getSubCarts().forEach(subCart -> {
+            Product product = subCart.getProduct();
+            if(product.isFile()){
+                customer.getDocumentsPurchased().add(product.getDocument());
+            }
             try {
                 logService.createSellLog(subCart, name);
-                productService.addBought(subCart.getProduct().getId(), subCart.getAmount());
+                productService.addBought(product.getId(), subCart.getAmount());
             } catch (NoSuchAPackageException | NoSuchAProductException | UserNotFoundException e) {
                 e.printStackTrace();
             }
@@ -147,6 +153,11 @@ public class CustomerService {
                 bankService.getInfo("AccountId"),
                 "Purchase"
         ));
+    }
+
+    public List<Document> docsPurchased(String username) throws NoSuchACustomerException {
+        Customer customer = getCustomerByUsername(username);
+        return customer.getDocumentsPurchased();
     }
 
     public void productChangeInPurchase(Customer customer) throws NoSuchSellerException, NoSuchAProductException {

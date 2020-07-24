@@ -1,5 +1,6 @@
 package com.codefathers.cfkserver.service.file;
 
+import com.codefathers.cfkserver.model.entities.product.Document;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
@@ -136,5 +137,14 @@ public class StorageService {
         file.createNewFile();
         saveDataToFile(resource.getInputStream(),file);
         return file.getPath();
+    }
+
+    public ByteArrayResource getFile(Document document) {
+        File file = new File(productFiles + document.getProduct().getId() + "." + document.getFormat());
+        if (file.exists()){
+            return loadFileAsResource(file);
+        }else {
+            throw new RuntimeException("File Does Not Exist");
+        }
     }
 }

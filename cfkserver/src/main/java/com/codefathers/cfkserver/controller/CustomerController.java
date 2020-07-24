@@ -10,12 +10,14 @@ import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.customer.*;
 import com.codefathers.cfkserver.model.dtos.discount.DisCodeUserDTO;
 import com.codefathers.cfkserver.model.dtos.discount.DisCodeUserListDTO;
+import com.codefathers.cfkserver.model.dtos.product.Doc;
 import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
 import com.codefathers.cfkserver.model.entities.logs.PurchaseLog;
 import com.codefathers.cfkserver.model.entities.maps.DiscountcodeIntegerMap;
 import com.codefathers.cfkserver.model.entities.maps.SoldProductSellerMap;
 import com.codefathers.cfkserver.model.entities.offs.DiscountCode;
 import com.codefathers.cfkserver.model.entities.offs.Off;
+import com.codefathers.cfkserver.model.entities.product.Document;
 import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.model.entities.product.SellPackage;
 import com.codefathers.cfkserver.model.entities.user.*;
@@ -373,5 +375,26 @@ public class CustomerController {
 
     private int findPriceForSpecialSeller(Seller seller, Product product) throws NoSuchSellerException {
         return product.findPackageBySeller(seller).getPrice();
+    }
+
+    @GetMapping("/customer/docs")
+    private ResponseEntity<?> getAllDocsPurchased(HttpServletRequest request, HttpServletResponse response){
+        try {
+            checkToken(response, request);
+            List<Document> documents = customerService.docsPurchased(getUsernameFromToken(request));
+            ArrayList<Doc> docs = new ArrayList<>();
+            documents.forEach(document -> docs.add(createDocFrom(document)));
+            return ResponseEntity.ok(docs);
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            return null;
+        } catch (Exception e){
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+            return null;
+        }
+    }
+
+    private Doc createDocFrom(Document document) {
+        return new Doc(document.getId(),document.getName(),document.getFormat(),document.getSize());
     }
 }
