@@ -20,6 +20,7 @@ import java.util.Random;
 
 public class Advertise {
     public AnchorPane root;
+    // TODO: 7/21/2020 Change to circle
     public ImageView image;
     public Label name;
     public Label seller;

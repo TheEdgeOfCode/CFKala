@@ -9,6 +9,8 @@ import com.codefathers.cfkclient.dtos.bank.TransactType;
 import com.codefathers.cfkclient.dtos.bank.TransactionDTO;
 import com.codefathers.cfkclient.dtos.edit.TollMinimumBalanceEditAttribute;
 import com.codefathers.cfkclient.dtos.edit.UserEditAttributes;
+import com.codefathers.cfkclient.dtos.log.DeliveryStatus;
+import com.codefathers.cfkclient.dtos.log.PurchaseLogDTO;
 import com.codefathers.cfkclient.dtos.user.UserFullDTO;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
@@ -30,16 +32,53 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.script.Bindings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import static com.codefathers.cfkclient.controllers.Notification.show;
 import static com.codefathers.cfkclient.dtos.bank.TransactType.*;
 
 public class ManagerAccount extends BackAbleController {
+    // -> Main
+    @FXML private AnchorPane main;
+    @FXML private JFXButton manageBudget;
+    @FXML private JFXButton orders;
+    @FXML private JFXButton back;
+    @FXML private JFXButton minimize;
+    @FXML private JFXButton close;
+    @FXML private JFXButton chooseProf;
+    @FXML private JFXButton usersButt;
+    @FXML private JFXButton productsButt;
+    @FXML private JFXButton categoriesButt;
+    @FXML private JFXButton discountButt;
+    @FXML private JFXButton requestButt;
+    @FXML private JFXButton mainContent;
+    @FXML private JFXButton addManagerButt;
+    @FXML private JFXButton changePassButt;
+    @FXML private JFXButton addSupportButt;
+    @FXML private Circle imageCircle;
+    @FXML private Label username;
+    @FXML private JFXTextField fNameText;
+    @FXML private Label fName;
+    @FXML private JFXButton editFNameButt;
+    @FXML private JFXTextField lNameText;
+    @FXML private Label lName;
+    @FXML private JFXButton editLNameButt;
+    @FXML private JFXTextField emailText;
+    @FXML private Label email;
+    @FXML private JFXButton editEMailButt;
+    @FXML private JFXTextField phoneText;
+    @FXML private Label phone;
+    @FXML private JFXButton editPhoneButt;
+    @FXML private JFXButton cancelButt;
+    @FXML private JFXButton confirmButt;
+    @FXML private JFXButton logoutButt;
+
+    // -> Budget
+    @FXML private AnchorPane budget;
     @FXML private TableColumn<TransactionDTO, Integer> idCol;
     @FXML private TableColumn<TransactionDTO, Boolean> paidCol;
     @FXML private TableColumn<TransactionDTO, Integer> destCol;
@@ -59,44 +98,21 @@ public class ManagerAccount extends BackAbleController {
     @FXML private JFXTextField tollText;
     @FXML private Label shopBalance;
     @FXML private JFXTextField shopBalanceText;
-    @FXML private AnchorPane budget;
-    @FXML private AnchorPane main;
-    @FXML private JFXButton manageBudget;
-    @FXML
-    private JFXButton back;
-    @FXML private JFXButton minimize;
-    @FXML private JFXButton close;
-    @FXML private Circle imageCircle;
-    @FXML private JFXButton chooseProf;
-    @FXML private JFXButton usersButt;
-    @FXML private JFXButton productsButt;
-    @FXML private JFXButton categoriesButt;
-    @FXML private JFXButton discountButt;
-    @FXML private JFXButton requestButt;
-    @FXML private JFXButton mainContent;
-    @FXML private JFXButton changePassButt;
-    @FXML private Label username;
-    @FXML private JFXTextField fNameText;
-    @FXML private Label fName;
-    @FXML private JFXButton editFNameButt;
-    @FXML private JFXTextField lNameText;
-    @FXML private Label lName;
-    @FXML private JFXButton editLNameButt;
-    @FXML private JFXTextField emailText;
-    @FXML private Label email;
-    @FXML private JFXButton editEMailButt;
-    @FXML private JFXTextField phoneText;
-    @FXML private Label phone;
-    @FXML private JFXButton editPhoneButt;
-    @FXML private JFXButton cancelButt;
-    @FXML private JFXButton confirmButt;
-    @FXML private JFXButton addManagerButt;
-    @FXML private JFXButton logoutButt;
+
+    // -> Orders
+    @FXML private AnchorPane ordersRoot;
+    @FXML private Label no;
+    @FXML private Label date;
+    @FXML private Label price;
+    @FXML private Label delStatus;
+    @FXML private JFXButton changeStatus;
+    @FXML private TableView<PurchaseLogDTO> orderTable;
+    @FXML private TableColumn<PurchaseLogDTO, Integer> orderNoColumn;
+    @FXML private TableColumn<PurchaseLogDTO, String> dateColumn;
 
     private static final Paint redColor = Paint.valueOf("#c0392b");
     private static final Paint blueColor = Paint.valueOf("#405aa8");
     private static final String userPhoto = "/Images/user-png-icon-male-user-icon-512.png";
-
 
     private Connector connector = Connector.getInstance();
     private CacheData cacheData = CacheData.getInstance();
@@ -152,6 +168,8 @@ public class ManagerAccount extends BackAbleController {
             stage.close();
         });
         back.setOnAction(event -> handleBack());
+
+        // -> Main
         usersButt.setOnAction(event -> handleUsers());
         productsButt.setOnAction(event -> handleProducts());
         categoriesButt.setOnAction(event -> handleCategories());
@@ -163,19 +181,91 @@ public class ManagerAccount extends BackAbleController {
         addManagerButt.setOnAction(event -> handleAddManager());
         chooseProf.setOnAction(event -> handleChooseProf());
         mainContent.setOnAction(event -> handleMainContent());
-
+        addSupportButt.setOnAction(event -> handleAddSupport());
         editFNameButt.setOnAction(event -> handleEditFName());
         editLNameButt.setOnAction(event -> handleEditLName());
         editEMailButt.setOnAction(event -> handleEditEmail());
         editPhoneButt.setOnAction(event -> handleEditPhone());
         confirmButt.setOnAction(event -> handleConfirm());
         cancelButt.setOnAction(event -> handleCancel());
+        orders.setOnAction(event -> handleOrders());
+
+        // -> Budget
         editTollButt.setOnAction(event -> handleEditTollButt());
         editMinimumButt.setOnAction(event -> handleEditMinimumButt());
         confirmButt.setOnAction(event -> handleConfirm_Budget());
         cancelButtBud.setOnAction(event -> handleCancelButt_Budget());
-
         find.setOnAction(event -> handleFindButt());
+
+        // -> Orders
+
+    }
+
+    private void handleOrders() {
+        main.setVisible(false);
+        budget.setVisible(false);
+        ordersRoot.setVisible(true);
+
+        initOrderButts();
+        initOrdersTable();
+    }
+
+    private void initOrderButts() {
+        changeStatus.setOnAction(event -> handleChangeStatus());
+    }
+
+    private void handleChangeStatus() {
+        try {
+            connector.changeLogStatus(orderTable.getSelectionModel().getSelectedItem().getId());
+            changeStatus.setVisible(false);
+            delStatus.setText(DeliveryStatus.DELIVERED.toString());
+        } catch (Exception e) {
+            show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
+    }
+
+    private void initOrdersTable() {
+        orderNoColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+        orderTable.setItems(getOrders());
+
+        orderTable.getSelectionModel().selectedItemProperty().addListener((v, oldOrder, newOrder) -> changeData(newOrder));
+    }
+
+    private void changeData(PurchaseLogDTO order) {
+        no.setText(String.valueOf(order.getId()));
+        date.setText(order.getDate());
+        price.setText(String.valueOf(order.getPrice()));
+        delStatus.setText(order.getStatus().toString());
+        if (order.getStatus().equals(DeliveryStatus.DELIVERED)){
+            changeStatus.setVisible(false);
+        } else {
+            changeStatus.setVisible(true);
+        }
+    }
+
+    private ObservableList<PurchaseLogDTO> getOrders() {
+        ObservableList<PurchaseLogDTO> orders = FXCollections.observableArrayList();
+
+        try {
+            orders.addAll(connector.viewAllLogs());
+        } catch (Exception e) {
+            show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    private void handleAddSupport() {
+        try {
+            Scene scene = new Scene(CFK.loadFXML("CreateSupport", backForForward("ManagerAccount")));
+            CFK.setSceneToStage(back, scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleCancelButt_Budget() {
@@ -295,6 +385,7 @@ public class ManagerAccount extends BackAbleController {
 
     private void handleBudgetButt() {
         main.setVisible(false);
+        ordersRoot.setVisible(false);
         budget.setVisible(true);
         try {
             InfoDTO infoDTO = connector.getManagerInfoInBank();

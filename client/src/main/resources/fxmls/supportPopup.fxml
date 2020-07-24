@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane style="-fx-background-color: #E5FFBE;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.SupportCenter">
+   <BorderPane prefHeight="561.0" prefWidth="450.0">
+      <top>
+         <HBox alignment="CENTER_LEFT" prefHeight="38.0" style="-fx-background-color: white;" styleClass="roundPane-down" stylesheets="@../CSSs/button.css" BorderPane.alignment="CENTER">
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <Label fx:id="label" text="Suppor Centert">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="back" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefWidth="34.0" ripplerFill="#87cab8" style="-fx-background-radius: 20;" text="Button" visible="false">
+               <graphic>
+                  <FontIcon iconLiteral="fa-arrow-circle-right" iconSize="20" />
+               </graphic>
+            </JFXButton>
+         </HBox>
+      </top>
+      <center>
+         <Pane stylesheets="@../CSSs/button.css" BorderPane.alignment="CENTER">
+            <Pane fx:id="supportPane" prefHeight="508.0" prefWidth="450.0">
+               <VBox fx:id="availableSupports" layoutX="10.0" layoutY="6.0" prefHeight="496.0" prefWidth="430.0" spacing="5.0">
+                  <styleClass>
+                     <String fx:value="productPane" />
+                     <String fx:value="transparentFade15" />
+                  </styleClass>
+                  <padding>
+                     <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                  </padding>
+               </VBox>
+            </Pane>
+            <VBox fx:id="chatBox" alignment="BOTTOM_CENTER" layoutY="-3.0" prefHeight="515.0" prefWidth="450.0" visible="false">
+               <ScrollPane fx:id="scroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="516.0" prefWidth="455.0" styleClass="rounded-scroll-pane" stylesheets="@../CSSs/scroll.css" vvalue="1.0">
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                  </VBox.margin>
+                  <VBox fx:id="messageBox" alignment="BOTTOM_CENTER" minHeight="500.0" prefWidth="439.0" style="-fx-background-color: #fff,#fff,#fff,#fff;">
+                     <padding>
+                        <Insets bottom="5.0" top="20.0" />
+                     </padding>
+                  </VBox>
+               </ScrollPane>
+               <HBox alignment="CENTER" prefHeight="46.0" prefWidth="425.0" spacing="10.0" style="-fx-background-color: #85dcb2; -fx-background-radius: 5;">
+                  <padding>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </VBox.margin>
+                  <TextField fx:id="text" prefHeight="26.0" prefWidth="431.0" style="-fx-background-color: white;" />
+                  <JFXButton fx:id="send" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ripplerFill="BLACK" style="-fx-background-radius: 5; -fx-background-color: #41b3a3;">
+                     <graphic>
+                        <FontIcon iconColor="WHITE" iconLiteral="fa-send" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
+               </HBox>
+            </VBox>
+         </Pane>
+      </center>
+   </BorderPane>
+</AnchorPane>

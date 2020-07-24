@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+
+<HBox fx:id="root" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="70.0" minWidth="-Infinity"
+      spacing="10.0"
+      stylesheets="@../CSSs/button.css" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.ChatUser">
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
+    <styleClass>
+        <String fx:value="productPane"/>
+        <String fx:value="transparentFade15"/>
+    </styleClass>
+    <Circle fx:id="image" fill="WHITE" radius="28.0" stroke="BLACK" strokeType="INSIDE"/>
+    <Label fx:id="username" text="Username">
+        <font>
+          <Font name="System Bold" size="17.0"/>
+        </font>
+    </Label>
+    <Region HBox.hgrow="ALWAYS"/>
+    <Circle fx:id="newMessage" fill="#27d736" radius="4.0" stroke="#df1814" strokeType="INSIDE" visible="false"/>
+    <Label fx:id="unreadAmount"/>
+</HBox>

@@ -1,6 +1,13 @@
 package com.codefathers.cfkserver.controller;
 
+import com.codefathers.cfkserver.exceptions.model.log.NoSuchALogException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
+import com.codefathers.cfkserver.model.dtos.customer.OrderLogDTO;
+import com.codefathers.cfkserver.model.dtos.customer.OrderLogListDTO;
+import com.codefathers.cfkserver.model.dtos.customer.OrderProductDTO;
+import com.codefathers.cfkserver.model.dtos.customer.PurchaseDTO;
+import com.codefathers.cfkserver.model.dtos.log.PurchaseLogDTO;
+import com.codefathers.cfkserver.model.dtos.log.PurchaseLogDTOList;
 import com.codefathers.cfkserver.model.dtos.product.FilterSortDto;
 import com.codefathers.cfkserver.model.dtos.product.MiniProductDto;
 import com.codefathers.cfkserver.model.dtos.product.MiniProductListDto;
@@ -8,6 +15,7 @@ import com.codefathers.cfkserver.model.dtos.user.RequestDTO;
 import com.codefathers.cfkserver.model.dtos.user.RequestsListDTO;
 import com.codefathers.cfkserver.model.dtos.user.UserFullDTO;
 import com.codefathers.cfkserver.model.dtos.user.UserFullListDTO;
+import com.codefathers.cfkserver.model.entities.logs.PurchaseLog;
 import com.codefathers.cfkserver.model.entities.product.Product;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.user.User;
@@ -22,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +58,9 @@ public class ManagerController {
 
     @Autowired
     private StorageService storageService;
+
+    @Autowired
+    private LogService logService;
 
     @PostMapping("/manager/show_users")
     private ResponseEntity<?> showUsers(HttpServletRequest request, HttpServletResponse response) {
@@ -164,6 +176,45 @@ public class ManagerController {
         try {
             if (checkToken(response, request)) {
                 requestService.decline(Integer.parseInt(info));
+            }
+        } catch (Exception e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
+    @GetMapping("/manager/show_all_logs")
+    private ResponseEntity<?> showAllLogs(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (checkToken(response, request)) {
+                List<PurchaseLog> purchaseLogs = logService.getAllPurchaseLogs();
+                List<PurchaseLogDTO> purchaseLogDTOS = new ArrayList<>();
+                for (PurchaseLog purchaseLog : purchaseLogs) {
+                    purchaseLogDTOS.add(createPurchaseDTO(purchaseLog));
+                }
+                return ResponseEntity.ok(new PurchaseLogDTOList(new ArrayList<>(purchaseLogDTOS)));
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            return null;
+        }
+    }
+
+    private PurchaseLogDTO createPurchaseDTO(PurchaseLog log) throws NoSuchALogException {
+        return new PurchaseLogDTO(
+                log.getLogId(),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(log.getDate()),
+                log.getPricePaid(),
+                log.getDeliveryStatus()
+        );
+    }
+
+    @PostMapping("/manager/change_log_status")
+    private void changeLogStatus(HttpServletRequest request, HttpServletResponse response, @RequestBody int logId) {
+        try {
+            if (checkToken(response, request)) {
+                logService.changeLogStatus(logId);
             }
         } catch (Exception e) {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());

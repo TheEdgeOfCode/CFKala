@@ -25,12 +25,17 @@ public class CFK extends Application {
     private static double yOffset;
 
     @Override
-    public void init() throws Exception {
+    public void stop() {
+        Connector.getInstance().logout();
+    }
+
+    @Override
+    public void init() {
         SpringApplication.run(CFKClientApplication.class);
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         //SoundCenter.background();
         window = stage;
         loadLogo();

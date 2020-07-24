@@ -31,7 +31,7 @@ public class User {
 
     private String accountId;
 
-    public User(String username, String password, String firstName, String lastName, String email, String phoneNumber, Cart cart) {
+    public User(String username, String password, String firstName, String lastName, String email, String phoneNumber, Cart cart, String accountId) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -39,6 +39,7 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.cart = cart;
+        this.accountId = accountId;
         this.messages = new ArrayList<>();
     }
     public User(){

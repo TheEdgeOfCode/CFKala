@@ -1,5 +1,7 @@
 package com.codefathers.cfkserver.controller;
 
+import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
+import com.codefathers.cfkserver.exceptions.model.bank.account.PasswordsDoNotMatchException;
 import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
 import com.codefathers.cfkserver.exceptions.model.user.NotVerifiedSeller;
 import com.codefathers.cfkserver.exceptions.model.user.UserAlreadyExistsException;
@@ -31,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +79,7 @@ public class UserController {
             userService.createCustomer(dto);
             String token = JwtUtil.generateToken(dto.getUsername(),"customer");
             return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
-        } catch (UserAlreadyExistsException e) {
+        } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
@@ -88,7 +91,7 @@ public class UserController {
             userService.createManager(dto);
             String token = JwtUtil.generateToken(dto.getUsername(),"manager");
             return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
-        } catch (UserAlreadyExistsException e) {
+        } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
@@ -98,7 +101,7 @@ public class UserController {
     private void createSeller(@RequestBody SellerDTO dto, HttpServletResponse response){
         try {
             userService.createSeller(dto);
-        } catch (UserAlreadyExistsException | NoSuchACompanyException e) {
+        } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -222,6 +225,18 @@ public class UserController {
                 userService.chargeWallet(dto, getUsernameFromToken(request));
             }
         } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping("/users/create/support")
+    private void createSupport(@RequestBody UserDTO userDTO,HttpServletRequest request, HttpServletResponse response){
+        try {
+            checkToken(response, request);
+            userService.createSupport(userDTO);
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, UNAUTHORIZED, e.getMessage());
+        } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

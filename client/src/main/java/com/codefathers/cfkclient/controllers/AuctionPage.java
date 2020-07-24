@@ -114,6 +114,7 @@ public class AuctionPage extends BackAbleController {
             AuctionLog builder = new AuctionLog();
             logContainer.getChildren().add(builder.createLog(cacheData.getUsername(), finalPrice));
             currentPrice.setText(finalPrice);
+            yourPrice.setText(finalPrice);
 
             AuctionLogDTO dto = builder.getAuctionLogDto();
             dto.setAuctionId(auctionDTO.getId());
@@ -128,8 +129,11 @@ public class AuctionPage extends BackAbleController {
     private void handleApply() {
         if (checkInput()) {
             try {
+                String finalPrice = priceEntry.getText();
                 AuctionLog builder = new AuctionLog();
-                logContainer.getChildren().add(builder.createLog(cacheData.getUsername(), priceEntry.getText()));
+                logContainer.getChildren().add(builder.createLog(cacheData.getUsername(), finalPrice));
+                currentPrice.setText(finalPrice);
+                yourPrice.setText(finalPrice);
 
                 AuctionLogDTO dto = builder.getAuctionLogDto();
                 dto.setAuctionId(auctionDTO.getId());
@@ -230,6 +234,8 @@ class AuctionClient implements Runnable {
                     if (message.startsWith("{\"expression\"")){
                         AuctionLogDTO dto = new Gson().fromJson(message, AuctionLogDTO.class);
                         addLog(dto);
+                        client.currentPrice.setText(dto.getPrice());
+                        client.mostPriceUser.setText(dto.getUsername());
                     } else {
                         AuctionMessageDTO dto = new Gson().fromJson(message, AuctionMessageDTO.class);
                         addMessage(dto);

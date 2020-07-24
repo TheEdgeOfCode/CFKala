@@ -36,6 +36,20 @@
     /* top-left, top-right, bottom-right, and bottom-left corners, in that order. */
 }
 
+.roundPane-up{
+    -fx-border-radius: 20 20 0 0;
+    -fx-background-radius: 20 20 0 0
+
+    /* top-left, top-right, bottom-right, and bottom-left corners, in that order. */
+}
+
+.roundPane-down{
+    -fx-border-radius: 0 0 10 10;
+    -fx-background-radius: 0 0 10 10;
+
+    /* top-left, top-right, bottom-right, and bottom-left corners, in that order. */
+}
+
 .shadow{
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.33), 10, 0, 4, 4);
 }

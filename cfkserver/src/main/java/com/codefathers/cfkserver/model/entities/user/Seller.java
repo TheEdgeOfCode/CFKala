@@ -39,8 +39,8 @@ public class Seller extends User {
     @OneToMany
     private List<Request> requests;
 
-    public Seller(String username, String password, String firstName, String lastName, String email, String phoneNumber, Cart cart, Company company, long balance) {
-        super(username, password, firstName, lastName, email, phoneNumber, cart);
+    public Seller(String username, String password, String firstName, String lastName, String email, String phoneNumber, Cart cart, Company company, long balance, String accountId) {
+        super(username, password, firstName, lastName, email, phoneNumber, cart, accountId);
         this.company = company;
         this.balance = balance;
         this.offs = new ArrayList<>();

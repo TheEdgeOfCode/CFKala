@@ -27,6 +27,8 @@ import static com.codefathers.cfkclient.controllers.Notification.show;
 public class MainPage extends BackAbleController {
     @FXML private JFXButton auction;
     @FXML
+    private JFXButton support;
+    @FXML
     private JFXButton minimize;
     @FXML private JFXButton close;
     @FXML private JFXButton account;
@@ -35,6 +37,7 @@ public class MainPage extends BackAbleController {
     @FXML private VBox mainBox;
 
     private PopOver accountPopOver;
+    private PopOver supportPopOver;
     private static CacheData cacheData = CacheData.getInstance();
     private static Connector connector = Connector.getInstance();
 
@@ -83,9 +86,8 @@ public class MainPage extends BackAbleController {
 
     private void slider() {
         List<Node> nodes = new ArrayList<>();
-        List<MainContent> contents = null;
         try {
-            contents = connector.mainContents();
+            List<MainContent> contents = connector.mainContents();
             contents.forEach(content -> {
                 Parent parent = Content.createContent(content);
                 if (parent != null) {
@@ -117,6 +119,19 @@ public class MainPage extends BackAbleController {
 
     private void popOver() {
         accountPop();
+        supportPop();
+    }
+
+    private void supportPop() {
+        String fxml = "SupportPopup";
+
+        try {
+            supportPopOver = new PopOver(CFK.loadFXML(fxml));
+            supportPopOver.setTitle("Support");
+            supportPopOver.setArrowLocation(PopOver.ArrowLocation.RIGHT_BOTTOM);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void accountPop() {
@@ -126,6 +141,7 @@ public class MainPage extends BackAbleController {
         } else {
             fxml = "accountManagerPopUp";
         }
+
         try {
             accountPopOver = new PopOver(CFK.loadFXML(fxml));
             accountPopOver.setTitle("Account");
@@ -144,7 +160,17 @@ public class MainPage extends BackAbleController {
         minimize.setOnAction(event -> ((Stage) close.getScene().getWindow()).setIconified(true));
         cart.setOnAction(event -> gotoCart());
         account.setOnAction(event -> accountManager());
+        support.setOnAction(event -> supportManager());
         auction.setOnAction(event -> handleAuction());
+    }
+
+    private void supportManager() {
+        if (supportPopOver.isShowing()) {
+            supportPopOver.hide();
+        } else {
+            SoundCenter.play(POP_UP);
+            supportPopOver.show(support);
+        }
     }
 
     private void handleAuction() {
