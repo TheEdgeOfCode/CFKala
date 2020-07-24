@@ -31,7 +31,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
@@ -394,7 +393,7 @@ public class Connector {
     }
 
     public void updateProductMainImage(int id,ByteArrayResource[] resources) throws Exception {
-        post(address + "/upload/product/" + id,resources,String.class);
+        post(address + "/upload/product/" + id,resources[0],String.class);
     }
 
     public ArrayList<MicroProductDto> similarNameProducts(String name) throws Exception {
@@ -553,16 +552,8 @@ public class Connector {
 
     public ArrayList<Image> loadImages(int id) throws Exception {
         ArrayList<Image> images = new ArrayList<>();
-        ByteArrayResource[] resources = getArrayResources(address + "/download/product/" + id, null);
-        Arrays.stream(resources).forEach(byteArrayResource -> {
-            try {
-                Image image = createImageFromResource(byteArrayResource);
-                if (image != null) {
-                    images.add(image);
-                }
-            } catch (IOException ignore) {
-            }
-        });
+        ByteArrayResource resources = getResources(address + "/download/product/" + id, null);
+        images.add(createImageFromResource(resources));
         return images;
     }
 

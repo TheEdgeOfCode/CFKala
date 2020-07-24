@@ -9,7 +9,8 @@ import java.util.*;
 @Data
 @Entity
 public class DiscountCode {
-    @Id @Column(unique = true)
+    @Id
+    @Column(unique = true, length = 100)
     private String code;
 
     @Temporal(TemporalType.TIMESTAMP)

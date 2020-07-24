@@ -149,9 +149,9 @@ public class UserService {
     public void createManager(ManagerDTO managerDTO) throws UserAlreadyExistsException, InvalidUsernameException,
             IOException, PasswordsDoNotMatchException {
         checkUsername(managerDTO.getUsername());
-        String accountId;
+        String accountId = "asdfasdff";
 
-        if (managerService.isFirstManager()) {
+        /*if (managerService.isFirstManager()) {
             accountId = bankService.createAccount(new CreateBankAccountDTO(
                     managerDTO.getFirstName(),
                     managerDTO.getLastName(),
@@ -162,7 +162,7 @@ public class UserService {
             saveToFile(accountId);
         } else {
             accountId = bankService.getInfo("AccountId");
-        }
+        }*/
 
         Manager manager = new Manager(
                 managerDTO.getUsername(),

@@ -130,7 +130,7 @@ public class SellerController {
         return null;
     }
 
-    @GetMapping("seller/products")
+    @PostMapping("seller/products")
     public ResponseEntity<?> manageProducts(@RequestBody FilterSortDto filter,HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
@@ -162,9 +162,11 @@ public class SellerController {
         try {
             checkToken(response, request);
             List<Product> sellerProducts = sellerService.viewProducts(username);
+            System.out.println(sellerProducts);
             List<MicroProductDto> list = new ArrayList<>();
             if (sellerProducts != null)
                 sellerProducts.forEach(product -> list.add(new MicroProductDto(product.getName(), product.getId())));
+            System.out.println(list);
             return ResponseEntity.ok().body(list);
         } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());

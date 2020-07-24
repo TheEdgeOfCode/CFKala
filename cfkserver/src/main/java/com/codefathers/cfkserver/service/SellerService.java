@@ -60,8 +60,11 @@ public class SellerService {
     public List<Product> viewProducts(String username) throws NoSuchSellerException {
         Seller seller = findSellerByUsername(username);
         List<Product> toReturn = new ArrayList<>();
-        if (seller.getPackages().size() != 0)
+        if (seller.getPackages().size() != 0) {
+            System.out.println(seller.getPackages());
             seller.getPackages().forEach(sellPackage -> toReturn.add(sellPackage.getProduct()));
+        }
+
         return toReturn;
     }
 

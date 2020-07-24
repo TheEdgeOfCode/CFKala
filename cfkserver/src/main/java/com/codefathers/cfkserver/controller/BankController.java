@@ -49,7 +49,7 @@ public class BankController {
         return null;
     }
 
-    @GetMapping("/bank/get_token")
+    @PostMapping("/bank/get_token")
     private ResponseEntity<?> getToken(HttpServletResponse response, @RequestBody TokenRequestDTO dto) {
         try {
             return ResponseEntity.ok(bankService.getToken(dto));

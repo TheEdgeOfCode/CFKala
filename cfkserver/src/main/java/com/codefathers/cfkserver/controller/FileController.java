@@ -69,7 +69,7 @@ public class FileController {
 
     @PostMapping
     @RequestMapping("/upload/product/{id}")
-    private void UpdateProductPhoto(@RequestBody ByteArrayResource[] images,
+    private void UpdateProductPhoto(@RequestBody ByteArrayResource images,
                                     HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
         try {
             checkToken(response, request);

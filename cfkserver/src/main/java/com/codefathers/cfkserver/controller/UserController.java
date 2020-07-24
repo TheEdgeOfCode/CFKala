@@ -92,6 +92,7 @@ public class UserController {
             String token = JwtUtil.generateToken(dto.getUsername(),"manager");
             return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
         } catch (Exception e) {
+            e.printStackTrace();
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }

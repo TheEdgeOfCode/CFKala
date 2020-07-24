@@ -43,7 +43,8 @@ public class AllAuctionPage extends BackAbleController {
             List<MiniAuctionDTO> dtos = connector.getAllAuctions();
             createMiniAuctions(dtos);
         } catch (Exception e) {
-            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            e.printStackTrace();
+            new OopsAlert().show(e.getMessage());
         }
     }
 

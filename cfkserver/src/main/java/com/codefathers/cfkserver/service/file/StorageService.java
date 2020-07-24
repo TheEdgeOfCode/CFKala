@@ -68,12 +68,11 @@ public class StorageService {
         }
     }
 
-    public void saveProductImage(int id, ByteArrayResource[] resource) throws IOException {
+    public void saveProductImage(int id, ByteArrayResource resource) throws IOException {
         File imageDir = new File(products + id);
         imageDir.mkdirs();
         FileUtils.cleanDirectory(imageDir);
-        createMainImage(id, resource[0]);
-        updateOtherImages(id, resource);
+        createMainImage(id, resource);
     }
 
     private void createMainImage(int id, ByteArrayResource resource) throws IOException {
@@ -109,11 +108,8 @@ public class StorageService {
         outStream.close();
     }
 
-    public ByteArrayResource[] getProductImages(int id) {
-        ArrayList<ByteArrayResource> resources = new ArrayList<>();
-        resources.add(getProductMainImage(id));
-        resources.addAll(getAllOtherProductImages(id));
-        return resources.toArray(new ByteArrayResource[0]);
+    public ByteArrayResource getProductImages(int id) {
+        return getProductMainImage(id);
     }
 
     private ArrayList<ByteArrayResource> getAllOtherProductImages(int id) {

@@ -140,14 +140,14 @@ public class SellerAccount extends BackAbleController {
         lName.setText(userFullDTO.getLastName());
         email.setText(userFullDTO.getEmail());
         phone.setText(userFullDTO.getPhoneNumber());
-        wallet.setText(String.valueOf(userFullDTO.getBalance()));
-        try {
+        //wallet.setText(String.valueOf(userFullDTO.getBalance()));
+        /*try {
             balance.setText(String.valueOf(connector.getBalance(
                     new BalanceDTO(userFullDTO.getUsername(), userFullDTO.getPassword()))));
         } catch (Exception e) {
             Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             e.printStackTrace();
-        }
+        }*/
         companyName.setText(companyDTO.getName() + "  (ID : " + companyDTO.getId() + " )");
         companyPhone.setText(companyDTO.getPhone());
     }

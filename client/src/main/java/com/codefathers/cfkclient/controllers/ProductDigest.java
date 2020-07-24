@@ -257,7 +257,7 @@ public class ProductDigest extends BackAbleController {
             offPrice.setVisible(false);
             specialOffer.setVisible(false);
         }
-        if (pm.isAvailable()) {
+        if (pm.getAvailable()) {
             notAvailableSign.setVisible(false);
         } else {
             notAvailableSign.setVisible(true);
@@ -272,7 +272,7 @@ public class ProductDigest extends BackAbleController {
             loadImage();
             initialFeatures(pm.getFeatures());
         } catch (Exception e) {
-            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            new OopsAlert().show(e.getMessage());
             e.printStackTrace();
         }
     }
