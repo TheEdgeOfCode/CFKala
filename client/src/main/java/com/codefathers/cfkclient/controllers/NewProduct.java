@@ -5,6 +5,7 @@ import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.CacheData;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.product.AddSellerToProductDTO;
+import com.codefathers.cfkclient.dtos.product.CreateDocumentDto;
 import com.codefathers.cfkclient.dtos.product.CreateProductDTO;
 import com.codefathers.cfkclient.dtos.product.MicroProductDto;
 import com.codefathers.cfkclient.utils.Connector;
@@ -25,6 +26,8 @@ import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.ByteArrayResource;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -87,7 +90,7 @@ public class NewProduct extends BackAbleController {
 
     private void pickFile() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image", "*.jpg"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("any file", "*"));
         this.file = fileChooser.showOpenDialog(null);
         if (file!=null){
             fileLocation.setText(file.getName());
@@ -254,14 +257,15 @@ public class NewProduct extends BackAbleController {
         } catch (IOException ignore) {}
     }
 
-    private CreateProductDTO generateProductInfoPack(HashMap<String, String> publicFeatures, HashMap<String, String> specialFeatures) {
+    private CreateProductDTO generateProductInfoPack(
+            HashMap<String, String> publicFeatures, HashMap<String, String> specialFeatures,int stock) {
         return new CreateProductDTO(
                 cacheData.getUsername(),
                 productName.getText(),
                 Integer.parseInt(company.getText()),
                 category.getSelectionModel().getSelectedItem().getId(),
                 description.getText(),
-                Integer.parseInt(stock.getText()),
+                stock,
                 Integer.parseInt(price.getText()),
                 publicFeatures,
                 specialFeatures);
@@ -276,32 +280,59 @@ public class NewProduct extends BackAbleController {
     }
 
     private void createFileProduct() {
+        if (file == null) {
+            Notification.show("File Error","File is needed",back.getScene().getWindow(),true);
+            return;
+        }
+        if (checkForEmptyValues(false)){
+            try{
+                HashMap<String, String> publicFeatures = new HashMap<>();
+                HashMap<String, String> specialFeatures = new HashMap<>();
+                CreateDocumentDto dto = generateProductInfoPackDoc(publicFeatures, specialFeatures);
+                int id = connector.createFileProduct(dto);
+                savePics(id);
+                Notification.show("Successful", "Your Product was Registered Successfully!!!",
+                        back.getScene().getWindow(), false);
+                Scene scene = new Scene(CFK.loadFXML(back(), backForBackward()));
+                CFK.setSceneToStage(back, scene);
+            } catch (Exception e) {
+                Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            }
+        }
+    }
 
+    private CreateDocumentDto generateProductInfoPackDoc(HashMap<String, String> publicFeatures, HashMap<String, String> specialFeatures) throws IOException {
+        ByteArrayResource resource = new ByteArrayResource(new FileInputStream(file).readAllBytes());
+        String format = FilenameUtils.getExtension(file.getName());
+        String name = FilenameUtils.getName(file.getName());
+        return new CreateDocumentDto(cacheData.getUsername(),
+                productName.getText(),
+                Integer.parseInt(company.getText()),
+                category.getSelectionModel().getSelectedItem().getId(),
+                description.getText(),
+                2000000000,
+                Integer.parseInt(price.getText()),
+                publicFeatures,
+                specialFeatures,resource,name,format);
     }
 
     private void createNormalProduct(){
-        if (checkForEmptyValues()) {
-            String[] productInfo = new String[7];
+        if (checkForEmptyValues(true)) {
             HashMap<String, String> publicFeatures = new HashMap<>();
             HashMap<String, String> specialFeatures = new HashMap<>();
-            CreateProductDTO createProductDTO = generateProductInfoPack(publicFeatures, specialFeatures);
+            CreateProductDTO createProductDTO = generateProductInfoPack(publicFeatures, specialFeatures,
+                    Integer.parseInt(stock.getText()));
             generateFeaturePacks(publicFeatures, specialFeatures);
             try {
-                try {
-                    int productId = connector.createProduct(createProductDTO);
-                    savePics(productId);
-                    Notification.show("Successful", "Your Product was Registered Successfully!!!",
-                            back.getScene().getWindow(), false);
-                    try {
-                        Scene scene = new Scene(CFK.loadFXML(back(), backForBackward()));
-                        CFK.setSceneToStage(back, scene);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
-                    Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
-                }
-            } catch (RuntimeException e) {
+                int productId = connector.createProduct(createProductDTO);
+                savePics(productId);
+                Notification.show("Successful",
+                        "Your Product was Registered Successfully!!!",
+                        back.getScene().getWindow(),
+                        false);
+                Scene scene = new Scene(CFK.loadFXML(back(), backForBackward()));
+                CFK.setSceneToStage(back, scene);
+            } catch (Exception e) {
                 Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
             }
         }
@@ -309,17 +340,18 @@ public class NewProduct extends BackAbleController {
 
     private void savePics(int id) {
         ArrayList<File> files = new ArrayList<>(pictureList.getItems());
-        ArrayList<InputStream> streams = new ArrayList<>();
+        ArrayList<ByteArrayResource> streams = new ArrayList<>();
         files.forEach(file -> {
             try {
-                streams.add(new FileInputStream(file));
-            } catch (FileNotFoundException e) {
+                streams.add(new ByteArrayResource(new FileInputStream(file).readAllBytes()));
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         try {
-            connector.updateProductMainImage(id, (InputStream[])streams.toArray());
+            connector.updateProductMainImage(id, streams.toArray(new ByteArrayResource[0]));
         } catch (Exception e) {
+            e.printStackTrace();
             Notification.show("Error",e.getMessage(),back.getScene().getWindow(),true);
         }
     }
@@ -345,7 +377,7 @@ public class NewProduct extends BackAbleController {
         }
     }
 
-    private boolean checkForEmptyValues(){
+    private boolean checkForEmptyValues(boolean needStock){
         if (productName.getText().isEmpty()){
             errorField(productName,"Product Name Is Required");
             return false;
@@ -359,10 +391,10 @@ public class NewProduct extends BackAbleController {
         } else if (!price.getText().matches("\\d{0,9}")){
             errorField(price,"Price Must Be Numerical");
             return false;
-        } else if (stock.getText().isEmpty()) {
+        } else if (stock.getText().isEmpty() && needStock) {
             errorField(stock,"Stock Is Required");
             return false;
-        } else if (!stock.getText().matches("\\d{0,9}")){
+        } else if (!stock.getText().matches("\\d{0,9}") && needStock){
             errorField(price,"Stock Must Be Numerical");
             return false;
         } else if (company.getText().isEmpty()) {

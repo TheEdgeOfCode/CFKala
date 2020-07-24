@@ -23,8 +23,10 @@ public class StorageService {
     private void init() {
         File user = new File(users);
         File product = new File(products);
+        File files = new File(productFiles);
         user.mkdirs();
         product.mkdirs();
+        files.mkdirs();
     }
 
     public void saveProfile(String username, InputStreamResource file) throws IOException {
@@ -66,7 +68,7 @@ public class StorageService {
         }
     }
 
-    public void saveProductImage(int id, InputStreamResource[] resource) throws IOException {
+    public void saveProductImage(int id, ByteArrayResource[] resource) throws IOException {
         File imageDir = new File(products + id);
         imageDir.mkdirs();
         FileUtils.cleanDirectory(imageDir);
@@ -74,13 +76,13 @@ public class StorageService {
         updateOtherImages(id, resource);
     }
 
-    private void createMainImage(int id, InputStreamResource resource) throws IOException {
+    private void createMainImage(int id, ByteArrayResource resource) throws IOException {
         File image = new File(products + id + "/main.jpg");
         image.createNewFile();
         saveDataToFile(resource.getInputStream(), image);
     }
 
-    private void updateOtherImages(int id, InputStreamResource[] resources) throws IOException {
+    private void updateOtherImages(int id, ByteArrayResource[] resources) throws IOException {
         for (int i = 1; i < resources.length; i++) {
             saveImageForProduct(id, resources[i].getInputStream(), i);
         }
@@ -134,7 +136,8 @@ public class StorageService {
     }
 
     public String saveProductFile(int id,ByteArrayResource resource,String format) throws IOException {
-        File file = new File(productFiles+ "id."+format);
+        File file = new File(productFiles + id + "." + format);
+        file.createNewFile();
         saveDataToFile(resource.getInputStream(),file);
         return file.getPath();
     }

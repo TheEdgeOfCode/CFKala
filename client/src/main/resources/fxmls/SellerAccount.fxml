@@ -105,7 +105,7 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ecf0f1;" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane fx:id="main" prefHeight="562.0" prefWidth="682.0" visible="false">
+                  <AnchorPane fx:id="main" prefHeight="562.0" prefWidth="682.0">
                      <children>
                         <VBox prefHeight="478.0" prefWidth="454.0" spacing="10.0">
                            <children>
@@ -377,7 +377,7 @@
                               <FontIcon iconLiteral="fa-bullhorn" iconSize="15" />
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="auction" focusTraversable="false" layoutX="193.0" layoutY="509.0" prefHeight="38.0" prefWidth="158.0" text="Create Auction">
+                        <JFXButton fx:id="auction" focusTraversable="false" layoutX="184.0" layoutY="509.0" prefHeight="38.0" prefWidth="158.0" text="Create Auction">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
@@ -387,7 +387,7 @@
                         </JFXButton>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="budget" prefHeight="562.0" prefWidth="685.0">
+                  <AnchorPane fx:id="budget" prefHeight="562.0" prefWidth="685.0" visible="false">
                      <children>
                         <HBox alignment="CENTER_LEFT" layoutX="37.0" layoutY="37.0" prefHeight="54.0" prefWidth="388.0" spacing="10.0">
                            <padding>

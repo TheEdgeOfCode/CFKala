@@ -23,14 +23,12 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.springframework.core.io.ByteArrayResource;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.codefathers.cfkclient.controllers.Notification.show;
 
@@ -179,10 +177,16 @@ public class EditProduct extends BackAbleController {
 
     private void submitEditPicture() {
         List<Image> images = new ArrayList<>(imageList.getItems());
-        ArrayList<InputStream> others = new ArrayList<>();
-        images.forEach(image -> others.add(imageToInputStream(image)));
+        ArrayList<ByteArrayResource> others = new ArrayList<>();
+        images.forEach(image -> {
+            try {
+                others.add(new ByteArrayResource(Objects.requireNonNull(imageToInputStream(image)).readAllBytes()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         try {
-            connector.updateProductMainImage(id,(InputStream[]) others.toArray());
+            connector.updateProductMainImage(id,(ByteArrayResource[]) others.toArray());
             show("Successful", "Images Saved To Product", back.getScene().getWindow(), false);
         } catch (Exception e) {
             show("Error", e.getMessage(), back.getScene().getWindow(), true);

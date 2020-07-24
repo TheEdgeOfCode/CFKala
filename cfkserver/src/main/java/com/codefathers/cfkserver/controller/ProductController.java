@@ -17,6 +17,7 @@ import com.codefathers.cfkserver.service.*;
 import com.codefathers.cfkserver.utils.TokenUtil;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -253,8 +254,8 @@ public class ProductController {
 
 
     @PostMapping("/products/create/file")
-    private ResponseEntity<?> createFileProduct(@RequestBody CreateDocumentDto documentDto
-            ,HttpServletRequest request, HttpServletResponse response){
+    private ResponseEntity<?> createFileProduct(@RequestBody CreateProductDTO documentDto
+            , HttpServletRequest request, HttpServletResponse response){
         try {
             checkToken(response, request);
             int id = productService.createFileProduct(documentDto);
@@ -265,6 +266,20 @@ public class ProductController {
         } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
             return null;
+        }
+    }
+
+    @PostMapping
+    @RequestMapping("/products/create-file/{filename}/{extension}/{id}")
+    private void uploadFileOfProduct(@RequestBody ByteArrayResource resource, @PathVariable String filename, @PathVariable String extension, @PathVariable String id
+            , HttpServletRequest request, HttpServletResponse response) {
+        try {
+            checkToken(response, request);
+            productService.uploadFile(Integer.parseInt(id), filename, extension, resource);
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (Exception e) {
+            sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

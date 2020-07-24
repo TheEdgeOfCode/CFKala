@@ -133,19 +133,19 @@ public class Connector {
     public String login(LoginDto dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post(address + "/users/login", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
-        getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
+        //getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
         return role.getBody().getRole();
     }
 
     public void createCustomerAccount(CustomerDTO dto) throws Exception {
         ResponseEntity<TokenRoleDto> role = post(address + "/users/create_customer", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
-        getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
+        //getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
     }
 
     public void createManagerAccount(ManagerDTO dto) throws Exception {
         post(address + "/users/create_manager", dto, TokenRoleDto.class);
-        getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
+        //getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
     }
 
     public void createSellerAccount(SellerDTO dto) throws Exception {
@@ -216,8 +216,7 @@ public class Connector {
     }
 
     public CompanyDTO viewCompanyInfo() throws Exception {
-        ResponseEntity<CompanyDTO> response = post(address + "/seller/view_company", null, CompanyDTO.class);
-        return response.getBody();
+        return get(address + "/seller/view_company", null, CompanyDTO.class);
     }
 
     public List<SellLogDTO> viewSalesHistory() throws Exception {
@@ -390,8 +389,8 @@ public class Connector {
         post(address + "/upload/user/profile", resource, String.class);
     }
 
-    public void updateProductMainImage(int id,InputStream[] streams) throws Exception {
-        post(address + "/upload/product/" + id,streams,String.class);
+    public void updateProductMainImage(int id,ByteArrayResource[] resources) throws Exception {
+        post(address + "/upload/product/" + id,resources,String.class);
     }
 
     public ArrayList<MicroProductDto> similarNameProducts(String name) throws Exception {
@@ -443,6 +442,7 @@ public class Connector {
     }
 
 
+    // TODO: 7/22/2020 Causes Problem
     public void getToken(TokenRequestDTO dto) throws Exception {
         ResponseEntity<String> response = get("http://127.0.0.1:8050/bank/get_token", dto, String.class);
         bankToken = response.getBody();
@@ -454,8 +454,12 @@ public class Connector {
     }
 
     public int createFileProduct(CreateDocumentDto dto) throws Exception {
-        String response = post(address + "",dto,String.class).getBody();
-        return Integer.parseInt(response);
+        CreateProductDTO dto1 = new CreateProductDTO(dto);
+        String response = post(address + "/products/create/file",dto1,String.class).getBody();
+        int id =  Integer.parseInt(response);
+        post(address + "/products/create-file/"+dto.getName() +"/" + dto.getFormat()+"/" + id,dto.getResource(),
+                String.class);
+        return id;
     }
 
     //TODO: We Do not need these!!!

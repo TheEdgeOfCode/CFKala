@@ -21,6 +21,7 @@ import com.codefathers.cfkserver.service.file.StorageException;
 import com.codefathers.cfkserver.service.file.StorageService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -89,26 +90,26 @@ public class ProductService {
         return product.getId();
     }
 
-    public int createFileProduct(CreateDocumentDto dto)
+    public int createFileProduct(CreateProductDTO dto)
             throws NoSuchSellerException, NoSuchACompanyException, CategoryNotFoundException {
         Product product = createProductFromDto(dto);
         product.setFile(true);
         productRepository.save(product);
-        Document document = createDocumentFromDto(product.getId(),dto);
+        String username = dto.getSellerName();
+        String request = String.format("User \"%20s\" Requested to Create Product\" %30s\"",
+                username, product.getName());
+        requestService.createRequest(product, RequestType.CREATE_PRODUCT, request, username);
+        return product.getId();
+    }
+
+    public void uploadFile(int id, String filename, String extension, ByteArrayResource resource) throws IOException, NoSuchAProductException {
+        String uri = storageService.saveProductFile(id, resource, extension);
+        Document document = new Document(filename, extension, uri, resource.contentLength());
+        Product product = findById(id);
         document.setProduct(product);
         product.setDocument(document);
         documentRepository.save(document);
         productRepository.save(product);
-        return product.getId();
-    }
-
-    private Document createDocumentFromDto(int id,CreateDocumentDto dto) {
-        try {
-            String uri = storageService.saveProductFile(id, dto.getResource(), dto.getFormat());
-            return new Document(dto.getName(),dto.getFormat(),uri,dto.getResource().contentLength());
-        } catch (IOException e) {
-            throw new StorageException("Unable To Save File Uploaded");
-        }
     }
 
     private Product createProductFromDto(CreateProductDTO dto)

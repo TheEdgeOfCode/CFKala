@@ -1,6 +1,7 @@
 package com.codefathers.cfkserver.model.entities.product;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Document {
     @Id @GeneratedValue
     private int id;
