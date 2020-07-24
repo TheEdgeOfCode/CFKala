@@ -1,6 +1,10 @@
 package com.codefathers.cfkclient.utils;
 
-import com.codefathers.cfkclient.CacheData;
+import com.codefathers.cfkclient.dtos.log.PurchaseLogDTOList;
+import com.codefathers.cfkclient.dtos.log.PurchaseLogDTO;
+import com.codefathers.cfkclient.dtos.auction.CreateAuctionDTO;
+import com.codefathers.cfkclient.dtos.auction.AuctionListDTO;
+import com.codefathers.cfkclient.dtos.auction.MiniAuctionDTO;
 import com.codefathers.cfkclient.dtos.bank.*;
 import com.codefathers.cfkclient.dtos.category.CategoryPM;
 import com.codefathers.cfkclient.dtos.category.CreateDTO;
@@ -435,6 +439,11 @@ public class Connector {
         return listDTO.getOffs();
     }
 
+    public List<PurchaseLogDTO> viewAllLogs() throws Exception {
+        PurchaseLogDTOList listDTO = get(address + "/manager/show_all_logs", null, PurchaseLogDTOList.class);
+        return listDTO.getDtos();
+    }
+
     public boolean isTheFirstManager() {
         try {
             return get(address + "/manager/is_first",null,Boolean.class);
@@ -476,7 +485,14 @@ public class Connector {
         post("http://127.0.0.1:8050/bank/pay", receiptId, String.class);
     }*/
 
-    private List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws Exception {
+    public int takeMoneyIntoAccount(TakeMoneyDTO dto) throws Exception {
+        dto.setToken(bankToken);
+        ResponseEntity<Integer> response = post(address + "/users/take_money", dto, Integer.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
+    public List<TransactionDTO> getTransactions(NeededForTransactionDTO dto) throws Exception {
+        dto.setToken(bankToken);
         ResponseEntity<TransactionListDTO> response = get("http://127.0.0.1:8050/bank/get_transactions",
                 dto, TransactionListDTO.class);
         return Objects.requireNonNull(response.getBody()).getDtos();
@@ -512,6 +528,10 @@ public class Connector {
 
     public String getGuestToken() throws Exception {
         return get(address + "/support/guest/get_account",null,String.class);
+    }
+
+    public void changeLogStatus(Integer logId) throws Exception {
+        post(address + "/manager/change_log_status", logId, String.class);
     }
 
     /**Resources======================================================================================================*/
@@ -554,5 +574,26 @@ public class Connector {
         }
     }
 
+    public InfoDTO getManagerInfoInBank() throws Exception {
+        ResponseEntity<InfoDTO> response = get(address + "/bank/get_info",
+                null, InfoDTO.class);
+        return Objects.requireNonNull(response.getBody());
+    }
 
+    public void editTollMinimumBalanceInfo(TollMinimumBalanceEditAttribute attribute) throws Exception {
+        post(address + "/bank/edit_info", attribute, String.class);
+    }
+
+    public void createAuction(CreateAuctionDTO dto) throws Exception {
+        post(address + "/auction/create_auction", dto, String.class);
+    }
+
+    public List<MiniAuctionDTO> getAllAuctions() throws Exception {
+        ResponseEntity<AuctionListDTO> response = get(
+                address + "/auction/get_auctions",
+                null,
+                AuctionListDTO.class
+        );
+        return Objects.requireNonNull(response.getBody()).getDtos();
+    }
 }

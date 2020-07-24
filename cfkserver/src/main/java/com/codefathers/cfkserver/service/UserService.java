@@ -1,18 +1,18 @@
 package com.codefathers.cfkserver.service;
 
 import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
+import com.codefathers.cfkserver.exceptions.model.bank.account.PasswordsDoNotMatchException;
 import com.codefathers.cfkserver.exceptions.model.bank.receipt.*;
 import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchSellerException;
 import com.codefathers.cfkserver.exceptions.model.user.*;
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
+import com.codefathers.cfkserver.model.dtos.bank.CreateBankAccountDTO;
 import com.codefathers.cfkserver.model.dtos.bank.CreateReceiptDTO;
-import com.codefathers.cfkserver.model.dtos.user.ChargeWalletDTO;
-import com.codefathers.cfkserver.model.dtos.user.CustomerDTO;
-import com.codefathers.cfkserver.model.dtos.user.ManagerDTO;
-import com.codefathers.cfkserver.model.dtos.user.SellerDTO;
-import com.codefathers.cfkserver.model.dtos.user.UserDTO;
+import com.codefathers.cfkserver.model.dtos.bank.ReceiptType;
+import com.codefathers.cfkserver.model.dtos.bank.TokenRequestDTO;
+import com.codefathers.cfkserver.model.dtos.user.*;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.RequestType;
 import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Optional;
+import java.util.Scanner;
 
 import static com.codefathers.cfkserver.model.dtos.bank.ReceiptType.MOVE;
 import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
@@ -43,13 +44,15 @@ public class UserService {
     @Autowired
     private CompanyService companyService;
     @Autowired
-    private SupportRepository supportRepository;
-    @Autowired
     private BankService bankService;
     @Autowired
     private CustomerService customerService;
     @Autowired
     private SellerService sellerService;
+    @Autowired
+    private ManagerService managerService;
+    @Autowired
+    private SupportRepository supportRepository;
 
     public User getUserByUsername(String username) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.findById(username);
@@ -60,8 +63,19 @@ public class UserService {
         }
     }
 
-    public void createSeller(SellerDTO sellerDTO) throws NoSuchACompanyException, UserAlreadyExistsException {
+    public void createSeller(SellerDTO sellerDTO) throws NoSuchACompanyException, UserAlreadyExistsException,
+            InvalidUsernameException, IOException, PasswordsDoNotMatchException, NotEnoughMoneyAtSourceException,
+            InvalidMoneyException, InvalidTokenException, InvalidSourceAccountException, InvalidAccountIdException,
+            InvalidDestAccountException, PaidReceiptException, InvalidDescriptionExcxeption, InvalidParameterPassedException,
+            InvalidRecieptTypeException, InvalidReceiptIdException, ExpiredTokenException, EqualSourceDestException {
         checkUsername(sellerDTO.getUsername());
+        String accountId =  bankService.createAccount(new CreateBankAccountDTO(
+                sellerDTO.getFirstName(),
+                sellerDTO.getLastName(),
+                sellerDTO.getUsername(),
+                sellerDTO.getPassword(),
+                sellerDTO.getPassword())
+        );
         Seller seller = new Seller(
                 sellerDTO.getUsername(),
                 sellerDTO.getPassword(),
@@ -71,8 +85,10 @@ public class UserService {
                 sellerDTO.getPhoneNumber(),
                 new Cart(),
                 companyService.getCompanyById(sellerDTO.getCompanyID()),
-                sellerDTO.getBalance()
+                0,
+                accountId
         );
+        chargeBankAccount(sellerDTO.getUsername(), sellerDTO.getPassword(), sellerDTO.getBalance(), accountId);
         sellerRepository.save(seller);
         String requestStr = String.format("%s has requested to create a seller with email %s", sellerDTO.getUsername(), sellerDTO.getEmail());
         Request request = requestService.createRequest(seller, RequestType.REGISTER_SELLER, sellerDTO.getUsername(), requestStr);
@@ -80,8 +96,20 @@ public class UserService {
         sellerRepository.save(seller);
     }
 
-    public void createCustomer(CustomerDTO customerDTO) throws UserAlreadyExistsException {
+    public void createCustomer(CustomerDTO customerDTO) throws UserAlreadyExistsException, InvalidUsernameException,
+            IOException, PasswordsDoNotMatchException, NotEnoughMoneyAtSourceException, InvalidMoneyException,
+            InvalidTokenException, InvalidSourceAccountException, InvalidAccountIdException,
+            InvalidDestAccountException, PaidReceiptException, InvalidDescriptionExcxeption,
+            InvalidParameterPassedException, InvalidRecieptTypeException, InvalidReceiptIdException,
+            ExpiredTokenException, EqualSourceDestException {
         checkUsername(customerDTO.getUsername());
+        String accountId =  bankService.createAccount(new CreateBankAccountDTO(
+                customerDTO.getFirstName(),
+                customerDTO.getLastName(),
+                customerDTO.getUsername(),
+                customerDTO.getPassword(),
+                customerDTO.getPassword())
+        );
         Customer customer = new Customer(
                 customerDTO.getUsername(),
                 customerDTO.getPassword(),
@@ -90,13 +118,52 @@ public class UserService {
                 customerDTO.getEmail(),
                 customerDTO.getPhoneNumber(),
                 new Cart(),
-                customerDTO.getBalance()
+                0,
+                accountId
         );
+        chargeBankAccount(customerDTO.getUsername(), customerDTO.getPassword(), customerDTO.getBalance(), accountId);
         customerRepository.save(customer);
     }
 
-    public void createManager(ManagerDTO managerDTO) throws UserAlreadyExistsException {
+    private void chargeBankAccount(String username, String password, long balance, String accountId) throws IOException,
+            InvalidUsernameException, InvalidDestAccountException, InvalidTokenException,
+            InvalidSourceAccountException, InvalidAccountIdException, InvalidMoneyException,
+            InvalidDescriptionExcxeption, InvalidParameterPassedException, InvalidRecieptTypeException,
+            ExpiredTokenException, EqualSourceDestException, NotEnoughMoneyAtSourceException,
+            PaidReceiptException, InvalidReceiptIdException {
+        String token = bankService.getToken(new TokenRequestDTO(username, password));
+        int receiptID = bankService.createReceipt(
+                new CreateReceiptDTO(
+                    username,
+                    password,
+                    token,
+                    ReceiptType.DEPOSIT,
+                    balance,
+                    "-1",
+                    accountId,
+                    "")
+                );
+        bankService.pay(receiptID);
+    }
+
+    public void createManager(ManagerDTO managerDTO) throws UserAlreadyExistsException, InvalidUsernameException,
+            IOException, PasswordsDoNotMatchException {
         checkUsername(managerDTO.getUsername());
+        String accountId;
+
+        if (managerService.isFirstManager()) {
+            accountId = bankService.createAccount(new CreateBankAccountDTO(
+                    managerDTO.getFirstName(),
+                    managerDTO.getLastName(),
+                    managerDTO.getUsername(),
+                    managerDTO.getPassword(),
+                    managerDTO.getPassword())
+            );
+            saveToFile(accountId);
+        } else {
+            accountId = bankService.getInfo("AccountId");
+        }
+
         Manager manager = new Manager(
                 managerDTO.getUsername(),
                 managerDTO.getPassword(),
@@ -104,9 +171,37 @@ public class UserService {
                 managerDTO.getLastName(),
                 managerDTO.getEmail(),
                 managerDTO.getPhoneNumber(),
-                new Cart()
+                new Cart(),
+                accountId
         );
         managerRepository.save(manager);
+    }
+
+    private void saveToFile(String accountId) {
+        File file = new File("src/main/resources/application_info.txt");
+        Scanner scanner;
+        StringBuilder info = new StringBuilder("");
+        try {
+            scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String fileLine = scanner.nextLine();
+                if (fileLine.startsWith("AccountId")) {
+                    String changed = fileLine.replaceFirst(fileLine.substring(fileLine.indexOf('=' + 2)), accountId);
+                    info.append(changed);
+                } else {
+                    info.append(fileLine);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found!!!");
+        }
+        try {
+            FileWriter writer = new FileWriter(file, false);
+            writer.write(String.valueOf(info));
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Could Not Write to File.");
+        }
     }
 
     public void createSupport(UserDTO userDTO) throws UserAlreadyExistsException {
@@ -133,15 +228,9 @@ public class UserService {
                 return "Seller";
             else
                 throw new NotVerifiedSeller("Your not verified yet");
-
             Optional<Manager> manager = managerRepository.findById(username);
             if (manager.isPresent()) {
                 return "Manager";
-            }
-
-            Optional<Support> support = supportRepository.findById(username);
-            if (support.isPresent()){
-                return "Support";
             }
         } else {
             throw new WrongPasswordException("Wrong Password");
@@ -198,8 +287,7 @@ public class UserService {
             InvalidSourceAccountException, InvalidAccountIdException, InvalidMoneyException, InvalidDescriptionExcxeption,
             InvalidParameterPassedException, InvalidRecieptTypeException, InvalidUsernameException, ExpiredTokenException,
             EqualSourceDestException, NotEnoughMoneyAtSourceException, PaidReceiptException, InvalidReceiptIdException,
-            NoSuchACustomerException, NoSuchSellerException, InvalidDestAccountException, InvalidSourceAccountException,
-            InvalidAccountIdException, InvalidMoneyException, InvalidDescriptionExcxeption, InvalidUsernameException {
+            NoSuchACustomerException, NoSuchSellerException {
         User user = getUserByUsername(username);
         int receiptId = bankService.createReceipt(
                 new CreateReceiptDTO(
@@ -220,5 +308,28 @@ public class UserService {
             Seller seller = sellerService.findSellerByUsername(username);
             seller.setBalance(seller.getBalance() + dto.getMoney());
         }
+    }
+
+    public int takeMoneyIntoAccount(TakeMoneyDTO dto, String username) throws UserNotFoundException, IOException, InvalidDestAccountException, InvalidTokenException, InvalidSourceAccountException, InvalidAccountIdException, InvalidMoneyException, InvalidDescriptionExcxeption, InvalidParameterPassedException, InvalidRecieptTypeException, InvalidUsernameException, ExpiredTokenException, EqualSourceDestException, NotEnoughMoneyAtSourceException, PaidReceiptException, InvalidReceiptIdException, NoSuchACustomerException, NoSuchSellerException {
+        User user = getUserByUsername(username);
+        int receiptId = bankService.createReceipt(new CreateReceiptDTO(
+                username,
+                getPassByUsername(username),
+                dto.getToken(),
+                MOVE,
+                dto.getMoney(),
+                bankService.getInfo("AccountId"),
+                user.getAccountId(),
+                "Move"
+        ));
+        bankService.pay(receiptId);
+        if (dto.getRole().equals(CUSTOMER)) {
+            Customer customer = customerService.getCustomerByUsername(username);
+            customer.setBalance(customer.getBalance() - dto.getMoney());
+        } else {
+            Seller seller = sellerService.findSellerByUsername(username);
+            seller.setBalance(seller.getBalance() - dto.getMoney());
+        }
+        return receiptId;
     }
 }

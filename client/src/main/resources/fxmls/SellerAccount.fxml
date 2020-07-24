@@ -469,18 +469,6 @@
                                     <Font name="Microsoft JhengHei" size="16.0" />
                                  </font>
                               </Label>
-                              <JFXButton fx:id="chargeWallet1" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="34.0" prefWidth="51.0" text=" ">
-                                 <ripplerFill>
-                                    <RadialGradient centerX="0.5133333418104384" centerY="0.5" cycleMethod="REFLECT" radius="0.14485981754053417">
-                                       <stops>
-                                          <Stop color="#59b5b0" />
-                                          <Stop color="#59b5b0" offset="0.007633587786259542" />
-                                          <Stop color="#d6d629" offset="0.6250182996967478" />
-                                          <Stop color="#c26666" offset="1.0" />
-                                       </stops>
-                                    </RadialGradient>
-                                 </ripplerFill>
-                              </JFXButton>
                            </children>
                         </HBox>
                      </children>

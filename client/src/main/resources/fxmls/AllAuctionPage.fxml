@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="594.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.AllAuctionPage">
+   <children>
+      <BorderPane>
+         <top>
+            <HBox prefHeight="25.0" prefWidth="960.0" BorderPane.alignment="CENTER">
+               <children>
+                  <JFXButton fx:id="back" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-arrow-circle-left" iconSize="20" text="" wrappingWidth="12.14285659790039" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="cart" prefHeight="28.0" prefWidth="31.0" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-shopping-basket" iconSize="20" wrappingWidth="15.85714340209961" />
+                     </graphic>
+                  </JFXButton>
+                  <Label prefHeight="28.0" prefWidth="85.0" text="All Auction">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Region prefHeight="28.0" prefWidth="740.0" />
+                  <JFXButton fx:id="minimize" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-minimize" iconSize="15" wrappingWidth="5.0" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="close" text=" ">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-window-close" iconSize="15" wrappingWidth="7.0" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </HBox>
+         </top>
+         <center>
+            <ScrollPane prefHeight="560.0" prefWidth="898.0" BorderPane.alignment="CENTER">
+               <content>
+                  <VBox fx:id="auctionVBox" alignment="CENTER" prefHeight="250.0" prefWidth="956.0" />
+               </content>
+            </ScrollPane>
+         </center></BorderPane>
+   </children>
+</AnchorPane>

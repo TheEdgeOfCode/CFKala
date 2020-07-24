@@ -308,7 +308,7 @@
                         <FontIcon iconLiteral="fa-user-plus" iconSize="15" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="logoutButt" focusTraversable="false" layoutX="14.0" layoutY="470.0" prefHeight="38.0" prefWidth="94.0" text="Logout">
+                  <JFXButton fx:id="logoutButt" focusTraversable="false" layoutX="17.0" layoutY="470.0" prefHeight="38.0" prefWidth="94.0" text="Logout">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
@@ -332,6 +332,14 @@
                         <FontIcon iconLiteral="fa-support" iconSize="15" />
                      </graphic>
                   </JFXButton>
+                  <JFXButton fx:id="orders" focusTraversable="false" layoutX="501.0" layoutY="470.0" prefHeight="38.0" prefWidth="94.0" text="Orders">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     <graphic>
+                        <FontIcon iconLiteral="fa-tasks" iconSize="15" />
+                     </graphic>
+                  </JFXButton>
                </children>
             </AnchorPane>
             <AnchorPane fx:id="budget" prefHeight="562.0" prefWidth="685.0" visible="false">
@@ -348,12 +356,12 @@
                         </Label>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                            <children>
-                              <JFXTextField fx:id="phoneText1" labelFloat="true" visible="false">
+                              <JFXTextField fx:id="shopBalanceText" labelFloat="true" visible="false">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </JFXTextField>
-                              <Label fx:id="balance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                              <Label fx:id="shopBalance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
                                  <font>
                                     <Font name="Microsoft JhengHei" size="16.0" />
                                  </font>
@@ -374,19 +382,19 @@
                         </Label>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                            <children>
-                              <JFXTextField fx:id="phoneText11" labelFloat="true" visible="false">
+                              <JFXTextField fx:id="tollText" labelFloat="true" visible="false">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </JFXTextField>
-                              <Label fx:id="balance1" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                              <Label fx:id="toll" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
                                  <font>
                                     <Font name="Microsoft JhengHei" size="16.0" />
                                  </font>
                               </Label>
                            </children>
                         </StackPane>
-                        <JFXButton fx:id="editToll" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="34.0" prefWidth="51.0" text=" ">
+                        <JFXButton fx:id="editTollButt" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="34.0" prefWidth="51.0" text=" ">
                            <graphic>
                               <FontIcon iconLiteral="fa-edit" iconSize="25" />
                            </graphic>
@@ -415,19 +423,19 @@
                         </Label>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                            <children>
-                              <JFXTextField fx:id="phoneText111" labelFloat="true" visible="false">
+                              <JFXTextField fx:id="minimumBalanceText" labelFloat="true" visible="false">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </JFXTextField>
-                              <Label fx:id="balance11" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
+                              <Label fx:id="minimumBalance" alignment="CENTER" prefHeight="31.0" prefWidth="214.0" text="Label">
                                  <font>
                                     <Font name="Microsoft JhengHei" size="16.0" />
                                  </font>
                               </Label>
                            </children>
                         </StackPane>
-                        <JFXButton fx:id="editMin" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="34.0" prefWidth="51.0" text=" ">
+                        <JFXButton fx:id="editMinimumButt" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" prefHeight="34.0" prefWidth="51.0" text=" ">
                            <graphic>
                               <FontIcon iconLiteral="fa-edit" iconSize="25" />
                            </graphic>
@@ -456,8 +464,8 @@
                         <TableColumn fx:id="moneyCol" prefWidth="78.4000244140625" text="Money" />
                         <TableColumn fx:id="sourceCol" prefWidth="103.20001220703125" text="Source Account" />
                         <TableColumn fx:id="destCol" prefWidth="95.20001220703125" text="Dest Account" />
-                        <TableColumn fx:id="idCol" prefWidth="59.200042724609375" text="ID" />
-                        <TableColumn fx:id="paidCol" prefWidth="97.59994506835938" text="Paid" />
+                        <TableColumn fx:id="idCol" prefWidth="91.0" text="Description" />
+                        <TableColumn fx:id="paidCol" prefWidth="63.0" text="Paid" />
                      </columns>
                   </TableView>
                   <JFXComboBox fx:id="transType" layoutX="247.0" layoutY="238.0" prefHeight="26.0" prefWidth="120.0" promptText="Type" />
@@ -485,6 +493,115 @@
                         <FontIcon iconLiteral="fa-check" iconSize="15" />
                      </graphic>
                   </JFXButton>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="ordersRoot" layoutX="10.0" layoutY="10.0" prefHeight="562.0" prefWidth="685.0" visible="false">
+               <children>
+                  <VBox layoutX="326.0" layoutY="16.0" prefHeight="502.0" prefWidth="353.0" spacing="3.0">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="158.0" text="Order No">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="no">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="78.0" text="Date">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="date">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </HBox>
+                        <Separator layoutX="10.0" layoutY="72.0" prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="76.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="66.0" text="Price">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="price">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </HBox>
+                        <Separator layoutX="10.0" layoutY="138.0" prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="207.0" prefHeight="62.0" prefWidth="561.0" spacing="15.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="250.0" text="Delivery Status">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="delStatus">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </HBox>
+                        <Separator layoutX="10.0" layoutY="269.0" prefWidth="200.0" />
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="232.0" prefHeight="77.0" prefWidth="287.0" spacing="15.0">
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <JFXButton fx:id="changeStatus" prefHeight="44.0" prefWidth="254.0" styleClass="signIButton" stylesheets="@../CSSs/button.css" text="Change To Delivered">
+                                 <font>
+                                    <Font name="System Bold" size="19.0" />
+                                 </font>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_RIGHT" prefHeight="560.0" prefWidth="320.0" spacing="15.0">
+                     <children>
+                        <TableView fx:id="orderTable" prefHeight="502.0" prefWidth="234.0">
+                           <columns>
+                              <TableColumn fx:id="orderNoColumn" prefWidth="150.39997214078903" text="Order No." />
+                              <TableColumn fx:id="dateColumn" prefWidth="138.40000305175784" text="Date" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </VBox>
                </children>
             </AnchorPane>
          </AnchorPane>

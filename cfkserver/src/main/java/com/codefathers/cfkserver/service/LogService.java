@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static com.codefathers.cfkserver.model.entities.logs.DeliveryStatus.DELIVERED;
+
 @Service
 public class LogService {
     @Autowired
@@ -94,6 +96,19 @@ public class LogService {
         purchaseLogRepository.save(log);
 
        customerService.addPurchaseLog(log, customer);
+    }
+
+    public void changeLogStatus(int id) throws NoSuchALogException {
+        Log log = getLogById(id);
+        log.setDeliveryStatus(DELIVERED);
+    }
+
+    public List<PurchaseLog> getAllPurchaseLogs(){
+        List<PurchaseLog> purchaseLogs = new ArrayList<>();
+        for (PurchaseLog purchaseLog : purchaseLogRepository.findAll()) {
+            purchaseLogs.add(purchaseLog);
+        }
+        return purchaseLogs;
     }
 
     public Log getLogById(int id) throws NoSuchALogException {

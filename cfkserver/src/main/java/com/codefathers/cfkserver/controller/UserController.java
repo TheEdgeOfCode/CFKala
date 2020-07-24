@@ -1,5 +1,7 @@
 package com.codefathers.cfkserver.controller;
 
+import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
+import com.codefathers.cfkserver.exceptions.model.bank.account.PasswordsDoNotMatchException;
 import com.codefathers.cfkserver.exceptions.model.company.NoSuchACompanyException;
 import com.codefathers.cfkserver.exceptions.model.user.NotVerifiedSeller;
 import com.codefathers.cfkserver.exceptions.model.user.UserAlreadyExistsException;
@@ -12,9 +14,14 @@ import com.codefathers.cfkserver.model.entities.product.Company;
 import com.codefathers.cfkserver.model.entities.request.Request;
 import com.codefathers.cfkserver.model.entities.request.edit.UserEditAttributes;
 import com.codefathers.cfkserver.model.entities.user.Customer;
+import com.codefathers.cfkserver.model.entities.user.Role;
 import com.codefathers.cfkserver.model.entities.user.Seller;
 import com.codefathers.cfkserver.model.entities.user.User;
-import com.codefathers.cfkserver.service.*;
+import com.codefathers.cfkserver.service.CompanyService;
+import com.codefathers.cfkserver.service.CustomerService;
+import com.codefathers.cfkserver.service.SellerService;
+import com.codefathers.cfkserver.service.UserService;
+import com.codefathers.cfkserver.utils.ErrorUtil;
 import com.codefathers.cfkserver.utils.JwtUtil;
 import com.codefathers.cfkserver.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +31,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.codefathers.cfkserver.model.entities.user.Role.CUSTOMER;
+import static com.codefathers.cfkserver.model.entities.user.Role.SELLER;
+import static com.codefathers.cfkserver.utils.ErrorUtil.*;
 import static com.codefathers.cfkserver.utils.ErrorUtil.sendError;
 import static com.codefathers.cfkserver.utils.TokenUtil.*;
 import static org.springframework.http.HttpStatus.*;
@@ -65,7 +79,7 @@ public class UserController {
             userService.createCustomer(dto);
             String token = JwtUtil.generateToken(dto.getUsername(),"customer");
             return ResponseEntity.ok(new TokenRoleDto(token, "customer"));
-        } catch (UserAlreadyExistsException e) {
+        } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
@@ -77,7 +91,7 @@ public class UserController {
             userService.createManager(dto);
             String token = JwtUtil.generateToken(dto.getUsername(),"manager");
             return ResponseEntity.ok(new TokenRoleDto(token, "manager"));
-        } catch (UserAlreadyExistsException e) {
+        } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
@@ -87,7 +101,7 @@ public class UserController {
     private void createSeller(@RequestBody SellerDTO dto, HttpServletResponse response){
         try {
             userService.createSeller(dto);
-        } catch (UserAlreadyExistsException | NoSuchACompanyException e) {
+        } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -104,7 +118,8 @@ public class UserController {
                         user.getLastName(),
                         user.getEmail(),
                         user.getPhoneNumber(),
-                        user.getClass().getName().split("\\.")[2]
+                        user.getClass().getName().split("\\.")[2],
+                        user.getAccountId()
                 );
                 return ResponseEntity.ok(dto);
             } else {
@@ -215,7 +230,7 @@ public class UserController {
     }
 
     @PostMapping("/users/create/support")
-    private void createSuuport(@RequestBody UserDTO userDTO,HttpServletRequest request, HttpServletResponse response){
+    private void createSupport(@RequestBody UserDTO userDTO,HttpServletRequest request, HttpServletResponse response){
         try {
             checkToken(response, request);
             userService.createSupport(userDTO);
@@ -224,5 +239,18 @@ public class UserController {
         } catch (UserAlreadyExistsException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @PostMapping("/users/take_money")
+    public ResponseEntity<?> takeMoneyIntoAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody TakeMoneyDTO dto) {
+        try {
+            if (checkToken(response, request)) {
+                int receiptId = userService.takeMoneyIntoAccount(dto, getUsernameFromToken(request));
+                return ResponseEntity.ok(receiptId);
+            }
+        } catch (Exception e) {
+            sendError(response, UNAUTHORIZED, e.getMessage());
+        }
+        return null;
     }
 }

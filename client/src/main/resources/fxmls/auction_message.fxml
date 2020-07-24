@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
+
+<HBox fx:id="root" prefHeight="100.0" prefWidth="380.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.AuctionMessage">
+   <children>
+      <AnchorPane prefHeight="100.0" prefWidth="350.0" styleClass="root" stylesheets="@../CSSs/auction_center.css">
+         <children>
+            <Label fx:id="time" alignment="CENTER_RIGHT" layoutX="269.0" layoutY="76.0" prefHeight="18.0" prefWidth="72.0" text="20:32" textFill="WHITE" />
+            <Circle fx:id="image" fill="WHITE" layoutX="23.0" layoutY="24.0" radius="18.0" stroke="BLACK" strokeType="INSIDE" />
+            <Label fx:id="user" layoutX="47.0" layoutY="6.0" text="Mohammad" textFill="WHITE">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <TextFlow fx:id="textFlow" layoutX="46.0" layoutY="27.0" prefHeight="66.0" prefWidth="222.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</HBox>

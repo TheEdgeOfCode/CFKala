@@ -1,9 +1,6 @@
 package com.codefathers.cfkclient.controllers;
 
-import com.codefathers.cfkclient.BackAbleController;
-import com.codefathers.cfkclient.CFK;
-import com.codefathers.cfkclient.CacheData;
-import com.codefathers.cfkclient.SoundCenter;
+import com.codefathers.cfkclient.*;
 import com.codefathers.cfkclient.dtos.content.AdPM;
 import com.codefathers.cfkclient.dtos.content.MainContent;
 import com.codefathers.cfkclient.utils.Connector;
@@ -25,6 +22,7 @@ import static com.codefathers.cfkclient.Sound.POP_UP;
 import static com.codefathers.cfkclient.controllers.Notification.show;
 
 public class MainPage extends BackAbleController {
+    @FXML private JFXButton auction;
     @FXML
     private JFXButton support;
     @FXML
@@ -160,6 +158,7 @@ public class MainPage extends BackAbleController {
         cart.setOnAction(event -> gotoCart());
         account.setOnAction(event -> accountManager());
         support.setOnAction(event -> supportManager());
+        auction.setOnAction(event -> handleAuction());
     }
 
     private void supportManager() {
@@ -168,6 +167,17 @@ public class MainPage extends BackAbleController {
         } else {
             SoundCenter.play(POP_UP);
             supportPopOver.show(support);
+        }
+    }
+
+    private void handleAuction() {
+        try {
+            SoundCenter.play(CLICK);
+            Scene scene = new Scene(CFK.loadFXML("AllAuctionPage", "MainPage"));
+            CFK.setSceneToStage(cart, scene);
+        } catch (IOException e) {
+            show("Error", e.getMessage(), cart.getScene().getWindow(), true);
+            e.printStackTrace();
         }
     }
 

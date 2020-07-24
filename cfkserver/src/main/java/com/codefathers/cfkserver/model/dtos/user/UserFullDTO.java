@@ -13,6 +13,7 @@ public class UserFullDTO{
     private String email;
     private String phoneNumber;
     private String role;
+    private String accountId;
 
     @Override
     public String toString() {

@@ -6,6 +6,7 @@ import com.codefathers.cfkserver.exceptions.model.bank.receipt.*;
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.bank.*;
+import com.codefathers.cfkserver.model.dtos.edit.TollMinimumBalanceEditAttribute;
 import com.codefathers.cfkserver.service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -125,6 +126,36 @@ public class BankController {
                 } catch (IOException | InvalidUsernameException e) {
                     sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
                 }
+            }
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+        return null;
+    }
+
+    @GetMapping("/bank/get_info")
+    private ResponseEntity<?> getManagerInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (checkToken(response, request)) {
+                String accountId = bankService.getInfo("AccountId");
+                String toll = bankService.getInfo("Toll");
+                String minimum_balance = bankService.getInfo("Minimum Balance");
+                InfoDTO infoDTO = new InfoDTO(accountId, toll, minimum_balance);
+                return ResponseEntity.ok(infoDTO);
+            }
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+        return null;
+    }
+
+    @PostMapping("/bank/edit_info")
+    private ResponseEntity<?> editTollMinimumBalanceInfo(HttpServletRequest request, HttpServletResponse response,
+                                                         @RequestBody TollMinimumBalanceEditAttribute attribute) {
+        try {
+            if (checkToken(response, request)) {
+                bankService.editTollMinimumBalanceInfo(attribute);
+                return ResponseEntity.ok(ResponseEntity.status(200));
             }
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());

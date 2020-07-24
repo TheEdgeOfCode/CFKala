@@ -3,10 +3,11 @@ package com.codefathers.cfkclient.controllers;
 import com.codefathers.cfkclient.CFK;
 import com.codefathers.cfkclient.utils.Connector;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -27,7 +28,7 @@ public class ChargeWalletDialog {
 
     @FXML
     private AnchorPane rootPane;
-    public JFXPasswordField money;
+    public JFXTextField money;
     @FXML private JFXButton submitButt;
     @FXML private JFXButton cancel;
 
