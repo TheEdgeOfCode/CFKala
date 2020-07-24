@@ -118,7 +118,8 @@ public class BankController {
         }
     }
 
-    @GetMapping("/bank/get_balance/{username}")
+    @GetMapping
+    @RequestMapping("/bank/get_balance/{username}")
     private Long getBalance(HttpServletRequest request, HttpServletResponse response,
                                          @PathVariable String username) {
         try {
