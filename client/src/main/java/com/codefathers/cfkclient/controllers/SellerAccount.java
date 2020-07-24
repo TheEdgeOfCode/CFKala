@@ -144,7 +144,7 @@ public class SellerAccount extends BackAbleController {
         try {
             balance.setText(String.valueOf(connector.getBalance(cacheData.getUsername())));
         } catch (Exception e) {
-            Notification.show("Error", e.getMessage(), back.getScene().getWindow(), true);
+            new OopsAlert().show(e.getMessage());
             e.printStackTrace();
         }
         companyName.setText(companyDTO.getName() + "  (ID : " + companyDTO.getId() + " )");

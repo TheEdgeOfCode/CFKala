@@ -36,20 +36,12 @@ public class BankUtil {
     }
 
     public String getMessage() {
+        try {
+            message = inputStream.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return message;
-    }
-
-    private void startListeningOnInput() {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    message = inputStream.readUTF();
-                } catch (IOException e) {
-                    System.out.println("disconnected");
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     public void sendMessage(String msg) throws IOException {
@@ -66,7 +58,6 @@ public class BankUtil {
     private void run() {
         try {
             connectToBankServer();
-            startListeningOnInput();
         } catch (IOException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

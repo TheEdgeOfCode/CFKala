@@ -57,6 +57,7 @@ public class BankService {
                 dto.getMoney() + " " + dto.getSource() + " " + dto.getDest() + " " + dto.getDescription();
         bankUtil.sendMessage(message);
         String response = bankUtil.getMessage();
+        System.out.println(response);
 
         if (response.startsWith("invalid receipt")){
             throw new InvalidRecieptTypeException(response);
@@ -147,7 +148,7 @@ public class BankService {
     }
 
     public String getInfo(String request){
-        File file = new File("cfkserver/src/main/resources/application_info.txt");
+        File file = new File("application_info.txt");
         Scanner scanner;
         try {
             scanner = new Scanner(file);
@@ -159,7 +160,7 @@ public class BankService {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("File Not Found!!!");
+            System.out.println("D:\\Educational\\University\\Semester '98-99' (2)\\AP\\Project\\Phase 3\\CFKala\\cfkserver\\src\\main\\resources\\application_info.txt");
         }
         return null;
     }

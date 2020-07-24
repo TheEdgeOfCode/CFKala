@@ -79,7 +79,7 @@ public class CustomerService {
 
         Cart cart = customer.getCart();
         checkIfThereIsEnoughAmount(customer);
-        purchaseForCustomer(customer, customerInformation, discountCode);
+        //purchaseForCustomer(customer, customerInformation, discountCode);
         sellerService.getMoneyFromSale(cart);
 
         if (discountCode != null) {

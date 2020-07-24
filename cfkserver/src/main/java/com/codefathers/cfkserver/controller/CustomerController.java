@@ -82,7 +82,7 @@ public class CustomerController {
         return null;
     }
 
-    @PostMapping("/customer/show_cart")
+    @GetMapping("/customer/show_cart")
     private ResponseEntity<?> showCart(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (checkToken(response, request)) {
@@ -109,7 +109,7 @@ public class CustomerController {
     }
 
     @PostMapping("/customer/change_amount")
-    private ResponseEntity<?> changeAmount(HttpServletRequest request, HttpServletResponse response, @RequestBody String info) {
+    private void changeAmount(HttpServletRequest request, HttpServletResponse response, @RequestBody String info) {
         try {
             if (checkToken(response, request)) {
                 String username = getUsernameFromToken(request);
@@ -119,13 +119,9 @@ public class CustomerController {
                 Cart cart = customer.getCart();
                 String sellerUsername = cartService.getSubCartByProductId(cart, productId).getSeller().getUsername();
                 cartService.changeProductAmountInCart(cart, productId, sellerUsername, change);
-                return ResponseEntity.ok(ResponseEntity.status(200));
-            } else {
-                return null;
             }
         } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
-            return null;
         }
     }
 
@@ -170,7 +166,7 @@ public class CustomerController {
     }
 
     @PostMapping("/customer/purchase")
-    private ResponseEntity<?> purchase(HttpServletRequest request, HttpServletResponse response, @RequestBody PurchaseDTO purchaseDTO) {
+    private void purchase(HttpServletRequest request, HttpServletResponse response, @RequestBody PurchaseDTO purchaseDTO) {
         try {
             if (checkToken(response, request)) {
                  CustomerInformation customerInformation = new CustomerInformation(
@@ -188,13 +184,10 @@ public class CustomerController {
                          username,
                          customerInformation,
                          discountCode);
-                 return ResponseEntity.ok(ResponseEntity.status(200));
             }
-            else
-                return null;
         } catch (Exception e) {
+            e.printStackTrace();
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
-            return null;
         }
     }
 
@@ -238,20 +231,15 @@ public class CustomerController {
     }
 
     @PostMapping("/customer/add_view")
-    private ResponseEntity<?> addViewDigest(HttpServletRequest request, HttpServletResponse response, @RequestBody Integer productId) {
+    private void addViewDigest(HttpServletRequest request, HttpServletResponse response, @RequestBody Integer productId) {
         try {
             if (checkToken(response, request)) {
                 productService.addView(productId);
-                return ResponseEntity.ok(ResponseEntity.status(200));
-            } else {
-                return null;
             }
         } catch (NoSuchAProductException e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
-            return null;
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
-            return null;
         }
     }
 

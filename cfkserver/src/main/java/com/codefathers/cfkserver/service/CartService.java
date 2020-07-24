@@ -71,7 +71,9 @@ public class CartService {
             throws NotEnoughAmountOfProductException, NoSuchAProductException, NoSuchSellerException {
         Product product = productService.findById(productId);
         int stock = product.findPackageBySeller(sellerId).getStock();
-        if (amount > stock) throw new NotEnoughAmountOfProductException(amount);
+        if (!product.isFile())
+            if (amount > stock)
+                throw new NotEnoughAmountOfProductException(amount);
     }
 
     private void checkIfProductExistsInCart(Cart cart, int productId) throws ProductExistedInCart {

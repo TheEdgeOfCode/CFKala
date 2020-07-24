@@ -69,6 +69,7 @@ public class UserController {
             return ResponseEntity.ok(new TokenRoleDto(token, role));
         } catch (UserNotFoundException | NotVerifiedSeller | WrongPasswordException e) {
             sendError(response, BAD_REQUEST, e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }

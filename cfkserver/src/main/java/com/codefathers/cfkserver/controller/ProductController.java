@@ -170,6 +170,7 @@ public class ProductController {
     @PostMapping("/product/add_to_cart")
     private void addToCart(@RequestBody String[] data,HttpServletRequest request, HttpServletResponse response) {
         try {
+            System.out.println(Arrays.toString(data));
             checkToken(response, request);
             String userName = data[0];
             User user = userService.getUserByUsername(userName);
@@ -180,6 +181,7 @@ public class ProductController {
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED,e.getMessage());
         } catch (Exception e){
+            e.printStackTrace();
             sendError(response, HttpStatus.BAD_REQUEST,e.getMessage());
         }
     }

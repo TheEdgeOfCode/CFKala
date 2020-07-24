@@ -89,6 +89,7 @@ public class Connector {
         String body = response.getBody();
         if (response.getStatusCode().equals(HttpStatus.OK)){
             Gson gson = new Gson();
+            System.out.println(body);
             return gson.fromJson(body,type);
         }else {
             throw new Exception(new GsonJsonParser().parseMap(body).get("error").toString());
@@ -172,9 +173,8 @@ public class Connector {
     }
 
     public CartDTO showCart() throws Exception {
-        ResponseEntity<CartDTO> response = post(address + "/customer/show_cart",
+        return get(address + "/customer/show_cart",
                 null, CartDTO.class);
-        return Objects.requireNonNull(response.getBody());
     }
 
     public void changeAmount(int productId, int amount) throws Exception {

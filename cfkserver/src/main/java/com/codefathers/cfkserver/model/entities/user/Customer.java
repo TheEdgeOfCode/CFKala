@@ -35,7 +35,7 @@ public class Customer extends User {
     private List<Request> requests;
 
     @ElementCollection
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Document> documentsPurchased;
 
     private long allPurchase;

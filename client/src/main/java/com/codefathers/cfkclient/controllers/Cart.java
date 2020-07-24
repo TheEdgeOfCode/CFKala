@@ -97,7 +97,7 @@ public class Cart extends BackAbleController {
 
     private void delete() {
         InCartDTO inCartDTO = tableView.getSelectionModel().getSelectedItem();
-        int productId = inCartDTO.getProduct().getId();
+        int productId = inCartDTO.getMiniProductDto().getId();
         try {
             connector.deleteProductFromCart(productId);
             tableView.getItems().remove(inCartDTO);
@@ -110,7 +110,7 @@ public class Cart extends BackAbleController {
 
     private void viewProduct() {
         InCartDTO inCartDTO = tableView.getSelectionModel().getSelectedItem();
-        int productId = inCartDTO.getProduct().getId();
+        int productId = inCartDTO.getMiniProductDto().getId();
         cacheData.setProductId(productId);
         try {
             Scene scene = new Scene(CFK.loadFXML("ProductDigest", backForForward("Cart")));
@@ -122,7 +122,7 @@ public class Cart extends BackAbleController {
 
     private void increaseDecrease(int change) {
         InCartDTO inCartDTO = tableView.getSelectionModel().getSelectedItem();
-        int productId = inCartDTO.getProduct().getId();
+        int productId = inCartDTO.getMiniProductDto().getId();
         try {
             connector.changeAmount(productId, change);
             int current = inCartDTO.getAmount();
@@ -141,7 +141,7 @@ public class Cart extends BackAbleController {
     }
 
     private void loadTable() {
-        product.setCellValueFactory(new PropertyValueFactory<>("product"));
+        product.setCellValueFactory(new PropertyValueFactory<>("miniProductDto"));
         price.setCellValueFactory(new PropertyValueFactory<>("price"));
         afterOff.setCellValueFactory(new PropertyValueFactory<>("offPrice"));
         amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
@@ -153,7 +153,7 @@ public class Cart extends BackAbleController {
     private ObservableList<InCartDTO> loadTableData() {
         try {
             CartDTO pm = connector.showCart();
-            return FXCollections.observableArrayList(pm.getPurchases());
+            return FXCollections.observableArrayList(pm.getInCartDTOS());
         } catch (Exception e) {
             e.printStackTrace();
         }
