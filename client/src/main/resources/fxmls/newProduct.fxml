@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.lang.String?>
@@ -26,16 +27,14 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="593.0" prefWidth="960.0" stylesheets="@../CSSs/button.css"
-            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.codefathers.cfkclient.controllers.NewProduct">
+<AnchorPane prefHeight="593.0" prefWidth="960.0" stylesheets="@../CSSs/button.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.codefathers.cfkclient.controllers.NewProduct">
    <children>
       <BorderPane prefHeight="594.0" prefWidth="960.0">
          <left>
             <AnchorPane prefHeight="200.0" prefWidth="367.0" BorderPane.alignment="CENTER">
                <stylesheets>
-                  <URL value="@../CSSs/gradient.css"/>
-                  <URL value="@../CSSs/button.css"/>
+                  <URL value="@../CSSs/gradient.css" />
+                  <URL value="@../CSSs/button.css" />
                </stylesheets>
                <styleClass>
                   <String fx:value="unknown" />
@@ -44,7 +43,7 @@
                <children>
                   <ImageView fitHeight="266.0" fitWidth="298.0" layoutX="39.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../Images/product.png"/>
+                        <Image url="@../Images/product.png" />
                      </image>
                      <effect>
                         <GaussianBlur />
@@ -82,10 +81,9 @@
             </AnchorPane>
          </left>
          <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;"
-                        styleClass="roudPaneRight" stylesheets="@../CSSs/button.css" BorderPane.alignment="CENTER">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" styleClass="roudPaneRight" stylesheets="@../CSSs/button.css" BorderPane.alignment="CENTER">
                <children>
-                  <VBox alignment="TOP_CENTER" layoutX="14.0" layoutY="14.0" prefHeight="564.0" prefWidth="338.0" spacing="15.0">
+                  <VBox alignment="TOP_CENTER" layoutX="14.0" layoutY="14.0" prefHeight="564.0" prefWidth="338.0" spacing="13.0">
                      <padding>
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
@@ -95,7 +93,15 @@
                         <JFXTextField fx:id="price" labelFloat="true" promptText="Price" />
                         <JFXTextField fx:id="stock" labelFloat="true" layoutX="25.0" layoutY="108.0" promptText="Stock" />
                         <JFXTextField fx:id="company" labelFloat="true" layoutX="25.0" layoutY="148.0" promptText="Company" />
-                        <JFXTextArea fx:id="description" prefHeight="73.0" prefWidth="308.0" promptText="Description" />
+                        <JFXTextArea fx:id="description" prefHeight="22.0" prefWidth="308.0" promptText="Description" />
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                           <children>
+                              <JFXCheckBox fx:id="fileCheck" text="File" />
+                              <JFXButton fx:id="chooseFile" style="-fx-background-color: gray;" text="Choose File" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Label fx:id="fileLocation" text="File location" />
+                           </children>
+                        </HBox>
                         <Label prefHeight="18.0" prefWidth="331.0" text="Enter Features Of Product" />
                         <TableView fx:id="table" disable="true" prefHeight="176.0" prefWidth="308.0">
                           <columns>
@@ -106,8 +112,7 @@
                         <JFXButton fx:id="createProduct" buttonType="RAISED" prefHeight="26.0" prefWidth="348.0" text="Create Product" />
                      </children>
                   </VBox>
-                  <VBox fx:id="sellThisBox" alignment="TOP_CENTER" disable="true" layoutX="392.0" layoutY="14.0"
-                        prefHeight="381.0" prefWidth="186.0" spacing="5.0" stylesheets="@../CSSs/button.css">
+                  <VBox fx:id="sellThisBox" alignment="TOP_CENTER" disable="true" layoutX="392.0" layoutY="14.0" prefHeight="381.0" prefWidth="186.0" spacing="5.0" stylesheets="@../CSSs/button.css">
                      <padding>
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
@@ -123,7 +128,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <ListView fx:id="similarProduct" prefHeight="135.0" prefWidth="157.0"/>
+                        <ListView fx:id="similarProduct" prefHeight="135.0" prefWidth="157.0" />
                         <Region VBox.vgrow="ALWAYS" />
                         <Button fx:id="view" focusTraversable="false" mnemonicParsing="false" prefHeight="26.0" prefWidth="190.0" text="Viwe This" />
                         <Button fx:id="sellThis" focusTraversable="false" layoutX="77.0" layoutY="432.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="193.0" text="Sell This" />
@@ -133,46 +138,44 @@
                         <String fx:value="productPane" />
                      </styleClass>
                   </VBox>
-                  <VBox layoutX="391.0" layoutY="403.0" prefHeight="167.0" prefWidth="188.0" spacing="5.0"
-                        stylesheets="@../CSSs/button.css">
+                  <VBox layoutX="391.0" layoutY="403.0" prefHeight="167.0" prefWidth="188.0" spacing="5.0" stylesheets="@../CSSs/button.css">
                      <children>
                         <Label alignment="CENTER" prefHeight="18.0" prefWidth="218.0" text="Choose At Least One Image">
                            <font>
-                              <Font name="System Bold" size="12.0"/>
+                              <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
                         <Label alignment="CENTER" prefHeight="18.0" prefWidth="218.0" text="For Your Product ">
                            <font>
-                              <Font name="System Bold" size="12.0"/>
+                              <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <ListView fx:id="pictureList" prefHeight="104.0" prefWidth="188.0"/>
+                        <ListView fx:id="pictureList" prefHeight="104.0" prefWidth="188.0" />
                         <HBox prefHeight="69.0" prefWidth="158.0">
                            <children>
                               <JFXButton fx:id="pickPic" prefHeight="26.0" prefWidth="112.0" text="Pick Pictures">
                                  <font>
-                                    <Font name="System Bold" size="12.0"/>
+                                    <Font name="System Bold" size="12.0" />
                                  </font>
                                  <graphic>
-                                    <FontIcon iconLiteral="fa-picture-o" iconSize="12"/>
+                                    <FontIcon iconLiteral="fa-picture-o" iconSize="12" />
                                  </graphic>
                               </JFXButton>
-                              <Region HBox.hgrow="ALWAYS"/>
-                              <JFXButton fx:id="reset" contentDisplay="GRAPHIC_ONLY" prefHeight="26.0" prefWidth="30.0"
-                                         text=" ">
+                              <Region HBox.hgrow="ALWAYS" />
+                              <JFXButton fx:id="reset" contentDisplay="GRAPHIC_ONLY" prefHeight="26.0" prefWidth="30.0" text=" ">
                                  <graphic>
-                                    <FontIcon iconLiteral="fa-trash-o" iconSize="15"/>
+                                    <FontIcon iconLiteral="fa-trash-o" iconSize="15" />
                                  </graphic>
                               </JFXButton>
                            </children>
                         </HBox>
                      </children>
                      <styleClass>
-                        <String fx:value="productPane"/>
-                        <String fx:value="transparentFade15"/>
+                        <String fx:value="productPane" />
+                        <String fx:value="transparentFade15" />
                      </styleClass>
                      <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
                   </VBox>
                </children>

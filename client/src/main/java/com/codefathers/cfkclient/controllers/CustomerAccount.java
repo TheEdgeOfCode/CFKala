@@ -29,6 +29,7 @@ import java.io.InputStream;
 import static com.codefathers.cfkclient.dtos.user.Role.CUSTOMER;
 
 public class CustomerAccount extends BackAbleController {
+    public JFXButton download;
     @FXML private JFXButton back;
     @FXML private JFXButton cartButt;
     @FXML private JFXButton minimize;
@@ -152,6 +153,16 @@ public class CustomerAccount extends BackAbleController {
         chooseProf.setOnAction(event -> handleChooseProf());
         requestsButt.setOnAction(event -> handleRequestView());
         chargeWallet.setOnAction(event -> handleChargeWallet());
+        download.setOnAction(event -> downloadHandle());
+    }
+
+    private void downloadHandle() {
+        try {
+            Scene scene = new Scene(CFK.loadFXML("DownloadCenter", backForForward("CustomerAccount")));
+            CFK.setSceneToStage(requestsButt, scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleRequestView() {

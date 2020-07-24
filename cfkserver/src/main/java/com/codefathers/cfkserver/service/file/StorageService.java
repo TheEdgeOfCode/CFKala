@@ -1,5 +1,6 @@
 package com.codefathers.cfkserver.service.file;
 
+import com.codefathers.cfkserver.model.entities.product.Document;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
@@ -17,13 +18,16 @@ import java.util.*;
 public class StorageService {
     private String users = "src/main/resources/db/users/";
     private String products = "src/main/resources/db/products/image/";
+    private String productFiles = "src/main/resources/db/files/products/";
 
     @PostConstruct
     private void init() {
         File user = new File(users);
         File product = new File(products);
+        File files = new File(productFiles);
         user.mkdirs();
         product.mkdirs();
+        files.mkdirs();
     }
 
     public void saveProfile(String username, InputStreamResource file) throws IOException {
@@ -65,21 +69,20 @@ public class StorageService {
         }
     }
 
-    public void saveProductImage(int id, InputStreamResource[] resource) throws IOException {
+    public void saveProductImage(int id, ByteArrayResource resource) throws IOException {
         File imageDir = new File(products + id);
         imageDir.mkdirs();
         FileUtils.cleanDirectory(imageDir);
-        createMainImage(id, resource[0]);
-        updateOtherImages(id, resource);
+        createMainImage(id, resource);
     }
 
-    private void createMainImage(int id, InputStreamResource resource) throws IOException {
+    private void createMainImage(int id, ByteArrayResource resource) throws IOException {
         File image = new File(products + id + "/main.jpg");
         image.createNewFile();
         saveDataToFile(resource.getInputStream(), image);
     }
 
-    private void updateOtherImages(int id, InputStreamResource[] resources) throws IOException {
+    private void updateOtherImages(int id, ByteArrayResource[] resources) throws IOException {
         for (int i = 1; i < resources.length; i++) {
             saveImageForProduct(id, resources[i].getInputStream(), i);
         }
@@ -106,11 +109,8 @@ public class StorageService {
         outStream.close();
     }
 
-    public ByteArrayResource[] getProductImages(int id) {
-        ArrayList<ByteArrayResource> resources = new ArrayList<>();
-        resources.add(getProductMainImage(id));
-        resources.addAll(getAllOtherProductImages(id));
-        return resources.toArray(new ByteArrayResource[0]);
+    public ByteArrayResource getProductImages(int id) {
+        return getProductMainImage(id);
     }
 
     private ArrayList<ByteArrayResource> getAllOtherProductImages(int id) {
@@ -130,5 +130,21 @@ public class StorageService {
     public ByteArrayResource getProductMainImage(int id) {
         File image = new File(products + id + "/main.jpg");
         return loadFileAsResource(image);
+    }
+
+    public String saveProductFile(int id,ByteArrayResource resource,String format) throws IOException {
+        File file = new File(productFiles + id + "." + format);
+        file.createNewFile();
+        saveDataToFile(resource.getInputStream(),file);
+        return file.getPath();
+    }
+
+    public ByteArrayResource getFile(Document document) {
+        File file = new File(productFiles + document.getProduct().getId() + "." + document.getFormat());
+        if (file.exists()){
+            return loadFileAsResource(file);
+        }else {
+            throw new RuntimeException("File Does Not Exist");
+        }
     }
 }

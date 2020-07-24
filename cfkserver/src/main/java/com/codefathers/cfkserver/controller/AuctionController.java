@@ -58,22 +58,21 @@ public class AuctionController {
     @GetMapping("/auction/get_auctions")
     private ResponseEntity<?> getAllAuctions(HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (checkToken(response, request)) {
-                List<MiniAuctionDTO> dtos = new ArrayList<>();
-                List<Auction> auctions = auctionService.getAllAvailableAuctions();
-                for (Auction auction : auctions) {
-                    dtos.add(new MiniAuctionDTO(
-                            getAuctionDTO(auction),
-                            auction.getStartTime(),
-                            auction.getEndTime()
-                    ));
-                }
-                return ResponseEntity.ok(new AuctionListDTO(new ArrayList<>(dtos)));
+            checkToken(response, request);
+            List<MiniAuctionDTO> dtos = new ArrayList<>();
+            List<Auction> auctions = auctionService.getAllAvailableAuctions();
+            for (Auction auction : auctions) {
+                dtos.add(new MiniAuctionDTO(
+                        getAuctionDTO(auction),
+                        auction.getStartTime(),
+                        auction.getEndTime()
+                ));
             }
+            return ResponseEntity.ok(new AuctionListDTO(new ArrayList<>(dtos)));
         } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            return null;
         }
-        return null;
     }
 
     private AuctionDTO getAuctionDTO(Auction auction) {
@@ -89,12 +88,11 @@ public class AuctionController {
     }
 
     private SellPackageDto createSellPackageDTO(SellPackage sellPackage) {
-        return new SellPackageDto(
-                sellPackage.getOff().getOffPercentage(),
+        int offPercent = sellPackage.isOnOff() ? sellPackage.getOff().getOffPercentage() : 0;
+        return new SellPackageDto(offPercent,
                 sellPackage.getPrice(),
                 sellPackage.getStock(),
                 sellPackage.getSeller().getUsername(),
-                sellPackage.isAvailable()
-        );
+                sellPackage.isAvailable());
     }
 }

@@ -1,7 +1,13 @@
 package com.codefathers.cfkserver.controller;
 
+import com.codefathers.cfkserver.exceptions.model.category.CategoryNotFoundException;
+import com.codefathers.cfkserver.exceptions.model.filters.InvalidFilterException;
 import com.codefathers.cfkserver.exceptions.model.log.NoSuchALogException;
 import com.codefathers.cfkserver.exceptions.model.product.NoSuchAProductException;
+import com.codefathers.cfkserver.model.dtos.customer.OrderLogDTO;
+import com.codefathers.cfkserver.model.dtos.customer.OrderLogListDTO;
+import com.codefathers.cfkserver.model.dtos.customer.OrderProductDTO;
+import com.codefathers.cfkserver.model.dtos.customer.PurchaseDTO;
 import com.codefathers.cfkserver.model.dtos.log.PurchaseLogDTO;
 import com.codefathers.cfkserver.model.dtos.log.PurchaseLogDTOList;
 import com.codefathers.cfkserver.model.dtos.product.FilterSortDto;
@@ -25,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,19 +100,20 @@ public class ManagerController {
     @PostMapping("/manager/show_products")
     private ResponseEntity<?> showProducts_Manager(HttpServletRequest request, HttpServletResponse response, @RequestBody FilterSortDto filterSortDto) {
         try {
-            if (checkToken(response, request)) {
-                int[] priceRange = {filterSortDto.getDownPriceLimit(), filterSortDto.getUpPriceLimit()};
-                List<Product> products = sorter.sort(filterService.updateFilterList(
-                        filterSortDto.getCategoryId(), filterSortDto.getActiveFilters(), priceRange,
-                        false, filterSortDto.isAvailableOnly()
-                        )
-                        , filterSortDto.getSortType());
-                List<MiniProductDto> toReturn = dtosFromList(products);
-                return ResponseEntity.ok(new MiniProductListDto(new ArrayList<>(toReturn)));
-            } else {
-                return null;
-            }
+            checkToken(response, request);
+            int[] priceRange = {filterSortDto.getDownPriceLimit(), filterSortDto.getUpPriceLimit()};
+            List<Product> products = sorter.sort(filterService.updateFilterList(
+                    filterSortDto.getCategoryId(), filterSortDto.getActiveFilters(), priceRange,
+                    false, filterSortDto.isAvailableOnly()
+                    )
+                    , filterSortDto.getSortType());
+            List<MiniProductDto> toReturn = dtosFromList(products);
+            return ResponseEntity.ok(new MiniProductListDto(new ArrayList<>(toReturn)));
+        } catch (InvalidTokenException | ExpiredTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+            return null;
         } catch (Exception e) {
+            e.printStackTrace();
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
             return null;
         }
@@ -115,18 +123,16 @@ public class ManagerController {
     @RequestMapping("/manager/remove_product/{id}")
     private ResponseEntity<?> removeProduct_Manager(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
         try {
-            if (checkToken(response, request)) {
-                try {
-                    productService.deleteProduct(Integer.parseInt(id));
-                    return ResponseEntity.ok(ResponseEntity.status(200));
-                } catch (NoSuchAProductException e) {
-                    sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
-                    return null;
-                }
-            } else {
+            checkToken(response, request);
+            try {
+                productService.deleteProduct(Integer.parseInt(id));
+                return ResponseEntity.ok(ResponseEntity.status(200));
+            } catch (NoSuchAProductException e) {
+                e.printStackTrace();
+                sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
                 return null;
             }
-        } catch (Exception e) {
+        } catch (ExpiredTokenException | InvalidTokenException e) {
             sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
             return null;
         }

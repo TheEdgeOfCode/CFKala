@@ -19,4 +19,8 @@ public class SellPackageDto {
     public String toString() {
         return sellerUsername;
     }
+
+    public boolean getAvailable(){
+        return stock !=0;
+    }
 }

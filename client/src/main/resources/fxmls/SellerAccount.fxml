@@ -377,7 +377,7 @@
                               <FontIcon iconLiteral="fa-bullhorn" iconSize="15" />
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="auction" focusTraversable="false" layoutX="193.0" layoutY="509.0" prefHeight="38.0" prefWidth="158.0" text="Create Auction">
+                        <JFXButton fx:id="auction" focusTraversable="false" layoutX="184.0" layoutY="509.0" prefHeight="38.0" prefWidth="158.0" text="Create Auction">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>

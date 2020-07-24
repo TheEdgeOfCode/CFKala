@@ -124,6 +124,8 @@ public class RequestService {
             SellPackage sellPackage = product.getPackages().get(0);
             seller.getPackages().add(sellPackage);
             sellerRepository.save(seller);
+        } else {
+            System.out.println("NOT FOUND");
         }
     }
 

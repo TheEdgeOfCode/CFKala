@@ -60,6 +60,11 @@ public class Product {
     private int leastPrice;
     private boolean onOff;
 
+    private boolean isFile;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Document document;
+
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private List<SellPackage> packages;
 

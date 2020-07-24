@@ -19,4 +19,17 @@ public class CreateProductDTO {
     private int price;
     private HashMap<String,String> publicFeatures;
     private HashMap<String,String> specialFeature;
+
+    public CreateProductDTO(CreateDocumentDto dto) {
+        this.sellerName = dto.getSellerName();
+        this.productName = dto.getProductName();
+        companyId = dto.getCompanyId();
+        categoryId = dto.getCategoryId();
+        description = dto.getDescription();
+        amount = dto.getAmount();
+        price = dto.getPrice();
+        amount = dto.getAmount();
+        publicFeatures = dto.getPublicFeatures();
+        specialFeature = dto.getSpecialFeature();
+    }
 }
