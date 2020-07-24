@@ -178,7 +178,7 @@ public class UserService {
     }
 
     private void saveToFile(String accountId) {
-        File file = new File("src/main/resources/application_info.txt");
+        File file = new File("cfkserver/src/main/resources/application_info.txt");
         Scanner scanner;
         StringBuilder info = new StringBuilder("");
         try {
@@ -186,10 +186,10 @@ public class UserService {
             while (scanner.hasNextLine()) {
                 String fileLine = scanner.nextLine();
                 if (fileLine.startsWith("AccountId")) {
-                    String changed = fileLine.replaceFirst(fileLine.substring(fileLine.indexOf('=' + 2)), accountId);
+                    String changed = fileLine.replaceFirst(fileLine.substring(fileLine.indexOf('=') + 2), accountId);
                     info.append(changed);
                 } else {
-                    info.append(fileLine);
+                    info.append(fileLine).append("\n");
                 }
             }
         } catch (FileNotFoundException e) {

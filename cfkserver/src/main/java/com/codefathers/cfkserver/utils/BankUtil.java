@@ -18,7 +18,7 @@ public class BankUtil {
     }
 
     public static final int PORT = 8090;
-    public static final String IP = "192.168.1.4";
+    public static final String IP = "127.0.0.1";
 
     private static DataOutputStream outputStream;
     private static DataInputStream inputStream;
