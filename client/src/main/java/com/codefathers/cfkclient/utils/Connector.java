@@ -452,8 +452,7 @@ public class Connector {
 
     // TODO: 7/22/2020 Causes Problem
     public void getToken(TokenRequestDTO dto) throws Exception {
-        ResponseEntity<String> response = get("http://127.0.0.1:8050/bank/get_token", dto, String.class);
-        bankToken = response.getBody();
+        bankToken = get(address + "/bank/get_token/" + dto.getUsername(), null, String.class);
     }
 
     public void chargeWallet(ChargeWalletDTO dto) throws Exception {

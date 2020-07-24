@@ -193,7 +193,7 @@ public class ManagerAccount extends BackAbleController {
         // -> Budget
         editTollButt.setOnAction(event -> handleEditTollButt());
         editMinimumButt.setOnAction(event -> handleEditMinimumButt());
-        confirmButt.setOnAction(event -> handleConfirm_Budget());
+        confirmButtBud.setOnAction(event -> handleConfirm_Budget());
         cancelButtBud.setOnAction(event -> handleCancelButt_Budget());
         find.setOnAction(event -> handleFindButt());
 

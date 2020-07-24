@@ -87,7 +87,7 @@ public class UserController {
     }
 
     @PostMapping("/users/create_manager")
-    private ResponseEntity<?> createCustomer(@RequestBody ManagerDTO dto, HttpServletResponse response){
+    private ResponseEntity<?> createManager(@RequestBody ManagerDTO dto, HttpServletResponse response){
         try {
             userService.createManager(dto);
             String token = JwtUtil.generateToken(dto.getUsername(),"manager");

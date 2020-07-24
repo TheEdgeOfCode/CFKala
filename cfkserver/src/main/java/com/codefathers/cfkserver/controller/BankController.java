@@ -3,18 +3,17 @@ package com.codefathers.cfkserver.controller;
 import com.codefathers.cfkserver.exceptions.model.bank.account.InvalidUsernameException;
 import com.codefathers.cfkserver.exceptions.model.bank.account.PasswordsDoNotMatchException;
 import com.codefathers.cfkserver.exceptions.model.bank.receipt.*;
+import com.codefathers.cfkserver.exceptions.model.user.UserNotFoundException;
 import com.codefathers.cfkserver.exceptions.token.ExpiredTokenException;
 import com.codefathers.cfkserver.exceptions.token.InvalidTokenException;
 import com.codefathers.cfkserver.model.dtos.bank.*;
 import com.codefathers.cfkserver.model.dtos.edit.TollMinimumBalanceEditAttribute;
 import com.codefathers.cfkserver.service.BankService;
+import com.codefathers.cfkserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +30,8 @@ public class BankController {
 
     @Autowired
     private BankService bankService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/bank/create_account")
     private ResponseEntity<?> createBankAccount(HttpServletRequest request, HttpServletResponse response,
@@ -49,11 +50,12 @@ public class BankController {
         return null;
     }
 
-    @PostMapping("/bank/get_token")
-    private ResponseEntity<?> getToken(HttpServletResponse response, @RequestBody TokenRequestDTO dto) {
+    @GetMapping("/bank/get_token/{username}")
+    private ResponseEntity<?> getToken(HttpServletResponse response, @PathVariable String username) {
         try {
-            return ResponseEntity.ok(bankService.getToken(dto));
-        } catch (IOException | InvalidUsernameException e) {
+            String password = userService.getPassByUsername(username);
+            return ResponseEntity.ok(bankService.getToken(new TokenRequestDTO(username, password)));
+        } catch (Exception e) {
             sendError(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
         return null;
