@@ -1,6 +1,7 @@
 package com.codefathers.cfkclient.utils;
 
-import com.codefathers.cfkclient.dtos.auction.AuctionDTO;
+import com.codefathers.cfkclient.dtos.log.PurchaseLogDTOList;
+import com.codefathers.cfkclient.dtos.log.PurchaseLogDTO;
 import com.codefathers.cfkclient.dtos.auction.CreateAuctionDTO;
 import com.codefathers.cfkclient.dtos.auction.AuctionListDTO;
 import com.codefathers.cfkclient.dtos.auction.MiniAuctionDTO;
