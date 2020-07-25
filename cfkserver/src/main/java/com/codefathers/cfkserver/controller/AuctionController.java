@@ -75,6 +75,21 @@ public class AuctionController {
         }
     }
 
+    @PostMapping("/auction/start")
+    private void startAuction(HttpServletRequest request, HttpServletResponse response){
+        try {
+            if (checkToken(response, request)) {
+                try {
+                    auctionService.startConnection();
+                } catch (Exception e) {
+                    sendError(response, BAD_REQUEST, e.getMessage());
+                }
+            }
+        } catch (ExpiredTokenException | InvalidTokenException e) {
+            sendError(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
     private AuctionDTO getAuctionDTO(Auction auction) {
         return new AuctionDTO(
                 auction.getId(),

@@ -37,11 +37,7 @@ public class AuctionMessage {
 
     private void initImage() {
         Image image;
-        try {
-            image = connector.userImage();
-        } catch (Exception e) {
-            image = new Image(USER_PHOTO);;
-        }
+        image = new Image(USER_PHOTO);
         this.image.setFill(new ImagePattern(image));
     }
 
@@ -55,12 +51,12 @@ public class AuctionMessage {
         root = loader.load();
         AuctionMessage controller = loader.getController();
         controller.init(username, message);
-        dto = createDTO(message, username, time.getText());
+        dto = createDTO(message, username);
         return root;
     }
 
-    private AuctionMessageDTO createDTO(String message, String username, String text) {
-        return new AuctionMessageDTO(message, username, text);
+    private AuctionMessageDTO createDTO(String message, String username) {
+        return new AuctionMessageDTO(message, username, "");
     }
 
     public AuctionMessageDTO getMessageDTO() {

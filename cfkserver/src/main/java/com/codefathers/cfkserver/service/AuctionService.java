@@ -77,118 +77,118 @@ public class AuctionService {
     public void startConnection(){
         new AuctionServer(9090).startConnection();
     }
-}
 
-@Data
-class AuctionServer{
-    private int port;
-    private ArrayList<AuctionClient> clients;
+    @Data
+    class AuctionServer{
+        private int port;
+        private ArrayList<AuctionClient> clients;
 
-    public AuctionServer(int port){
-        this.port = port;
-        this.clients = new ArrayList<>();
+        public AuctionServer(int port){
+            this.port = port;
+            this.clients = new ArrayList<>();
+        }
+
+        public void startConnection(){
+            Thread thread = getServerThread();
+            thread.setDaemon(true);
+            thread.start();
+        }
+
+        private Thread getServerThread(){
+            return new Thread(() -> {
+                try {
+                    ServerSocket serverSocket = new ServerSocket(port);
+
+                    while (true) {
+                        Socket socket = serverSocket.accept();
+                        socket.setTcpNoDelay(true);
+                        AuctionClient client = new AuctionClient(socket, this);
+                        clients.add(client);
+
+                        Thread thread = new Thread(client);
+                        thread.start();
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            });
+        }
+
+        public void broadcast(String message, AuctionClient you) {
+            for (AuctionClient client : this.clients) {
+                if (!client.equals(you)) {
+                    client.send(message);
+                }
+            }
+        }
+
+        public boolean hasClients() {
+            return !clients.isEmpty();
+        }
     }
 
-    public void startConnection(){
-        Thread thread = getServerThread();
-        thread.setDaemon(true);
-        thread.start();
-    }
+    class AuctionClient extends Thread {
+        private Socket socket;
+        private AuctionServer server;
+        private DataInputStream input;
+        private DataOutputStream output;
 
-    private Thread getServerThread(){
-        return new Thread(() -> {
-            try {
-                ServerSocket serverSocket = new ServerSocket(port);
+        public AuctionClient(Socket socket, AuctionServer server) {
+            this.socket = socket;
+            this.server = server;
+        }
+
+        @Override
+        public void run() {
+            try(DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                DataInputStream input = new DataInputStream(socket.getInputStream())) {
+                this.input = input;
+                this.output = out;
+
+                //printUsers();
 
                 while (true) {
-                    Socket socket = serverSocket.accept();
-                    socket.setTcpNoDelay(true);
-                    AuctionClient client = new AuctionClient(socket, this);
-                    clients.add(client);
-
-                    Thread thread = new Thread(client);
-                    thread.start();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
-
-    public void broadcast(String message) {
-        for (AuctionClient client : this.clients) {
-            client.send(message);
-        }
-    }
-
-    public boolean hasClients() {
-        return !clients.isEmpty();
-    }
-}
-
-class AuctionClient extends Thread {
-    @Autowired private AuctionService auctionService;
-
-    private Socket socket;
-    private AuctionServer server;
-    private DataInputStream input;
-    private DataOutputStream output;
-
-    public AuctionClient(Socket socket, AuctionServer server) {
-        this.socket = socket;
-        this.server = server;
-    }
-
-    @Override
-    public void run() {
-        try(DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            DataInputStream input = new DataInputStream(socket.getInputStream())) {
-            this.input = input;
-            this.output = out;
-
-            //printUsers();
-
-            while (true) {
-                String message = input.readUTF();
-                if (message.startsWith("{\"expression\"")){
-                    AuctionLogDTO dto = new Gson().fromJson(message, AuctionLogDTO.class);
-                    long price = Long.parseLong(dto.getPrice());
-                    try {
-                        auctionService.addPrice(dto.getAuctionId(), price, dto.getUsername());
-                    } catch (AuctionNotFoundException e) {
-                        e.printStackTrace();
+                    String message = input.readUTF();
+                    if (message.startsWith("{\"expression\"")){
+                        AuctionLogDTO dto = new Gson().fromJson(message, AuctionLogDTO.class);
+                        long price = Long.parseLong(dto.getPrice());
+                        try {
+                            addPrice(dto.getAuctionId(), price, dto.getUsername());
+                        } catch (AuctionNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    server.broadcast(message, this);
                 }
-                server.broadcast(message);
-            }
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }  finally {
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }  finally {
+                try {
+                    socket.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+
+        void printUsers() {
+            if (server.hasClients()) {
+                send(new Gson().toJson(server.getClients()));
+            } else {
+                send("No Other Users Are in the Auction Now");
+            }
+        }
+
+        public void send(String message) {
             try {
-                socket.close();
+                output.writeUTF(message);
+                output.flush();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+
         }
-    }
-
-
-    void printUsers() {
-        if (server.hasClients()) {
-            send(new Gson().toJson(server.getClients()));
-        } else {
-            send("No Other Users Are in the Auction Now");
-        }
-    }
-
-    public void send(String message) {
-        try {
-            output.writeUTF(message);
-            output.flush();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
     }
 }

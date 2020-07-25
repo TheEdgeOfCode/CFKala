@@ -45,9 +45,10 @@ public class SingleMiniAuction {
         pane.setOnMouseClicked(e -> {
             CacheData.getInstance().setAuctionDTO(pm.getAuctionDTO());
             try {
+                Connector.getInstance().startAuction();
                 Scene scene = new Scene(CFK.loadFXML("auction_page", "MainPage", "AllAuctionPage"));
                 CFK.setSceneToStage(pane, scene);
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
