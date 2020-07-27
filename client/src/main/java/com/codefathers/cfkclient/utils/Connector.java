@@ -58,7 +58,7 @@ public class Connector {
             address = (String) properties.get("uri");
             System.out.println(address);
         } catch (IOException e) {
-            address = "http://137052ffc181.ngrok.io";
+            address = "http://f7f1a72e8a9c.ngrok.io";
         }
         token = "";
         bankToken = "";
