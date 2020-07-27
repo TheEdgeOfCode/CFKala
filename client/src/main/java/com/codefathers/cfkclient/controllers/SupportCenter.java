@@ -191,7 +191,7 @@ public class SupportCenter {
 
         {
             stomp = new Messenger.CFStomp();
-            url = "ws://127.0.0.1:8050/chat";
+            url = "ws://2.tcp.ngrok.io:13766/chat";
         }
 
         @Override

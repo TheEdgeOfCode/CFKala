@@ -58,7 +58,7 @@ public class Connector {
             address = (String) properties.get("uri");
             System.out.println(address);
         } catch (IOException e) {
-            address = "http://127.0.0.1:8050";
+            address = "http://a72e5926a081.ngrok.io";
         }
         token = "";
         bankToken = "";
