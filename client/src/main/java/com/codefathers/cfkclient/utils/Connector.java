@@ -540,6 +540,10 @@ public class Connector {
         return getResources(address + "/docs/download/" + id);
     }
 
+    public void startAuction() throws Exception {
+        post(address + "/auction/start", null, String.class);
+    }
+
     /**Resources======================================================================================================*/
 
     public Image userImage() throws Exception {

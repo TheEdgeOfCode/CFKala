@@ -23,6 +23,8 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class AuctionPage extends BackAbleController {
@@ -150,13 +152,17 @@ public class AuctionPage extends BackAbleController {
     }
 
     private boolean checkInput() {
+        long current = 0;
+        if (currentPrice.getText().contains("$")) {
+            current = Long.parseLong(currentPrice.getText().substring(0, currentPrice.getText().indexOf('$')));
+        }
         if (priceEntry.getText().isEmpty()){
             Notification.show("Error", "Please Enter a Number", back.getScene().getWindow(), true);
             return false;
         } else if (!priceEntry.getText().matches("\\d+")){
             Notification.show("Error", "Should be Numeric", back.getScene().getWindow(), true);
             return false;
-        } else if (Long.parseLong(priceEntry.getText()) < Long.parseLong(currentPrice.getText())){
+        } else if (Long.parseLong(priceEntry.getText()) < current){
             Notification.show("Error", "Should be More Than Current Price", back.getScene().getWindow(), true);
             return false;
         }
@@ -174,6 +180,9 @@ public class AuctionPage extends BackAbleController {
             messageContainer.getChildren().add(builder.createMessage("You", message));
 
             AuctionMessageDTO dto = builder.getMessageDTO();
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:SS");
+            dto.setDate(LocalDateTime.now().format(formatter));
             dto.setUsername(cacheData.getUsername());
             String jsonMessage = new Gson().toJson(dto);
             sendMessage(jsonMessage);

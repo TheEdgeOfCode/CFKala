@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuctionLogDTO {
-    private int auctionId;
     private String expression;
+    private int auctionId;
     private String username;
     private String price;
 }

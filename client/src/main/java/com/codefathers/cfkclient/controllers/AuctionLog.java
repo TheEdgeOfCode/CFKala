@@ -17,7 +17,7 @@ public class AuctionLog {
     public HBox root;
 
     private static final String[] EXPRESSIONS = {"WOW", "Ridiculous", "Great", "Weird", "Shit", "Nooooo", "Really?"};
-    private AuctionLogDTO dto;
+    private static AuctionLogDTO dto;
 
     @FXML
     public void initialize(){
