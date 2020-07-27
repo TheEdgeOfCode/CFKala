@@ -50,6 +50,7 @@ public class AccountManagerPopUp {
                     break;
                 case "Support":
                 case "support":
+                    System.out.println("here");
                     scene = new Scene(CFK.loadFXML("SupportAccount","MainPage"));
                     break;
             }

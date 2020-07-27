@@ -250,6 +250,10 @@ public class UserService {
             if (manager.isPresent()) {
                 return "Manager";
             }
+            Optional<Support> support = supportRepository.findById(username);
+            if (support.isPresent()){
+                return "Support";
+            }
         } else {
             throw new WrongPasswordException("Wrong Password");
         }

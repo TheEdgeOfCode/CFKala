@@ -254,7 +254,7 @@ public class SupportAccount extends BackAbleController {
 
         {
             stomp = new CFStomp();
-            url = "ws://127.0.0.1:8050/chat";
+            url = "ws://0.tcp.ngrok.io:13752/chat";
         }
 
         @Override

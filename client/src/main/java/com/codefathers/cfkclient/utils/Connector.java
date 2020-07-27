@@ -58,7 +58,7 @@ public class Connector {
             address = (String) properties.get("uri");
             System.out.println(address);
         } catch (IOException e) {
-            address = "http://a72e5926a081.ngrok.io";
+            address = "http://546f3e06602b.ngrok.io";
         }
         token = "";
         bankToken = "";
@@ -140,6 +140,7 @@ public class Connector {
         ResponseEntity<TokenRoleDto> role = post(address + "/users/login", dto, TokenRoleDto.class);
         token = Objects.requireNonNull(role.getBody()).getToken();
         //getToken(new TokenRequestDTO(dto.getUsername(), dto.getPassword()));
+        System.out.println(role.getBody());
         return role.getBody().getRole();
     }
 

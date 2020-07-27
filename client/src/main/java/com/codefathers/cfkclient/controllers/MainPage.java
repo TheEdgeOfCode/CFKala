@@ -103,6 +103,7 @@ public class MainPage extends BackAbleController {
         cacheData.roleProperty.addListener((v, oldValue, newValue) -> {
             try {
                 if (!newValue.isEmpty()) {
+                    System.out.println("here");
                     accountPopOver.setContentNode(CFK.loadFXML("accountManagerPopUp"));
                 } else {
                     accountPopOver.setContentNode(CFK.loadFXML("accountPopUp"));
