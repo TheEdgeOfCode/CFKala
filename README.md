@@ -2,6 +2,10 @@
 Project Team 16, AdvProg2020, Phase 3 
 CFKala now on "Spring Boot"
 
+An Online shop with JavaFX (gorgous UI!) frontend and Spring(Boot) backend. 
+
+Origin: https://github.com/alihatamitajik/CFKala
+
 Team Code Fathers :
 
 Ali Hatami Tajik [98101385]
